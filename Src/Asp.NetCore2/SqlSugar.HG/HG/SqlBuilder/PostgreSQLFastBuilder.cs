@@ -11,12 +11,10 @@ namespace SqlSugar.HG
 {
     public class HGFastBuilder : FastBuilder, IFastBuilder
     {
-        public static Dictionary<string , NhgdbDbType> PgSqlType = UtilMethods.EnumToDictionary<NhgdbDbType>();
-        private EntityInfo entityInfo;
+        public static Dictionary<string, NhgdbDbType> PgSqlType = UtilMethods.EnumToDictionary<NhgdbDbType>();
 
-        public HGFastBuilder(EntityInfo entityInfo)
-        {
-            this.entityInfo = entityInfo;
+        public HGFastBuilder()
+        { 
         }
 
         public override string UpdateSql { get; set; } = @"UPDATE  {1}    SET {0}  FROM   {2}  AS TE  WHERE {3}
@@ -40,10 +38,10 @@ namespace SqlSugar.HG
             }
             string copyString = $"COPY  {dt.TableName} ( {string.Join(",", lsColNames) } ) FROM STDIN (FORMAT BINARY)";
             NhgdbConnection conn = (NhgdbConnection)this.Context.Ado.Connection;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.entityInfo.DbTableName);
+            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.FastEntityInfo.DbTableName);
             try
             {
-                var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
+                var identityColumnInfo = this.FastEntityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
                 if (identityColumnInfo != null)
                 {
                     throw new Exception("PgSql bulkcopy no support identity");
@@ -71,7 +69,7 @@ namespace SqlSugar.HG
                 ColumnView result = new ColumnView();
                 result.DbColumnInfo = columns.FirstOrDefault(it => it.DbColumnName?.ToLower()==item.ColumnName?.ToLower());
                 result.DataColumn = item;
-                result.EntityColumnInfo=this.entityInfo.Columns.FirstOrDefault(it => it.DbColumnName?.ToLower()==item.ColumnName?.ToLower());
+                result.EntityColumnInfo=this.FastEntityInfo.Columns.FirstOrDefault(it => it.DbColumnName?.ToLower()==item.ColumnName?.ToLower());
                 var key = result.DbColumnInfo?.DataType?.ToLower();
                 if (result.DbColumnInfo == null) 
                 {

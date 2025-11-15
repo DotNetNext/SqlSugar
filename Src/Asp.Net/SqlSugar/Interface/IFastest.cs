@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data; 
+using System.Data;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +46,7 @@ namespace SqlSugar
         int BulkMerge(List<T> datas, string[] whereColumns);
         Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns, string[] updateColumns);
         int BulkMerge(List<T> datas, string[] whereColumns, string[] updateColumns);
-
+        Task<int> BulkMergeAsync(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp);
+        int BulkMerge(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp);
     }
 }

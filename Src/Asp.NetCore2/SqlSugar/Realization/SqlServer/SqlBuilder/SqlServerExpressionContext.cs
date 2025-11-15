@@ -146,7 +146,14 @@ namespace SqlSugar
 
         private string GetJson(object memberName1, object memberName2, bool isLast)
         {
-            return $"JSON_VALUE({memberName1}, '$.'+"+memberName2+")";
+            if (isLast)
+            {
+                return $"JSON_VALUE({memberName1}, '$.'+" + memberName2 + ")";
+            }
+            else 
+            {
+                return $"JSON_QUERY({memberName1}, '$.'+" + memberName2 + ")";
+            }
         }
 
         public override string JsonListObjectAny(MethodCallExpressionModel model)

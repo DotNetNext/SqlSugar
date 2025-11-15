@@ -133,7 +133,9 @@ namespace SqlSugar
                 var tableName = this.QueryBuilder.AsTables.FirstOrDefault().Value;
                 if (tableName.StartsWith(" (SELECT * FROM  ("))
                 {
-                    var list = this.Clone().Select<int>(" COUNT(1) ").ToList();
+                    var copyDb = this.Clone();
+                    copyDb.QueryBuilder.OrderByValue = null;
+                    var list = copyDb.Select<int>(" COUNT(1) ").ToList();
                     return list.FirstOrDefault();
                 }
             }

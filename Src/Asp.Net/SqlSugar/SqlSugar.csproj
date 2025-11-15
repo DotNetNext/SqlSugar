@@ -429,7 +429,7 @@
     <Compile Include="Realization\Dm\DbBind\DmDbBind.cs" />
     <Compile Include="Realization\Dm\DbFirst\DmDbFirst.cs" />
     <Compile Include="Realization\Dm\DbMaintenance\DmDbMaintenance.cs" />
-    <Compile Include="Realization\Dm\Insertable\DmInserttable.cs" />
+    <Compile Include="Realization\Dm\Insertable\DmInsertable.cs" />
     <Compile Include="Realization\Dm\DmProvider.cs" />
     <Compile Include="Realization\Dm\Queryable\DmQueryable.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmBuilder.cs" />

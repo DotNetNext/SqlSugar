@@ -1,4 +1,4 @@
-﻿using Demo;
+using Demo;
 using SqlSeverTest;
 using SqlSeverTest.UserTestCases;
 using SqlSeverTest.UserTestCases.UnitTest;
@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitsadsfasdfys.Init();
             Unitsdfyasfs3lsss.Init();
             Unitadsfasyss.Init();
             Unitsadfasysss.Init();
@@ -149,6 +150,7 @@ namespace OrmTest
             UCustom01.Init();
             UCustom02.Init();
             UCustom03.Init();
+            UnitUtilConvert.Init();
             Bulk();
             Filter();
             Insert();
@@ -162,6 +164,7 @@ namespace OrmTest
             Queryable();
             Queryable2();
             QueryableAsync();
+            SecurityParameterHandling();
             //Thread();
             //Thread2();
             //Thread3();

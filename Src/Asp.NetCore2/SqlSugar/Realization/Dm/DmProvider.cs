@@ -205,24 +205,27 @@ namespace SqlSugar
             return sqlParameter.Direction == ParameterDirection.Output && this.CommandType == CommandType.StoredProcedure;
         }
 
-        private static string[] KeyWord =new string []{ ":asc", "@asc", ":desc", "@desc","@month", ":month", ":day","@day","@group", ":group",":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
-        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        private static string[] KeyWord =new string []{  ":asc", "@asc", ":desc", "@desc","@month", ":month", ":day","@day","@group", ":group",":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
+        private  string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
-            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn(KeyWord))>0)
+            if (parameters.HasValue() && this.CommandType != CommandType.StoredProcedure)
             {
-                int i = 0;
-                foreach (var Parameter in parameters.OrderByDescending(it=>it.ParameterName.Length))
+                if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn(KeyWord)) > 0)
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                    int i = 0;
+                    foreach (var Parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
                     {
-                        var newName = ":p" + i + 100;
-                        sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
-                        Parameter.ParameterName = newName;
-                        i++;
+                        if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                        {
+                            var newName = ":p" + i + 100;
+                            sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
+                            Parameter.ParameterName = newName;
+                            i++;
+                        }
                     }
                 }
-            } 
+            }
             return sql;
         }
 
@@ -230,13 +233,24 @@ namespace SqlSugar
         {
             if (parameters != null && sql != null && sql.Contains("@"))
             {
+                var isSelectIdentity = sql.EndsWith(";select @@identity")&&sql.StartsWith("INSERT INTO ");
                 foreach (var item in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
                     if (item.ParameterName.StartsWith("@"))
                     {
                         item.ParameterName = ":" + item.ParameterName.TrimStart('@');
                     }
+                    var paraNameIsIdentity = isSelectIdentity && 
+                        ( item.ParameterName.EqualCase(":Identity")|| item.ParameterName==":id");
+                    if (paraNameIsIdentity) 
+                    {
+                        sql = sql.Replace(";select @@identity", "");
+                    }
                     sql = Regex.Replace(sql, "@" + item.ParameterName.TrimStart(':'), item.ParameterName, RegexOptions.IgnoreCase);
+                    if (paraNameIsIdentity)
+                    {
+                        sql = sql+";select @@identity";
+                    }
                 }
             }
 

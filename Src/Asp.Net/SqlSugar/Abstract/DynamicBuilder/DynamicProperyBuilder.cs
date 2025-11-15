@@ -106,28 +106,29 @@ namespace SqlSugar
             Type mappingTableType = navigate.MappingType;
             string typeAiD = navigate.MappingAId;
             string typeBId = navigate.MappingBId; 
+            var queryPropertyNames = navigate.QueryPropertyNames;
             ConstructorInfo constructor;
             object[] constructorArgs;
 
             if (mappingTableType != null && typeAiD != null && typeBId != null)
             {
-                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(Type), typeof(string), typeof(string), typeof(string) });
-                constructorArgs = new object[] { mappingTableType, typeAiD, typeBId, whereSql };
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(Type), typeof(string), typeof(string), typeof(string), typeof(string[]) });
+                constructorArgs = new object[] { mappingTableType, typeAiD, typeBId, whereSql , queryPropertyNames };
             }
             else if (!string.IsNullOrEmpty(whereSql))
             {
-                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string), typeof(string) });
-                constructorArgs = new object[] { navigatType, name, name2, whereSql };
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string), typeof(string), typeof(string[]) });
+                constructorArgs = new object[] { navigatType, name, name2, whereSql, queryPropertyNames };
             }
             else if (!string.IsNullOrEmpty(name2))
             {
-                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string) });
-                constructorArgs = new object[] { navigatType, name, name2 };
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string), typeof(string[]) });
+                constructorArgs = new object[] { navigatType, name, name2, queryPropertyNames };
             }
             else
             {
-                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string) });
-                constructorArgs = new object[] { navigatType, name };
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string[]) });
+                constructorArgs = new object[] { navigatType, name, queryPropertyNames };
             }
 
             return new CustomAttributeBuilder(constructor, constructorArgs);

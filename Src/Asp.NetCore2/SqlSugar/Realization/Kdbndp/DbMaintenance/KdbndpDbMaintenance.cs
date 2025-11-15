@@ -615,6 +615,17 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                         dataSize = "int8";
                     }
                     string length = dataType.Substring(dataType.Length - 1);
+                    if (length == "t") 
+                    {
+                        if (dataType?.ToLower() == "int") 
+                        {
+                            length = "4";
+                        }
+                        if (dataType?.ToLower() == "bigint")
+                        {
+                            length = "8";
+                        }
+                    }
                     string identityDataType = "serial" + length;
                     if (IsSqlServerModel()&&dataType=="int") 
                     {

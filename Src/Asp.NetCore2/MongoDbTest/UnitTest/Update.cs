@@ -1,4 +1,6 @@
-﻿using SqlSugar;
+﻿using Newtonsoft.Json.Converters;
+using SqlSugar;
+using SqlSugar.DbConvert;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,8 @@ namespace MongoDbTest
         internal static void Init()
         {
             var db = DbHelper.GetNewDb();
-            db.CodeFirst.InitTables<Student>();
-            db.DbMaintenance.TruncateTable<Student>();
+            db.CodeFirst.InitTables<Student, Student2>();
+            db.DbMaintenance.TruncateTable<Student, Student2>();
 
             /***************************Update by object***************************/
             db.Insertable(new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now }).ExecuteCommandAsync().GetAwaiter().GetResult();
@@ -67,7 +69,18 @@ namespace MongoDbTest
             var list5 = db.Queryable<Student>().Where(it => it.SchoolId == "3").ToList();
             if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError();
 
-
+            db.Insertable(new Student2() { DbType = DbType.Sqlite }).ExecuteCommand();
+            var x = db.Queryable<Student2>().ToDataTable();
+            if (x.Rows[0][0] is string==false)
+            {
+                Cases.ThrowUnitError();
+            }
+            db.Updateable(db.Queryable<Student2>().ToList()).ExecuteCommand();
+            var x2 = db.Queryable<Student2>().ToDataTable();
+            if (x2.Rows[0][0] is string==false) 
+            {
+                Cases.ThrowUnitError();
+            }
             /***************************Update by sql***************************/
             var ages=db.Queryable<Student>()
                 .Where(it => it.SchoolId == "3")
@@ -97,6 +110,7 @@ namespace MongoDbTest
            .ExecuteCommandAsync().GetAwaiter().GetResult();
             var ages3 = db.Queryable<Student>().Where(it => it.SchoolId == "3").First();
             if (ages.age+1 != ages3.Age) Cases.ThrowUnitError();
+
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase
@@ -108,6 +122,12 @@ namespace MongoDbTest
             public int Age { get; set; }
 
             public DateTime CreateDateTime { get; set; }
+        }
+        [SqlSugar.SugarTable("UnitStudentdghhuesd3z1222")]
+        public class Student2 : MongoDbBase
+        {
+            [SugarColumn(SqlParameterDbType =typeof(EnumToStringConvert))]
+            public DbType DbType { get; set; }
         }
     }
 }

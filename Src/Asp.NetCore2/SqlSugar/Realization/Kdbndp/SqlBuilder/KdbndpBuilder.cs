@@ -24,6 +24,10 @@ namespace SqlSugar
         {
             get
             {
+                if (UtilMethods.GetDataBaseModel(this.Context) == DbType.SqlServer)
+                {
+                    return "getdate()";
+                }
                 return "current_date";
             }
         }
@@ -31,11 +35,15 @@ namespace SqlSugar
         {
             get
             {
+                if (UtilMethods.GetDataBaseModel(this.Context) == DbType.SqlServer)
+                {
+                    return "select getdate()";
+                }
                 return "select current_date";
             }
         }
 
-    
+
         public override string GetTranslationColumnName(string propertyName)
         {
             if (propertyName.Contains(".") && !propertyName.Contains(SqlTranslationLeft))

@@ -511,6 +511,10 @@ namespace SqlSugar
                     config.DbType = DbType.PostgreSQL;
                     if (this.CurrentConnectionConfig.MoreSettings==null) 
                         this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    if (this.CurrentConnectionConfig.MoreSettings.DatabaseModel == DbType.MySql)
+                    {
+                        this.CurrentConnectionConfig.MoreSettings.InnerTemp = DbType.MySql;
+                    }
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
                 case DbType.OceanBase:
@@ -527,6 +531,9 @@ namespace SqlSugar
                     break;
                 case DbType.PolarDB:
                     config.DbType = DbType.MySql;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.PolarDB;
                     break;
                 case DbType.TDSQL:
                     config.DbType = DbType.MySql;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Linq.Expressions;
 namespace SqlSugar 
 {
     public partial class FastestProvider<T>:IFastest<T> where T:class,new()
@@ -242,6 +243,21 @@ namespace SqlSugar
         public int BulkMerge(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
             return BulkMergeAsync(datas, whereColumns, updateColumns).GetAwaiter().GetResult();
+        }
+
+        public async Task<int> BulkMergeAsync(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp)
+        { 
+            // 1. 获取 whereColumns
+            var whereColumns =ExpressionTool.GetNewExpressionItemListNew((whereColumnsExp as LambdaExpression).Body).Select(it=>it.Key).ToArray();
+            // 2. 获取 updateColumns
+            var updateColumns = ExpressionTool.GetNewExpressionItemListNew((updateColumnsExp as LambdaExpression).Body).Select(it => it.Key).ToArray(); 
+
+            // 3. 调用 BulkMergeAsync
+            return await BulkMergeAsync(datas, whereColumns, updateColumns);
+        }
+        public int BulkMerge(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp)
+        {
+            return BulkMergeAsync(datas, whereColumnsExp, updateColumnsExp).GetAwaiter().GetResult();
         }
 
         private async Task<int> _BulkMerge(List<T> datas, string[] updateColumns, string[] whereColumns)

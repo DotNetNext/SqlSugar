@@ -73,7 +73,7 @@ trim(a.tabname) as name,
 trim(b.comments) as Description 
 from systables a
 left join syscomments b on b.tabname = a.tabname
-where a.tabtype in ('T')  and not (a.tabname like 'sys%') AND a.tabname <>'dual' ";
+where a.tabtype in ('T')  and a.tabid > 99";
             }
         }
         protected override string GetViewInfoListSql
@@ -85,7 +85,7 @@ trim(a.tabname) as name,
 trim(b.comments) as Description 
 from systables a
 left join syscomments b on b.tabname = a.tabname
-where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'  ";
+where a.tabtype in ('V') and a.tabid > 99 ";
             }
         }
         #endregion
@@ -158,7 +158,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "DROP TABLE {0}";
+                return "DROP TABLE IF EXISTS {0}";
             }
         }
         protected override string DropColumnToTableSql

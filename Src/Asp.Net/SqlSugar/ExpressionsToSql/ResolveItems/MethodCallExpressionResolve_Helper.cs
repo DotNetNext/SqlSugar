@@ -458,6 +458,12 @@ namespace SqlSugar
                 isRemoveParamter = true;
                 isNegate = true;
             }
+            else if (name == "IIF"&&item is MemberExpression member&& member?.Expression is BinaryExpression&& ExpressionTool.GetParameters(member).Count>0) 
+            { 
+                parameter.CommonTempData = GetNewExpressionValue(member);
+                isRemoveParamter = true;
+                isNegate = true;
+            }
             else
             {
                 base.Start();
@@ -516,7 +522,7 @@ namespace SqlSugar
                     List<object> result = new List<object>();
                     foreach (var memItem in (value as IList))
                     {
-                        result.Add(GetMemberValue(memItem, args.Last()));
+                        result.Add(GetMemberValue(memItem, args.Last(), out SugarParameter outConvertParameter));
                     }
                     value = result;
                 }

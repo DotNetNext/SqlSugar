@@ -27,6 +27,10 @@ namespace SqlSugar
             {
                 return OffsetPage();
             }
+            else if (this.Take==1&&this.Skip==0&&this.TranLock==null&&this.OrderByValue!= "ORDER BY sysdate ")
+            {
+                return FirstSql();
+            }
             var oldTake = Take;
             var oldSkip = Skip;
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
@@ -65,6 +69,16 @@ namespace SqlSugar
             var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( { this.ToSqlString() }) PAGETABLE1 WHERE ROWNUM<={skip+take}) WHERE PAGEINDEX>={(skip==0?skip:(skip+1))}";
             return pageSql;
         }
+        private string FirstSql()
+        {
+            var skip = this.Skip ?? 1;
+            var take = this.Take;
+            this.Skip = null;
+            this.Take = null;
+            this.Offset = null;
+            var pageSql = $"SELECT * FROM( {this.ToSqlString()}) PAGETABLE1 WHERE ROWNUM<={skip + take}";
+            return pageSql;
+        }
 
         public  string _ToSqlString()
         {
@@ -90,6 +104,11 @@ namespace SqlSugar
             if (this.GetGroupByString==null&&this.Take == 1 && this.Skip == 0&&oldOrderBy== "ORDER BY sysdate ") 
             {
                 result = $" {sql.ToString()} {(this.WhereInfos.Any()?"AND":"WHERE")}   ROWNUM = 1 ";
+                result = result.Replace(rowNumberString, " ");
+            }
+            if (!string.IsNullOrEmpty(this.TranLock)&&this.GetGroupByString == null && this.Take >1 && this.Skip == null && oldOrderBy == null)
+            {
+                result = $" {sql.ToString()} {(this.WhereInfos.Any() ? "AND" : "WHERE")}   ROWNUM <= {this.Take} ";
                 result = result.Replace(rowNumberString, " ");
             }
             if (ExternalPageIndex > 0)
@@ -135,6 +154,9 @@ namespace SqlSugar
             string temp = isExternal ? ExternalPageTempalte : PageTempalte;
             return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
-
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"\""\w+\""\.", "");
+        }
     }
 }

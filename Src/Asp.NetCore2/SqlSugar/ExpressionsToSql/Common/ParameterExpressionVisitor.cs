@@ -10,12 +10,21 @@ namespace SqlSugar
 {
     internal class ParameterExpressionVisitor : ExpressionVisitor
     {
+        public bool IsSqlFunc { get; set; }
         public List<ParameterExpression> Parameters { get; } = new List<ParameterExpression>();
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
             Parameters.Add(node);
             return base.VisitParameter(node);
+        }
+        protected override Expression VisitMethodCall(MethodCallExpression node)
+        {
+            if (node.Method?.DeclaringType==typeof(SqlFunc))
+            {
+                IsSqlFunc = true;
+            }
+            return base.VisitMethodCall(node);
         }
     }
     internal class MethodCallExpressionVisitor : ExpressionVisitor

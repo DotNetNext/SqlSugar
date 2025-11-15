@@ -375,7 +375,7 @@ namespace SqlSugar
                 {
                     var name = disItem.Split(':').First();
                     var value = disItem.Split(':').Last();
-                    insertItem.Add(new DbColumnInfo() { DbColumnName = name, PropertyName = name, PropertyType = typeof(string), Value = value });
+                    insertItem.Add(new DbColumnInfo() { TableId=i, DbColumnName = name, PropertyName = name, PropertyType = typeof(string), Value = value });
                 }
             }
         }

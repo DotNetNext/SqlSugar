@@ -67,6 +67,10 @@ namespace SqlSugar
             }
             else if (this.Context.GetLimit()!=null)
             {
+                if (this?.Context?.Case != null)
+                {
+                    this.Context.Case.HasWhere = this.HasWhere;
+                }
                 return this.Context.GetLimit();
             }
             else

@@ -1,13 +1,11 @@
-﻿using System;
+﻿using GBS.Data.GBasedbt;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Text.RegularExpressions;
-using GBS.Data.GBasedbt;
+using System.Threading.Tasks;
 
 namespace SqlSugar.GBase
 {
@@ -376,7 +374,7 @@ namespace SqlSugar.GBase
                         gbsParam.DbType = param.DbType;
                         gbsParam.ParameterName = param.ParameterName;
                         gbsParam.Direction = param.Direction;
-
+                        
                         if (UtilMethods.HasBigObjectParam(param))
                         {
                             // assign GbsType.
@@ -400,10 +398,20 @@ namespace SqlSugar.GBase
                                     gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
                                     break;
                             }
+
+                            if (param.DbType is System.Data.DbType.Binary&& param.TypeName==null)
+                            {
+                                gbsParam.GbsType = GbsType.Blob;
+                                gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
+                            }
                         }
                         else
                         {
                             gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                            if (gbsParam.Value is DateTime)
+                            {
+                                gbsParam.Value = ((DateTime)gbsParam.Value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
                         }
 
                         sqlCommand.Parameters.Add(gbsParam);
@@ -450,7 +458,7 @@ namespace SqlSugar.GBase
             //    sqlCommand.Parameters.AddRange(ipars);
             //}
             CheckConnection();
-            return sqlCommand;
+            return sqlCommand!;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {

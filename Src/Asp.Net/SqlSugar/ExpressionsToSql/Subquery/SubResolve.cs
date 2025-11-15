@@ -304,15 +304,33 @@ namespace SqlSugar
             {
                 this.context.CurrentShortName=ExpressionTool.GetParameters(allMethods.FirstOrDefault()).FirstOrDefault().Name;
             }
+            var hasNolock = false;
             List<string> result = isubList.Select(it =>
             {
                 it.HasWhere = isHasWhere;
-                return it.GetValue(it.Expression);
+                if (it is SubWithNolock)
+                {
+                    hasNolock = true;
+                }
+                var innerResult = it.GetValue(it.Expression);
+                var innerIsJoin = (it is SubLeftJoin || it is SubInnerJoin);
+                var isSqlServer =UtilMethods.GetDatabaseType(this.context) == DbType.SqlServer;
+                if (hasNolock && innerIsJoin&& isSqlServer)
+                {
+                    innerResult = innerResult.Replace("] ON (", "] " + SqlWith.NoLock + " ON (");
+                }
+                return innerResult;
             }).ToList();
+            if (this.context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.Oracle && isubList.Any(s => s is SubSelect) && isubList.Any(s => s is SubOrderBy || s is SubOrderByDesc))
+            {
+                result.Insert(0, "SELECT * FROM(");
+                result.Add(") WHERE ROWNUM = 1  ");
+            }
             this.context.JoinIndex = 0;
             this.context.IsAsAttr = false;
             return result;
         }
+
 
         private static void SetOrderByIndex(List<ISubOperation> isubList)
         {

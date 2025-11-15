@@ -177,11 +177,11 @@ namespace SqlSugar
                 }
                 else if (value is decimal decValue)
                 {
-                    return decValue.ToString(CultureInfo.InvariantCulture);
+                    return "'"+decValue.ToString(CultureInfo.InvariantCulture)+"'";
                 }
                 else if (value is double douValue)
                 {
-                    return douValue.ToString(CultureInfo.InvariantCulture);
+                    return "'" + douValue.ToString(CultureInfo.InvariantCulture) + "'";
                 }
                 else if (type == UtilConstants.BoolType)
                 {

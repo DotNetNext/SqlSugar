@@ -593,7 +593,7 @@ namespace SqlSugar
             }
         }
 
-        private string ReplaceFilterColumnName(string sql, Type filterType,string shortName=null)
+        internal string ReplaceFilterColumnName(string sql, Type filterType,string shortName=null)
         {
             foreach (var column in this.Context.EntityMaintenance.GetEntityInfoWithAttr(filterType).Columns.Where(it => it.IsIgnore == false))
             {
@@ -799,6 +799,10 @@ namespace SqlSugar
                 foreach (var paramter in this.SubToListParameters)
                 {
                     var regex = $@"\{Builder.SqlTranslationLeft}[\w]{{1,20}}?\{Builder.SqlTranslationRight}\.\{Builder.SqlTranslationLeft}.{{1,50}}?\{Builder.SqlTranslationRight}";
+                    if (Builder.SqlTranslationLeft == string.Empty) 
+                    {
+                         regex = $@"[\w]{{1,20}}?\..{{1,50}}? ";
+                    }
                     var matches = Regex
                         .Matches(paramter.Value.ObjToString(), regex, RegexOptions.IgnoreCase).Cast<Match>()
                         .Where(it => allShortName.Any(z => it.Value.ObjToString().ToLower().Contains(z)))

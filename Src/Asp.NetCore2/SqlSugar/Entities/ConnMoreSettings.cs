@@ -36,9 +36,10 @@ namespace SqlSugar
         public bool IsCorrectErrorSqlParameterName { get; set; }
         public int MaxParameterNameLength { get; set; }
         public bool DisableQueryWhereColumnRemoveTrim { get; set; }
-        public DbType? DatabaseModel { get;set; }
+        public DbType? DatabaseModel { get;set; } 
         public bool ClickHouseEnableFinal { get; set; }
         public bool EnableJsonb { get;  set; }
         public PostgresIdentityStrategy PostgresIdentityStrategy { get; set; } = PostgresIdentityStrategy.Serial; // 兼容性处理，默认使用Serial
+        internal object InnerTemp { get; set; }
     }
 }

@@ -420,7 +420,14 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 if (isVast) 
                 {
                     dbcompatibility=" dbcompatibility = 'PG'";
-                }
+                    if (this.Context?.CurrentConnectionConfig?.MoreSettings?.InnerTemp is DbType dbType) 
+                    {
+                        if (dbType == DbType.MySql) 
+                        {
+                            dbcompatibility = "";
+                        }
+                    }
+                } 
                 newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory)+ dbcompatibility);
             }
             return true;

@@ -241,6 +241,8 @@ namespace SqlSugar
         }
         public static DateTime[] GetDateRange(string date1Str, string date2Str)
         {
+            date1Str = date1Str.Trim();
+            date2Str = date2Str.Trim();
             var len = date2Str.Trim().Length;
             if (date1Str.Length == 4)
             {
@@ -250,8 +252,16 @@ namespace SqlSugar
             {
                 date2Str = new DateTime(int.Parse(date2Str), 1, 1).ToString(SugarDateTimeFormat.Default);
             }
+            if (date1Str.Length == 13) 
+            {
+                date1Str = date1Str + ":00:00";
+            }
+            if (date2Str.Length == 13)
+            {
+                date2Str = date2Str + ":00:00";
+            }
             if (!DateTime.TryParse(date1Str, out var date1))
-                Check.ExceptionEasy("date1 format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm)", "date1 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm");
+                Check.ExceptionEasy("date1 format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm |yyyy-MM-dd HH:mm:ss)", "date1 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm|yyyy-MM-dd HH:mm:ss");
 
             if (!DateTime.TryParse(date2Str, out var date2))
                 Check.ExceptionEasy("date2 format is incorrect.", "date2 格式不正确");
@@ -266,8 +276,10 @@ namespace SqlSugar
                 date2 = date2.AddHours(1);
             else if (len == 16) // yyyy-MM-dd HH:mm
                 date2 = date2.AddMinutes(1);
+            else if (len == 19) // yyyy-MM-dd HH:mm
+                date2 = date2.AddSeconds(1);
             else
-                Check.ExceptionEasy("date format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm)", "date 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm");
+                Check.ExceptionEasy("date format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm|yyyy-MM-dd HH:mm:ss)", "date 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm|yyyy-MM-dd HH:mm:ss");
 
             return new DateTime[] { date1, date2 };
         }

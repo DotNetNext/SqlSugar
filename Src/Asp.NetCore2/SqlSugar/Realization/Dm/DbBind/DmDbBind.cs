@@ -65,6 +65,10 @@ namespace SqlSugar
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
+                if (dbTypeName.StartsWith("datetime")) 
+                {
+                    return CSharpDataType.DateTime.ToString();
+                }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return null;
             }

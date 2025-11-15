@@ -8,8 +8,7 @@ using System.Collections;
 using System.Reflection;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization;
-using System.Diagnostics.CodeAnalysis;
-using Dm.util;
+using System.Diagnostics.CodeAnalysis; 
 namespace SqlSugar.MongoDb 
 {
     public partial class MethodCallExpressionTractor

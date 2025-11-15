@@ -324,7 +324,12 @@ namespace SqlSugar
             {
                 base.Expression = item;
                 base.Start();
-                parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey)));
+                var asValue = parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey);
+                parameter.Context.Result.Append(base.Context.GetEqString(memberName, asValue));
+                if (asValue == "sysdate" && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoToUpper == false)
+                {
+                    parameter.Context.Result.Replace(" = \"sysdate\" ", " = sysdate ");
+                }
             }
         }
 

@@ -177,6 +177,13 @@ namespace SqlSugar
                     OneToMany(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
                 });
             }
+            else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.OneToManyByArrayList)
+            {
+                this.Context.Utilities.PageEach(list, 5000, pageList =>
+                {
+                    OneToManyByArrayList(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                });
+            }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.ManyToOne)
             {
                 this.Context.Utilities.PageEach(list, 5000, pageList =>
@@ -264,7 +271,11 @@ namespace SqlSugar
             var sql = GetWhereSql(GetCrossDatabase(abDb, bEntity));
             if (sql.SelectString == null)
             {
+                //加载指定列
+                var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
+                     .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                      .Select(it => GetOneToManySelectByColumnInfo(it, abDb)).ToList();
                 sql.SelectString = String.Join(",", columns);
             }
@@ -426,7 +437,11 @@ namespace SqlSugar
                 var sqlObj = GetWhereSql(db, navObjectNameColumnInfo.Navigat.Name);
                 if (sqlObj.SelectString == null)
                 {
+                    // 加载指定列
+                    var queryPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(queryPropertyNames != null && queryPropertyNames.Length > 0, it => queryPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToOneSelectByColumnInfo(it, db)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
@@ -531,6 +546,127 @@ namespace SqlSugar
                 }
             }
         }
+        private void OneToManyByArrayList(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            Check.ExceptionEasy(!navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments().Any(), navObjectNamePropety?.Name + "Navigation configuration error one to many should be List<T>", navObjectNamePropety?.Name + "导航配置错误一对多应该是List<T>");
+
+            var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            var childDb = this.Context;
+            childDb = GetCrossDatabase(childDb, navEntityInfo.Type);
+            childDb.InitMappingInfo(navEntityInfo.Type);
+            var navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(navColumn == null, $"{navEntityInfo.EntityName} not found {navObjectNameColumnInfo.Navigat.Name} ", $"实体 {navEntityInfo.EntityName} 未找到导航配置列 {navObjectNameColumnInfo.Navigat.Name} ");
+            Check.ExceptionEasy(navColumn.IsJson==false&&navColumn.IsArray==false, $"Entity {navEntityInfo.EntityName} navigation configuration errors {navObjectNameColumnInfo.Navigat.Name}, needs to array and IsJson = true or Pgsql IsArray = true ", $"实体 {navEntityInfo.EntityName} 导航配置错误 {navObjectNameColumnInfo.Navigat.Name} ，需要IsJson=true的数组或者pgsql如果是数组类型用 IsArray=true");
+            //var navType = navObjectNamePropety.PropertyType;
+            var listItemPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            Check.ExceptionEasy(listItemPkColumn == null && navObjectNameColumnInfo.Navigat.Name2 == null, listItemEntity.EntityName + " not primary key", listItemEntity.EntityName + "没有主键");
+            if (navObjectNameColumnInfo.Navigat.Name2.HasValue())
+            {
+                listItemPkColumn = listItemEntity.Columns.Where(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+                Check.ExceptionEasy(listItemPkColumn == null, $"{navObjectNameColumnInfo.PropertyName} Navigate is error ", $"{navObjectNameColumnInfo.PropertyName}导航配置错误,可能顺序反了。");
+            }
+            var ids = list.Select(it => it.GetType().GetProperty(navColumn.PropertyName).GetValue(it)).SelectMany(it => (it as IEnumerable).Cast<object>()).Distinct().ToList();
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            if (IsEnumNumber(navColumn))
+            {
+                ids = ids.Select(it => Convert.ToInt64(it)).Cast<object>().ToList();
+            }
+            if (navColumn?.UnderType?.Name == UtilConstants.StringType.Name)
+            {
+                ids = ids.Select(it => it?.ToString()?.Replace(",", "[comma]")).Cast<object>().ToList();
+            }
+            conditionalModels.Add((new ConditionalModel()
+            {
+                ConditionalType = ConditionalType.In,
+                FieldName = listItemPkColumn.DbColumnName,
+                FieldValue = String.Join(",", ids),
+                CSharpTypeName = listItemPkColumn?.UnderType?.Name
+            }));
+            var sqlObj = GetWhereSql(childDb, navObjectNameColumnInfo.Navigat.Name);
+
+            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
+            {
+                if (sqlObj.SelectString == null)
+                {
+                    //加载指定列
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+                    var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
+                        .Select(it => GetOneToManySelectByColumnInfo(it, childDb)).ToList();
+                    sqlObj.SelectString = String.Join(",", columns);
+                }
+                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(GetDbTableName(navEntityInfo, sqlObj)).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql != null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                if (navList.HasValue())
+                {
+                    var groupQuery =
+                               (from l in list.Distinct()
+                                from n in navList
+                                let lValue = 
+                                listItemPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                let nValues = 
+                                ((navColumn.PropertyInfo.GetValue(l) as IEnumerable)?.Cast<object>()??new List<object>())
+                                where nValues != null && nValues.Select(x => x.ObjToString()).Contains(lValue)
+                                select new
+                                {
+                                    l,
+                                    n
+                                })
+                               .GroupBy(it => it.l)
+                               .ToList();
+                    foreach (var item in groupQuery)
+                    {
+                        var itemSelectList = item.Select(it => it.n);
+                        if (sqlObj.Skip != null)
+                        {
+                            itemSelectList = itemSelectList
+                                .Skip(sqlObj.Skip.Value);
+                        }
+                        if (sqlObj.Take != null)
+                        {
+                            itemSelectList = itemSelectList
+                                .Take(sqlObj.Take.Value);
+                        }
+                        if (sqlObj.MappingExpressions.HasValue())
+                        {
+                            MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                            helper.NavEntity = navEntityInfo;
+                            helper.Context = this.Context;
+                            helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key, itemSelectList.ToList(), sqlObj.MappingExpressions);
+                        }
+                        else
+                        {
+
+                            var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                            var ilist = instance as IList;
+                            foreach (var value in itemSelectList.ToList())
+                            {
+                                ilist.Add(value);
+                            }
+                            navObjectNamePropety.SetValue(item.Key, instance);
+                        }
+                    }
+                    foreach (var item in list)
+                    {
+                        if (navObjectNamePropety.GetValue(item) == null)
+                        {
+                            var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                            navObjectNamePropety.SetValue(item, instance);
+                        }
+                    }
+                }
+                else
+                {
+                    //No navigation data  set new List()
+                    foreach (var item in list)
+                    {
+                        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                        navObjectNamePropety.SetValue(item, instance);
+                    }
+                }
+            }
+        }
 
         private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
@@ -574,7 +710,11 @@ namespace SqlSugar
             {
                 if (sqlObj.SelectString == null)
                 {
+                    //加载指定列
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToManySelectByColumnInfo(it,childDb)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
@@ -1127,5 +1267,38 @@ namespace SqlSugar
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
 
+        /// <summary>
+        /// 获取查询的属性名称列表
+        /// </summary>
+        /// <param name="navObjectNamePropety"></param>
+        /// <returns></returns>
+        private string[] GetQueryPropertyNames(EntityColumnInfo navObjectNameColumnInfo)
+        {
+            string[] queryPropertyNames = null;
+            if (navObjectNameColumnInfo?.Navigat?.QueryPropertyNames?.Any()==true)
+            {
+                var navInfo = navObjectNameColumnInfo?.Navigat;
+                queryPropertyNames = navObjectNameColumnInfo.Navigat.QueryPropertyNames;
+                var list = queryPropertyNames.ToList();
+                if (navInfo.AClassId != null) 
+                {
+                    list.Add(navInfo.AClassId);
+                }
+                if (navInfo.BClassId != null)
+                {
+                    list.Add(navInfo.BClassId);
+                }
+                if (navInfo.Name != null)
+                {
+                    list.Add(navInfo.Name);
+                }
+                if (navInfo.Name2 != null)
+                {
+                    list.Add(navInfo.Name2);
+                }
+                queryPropertyNames = list.ToArray();
+            }
+            return queryPropertyNames;
+        }
     }
 }

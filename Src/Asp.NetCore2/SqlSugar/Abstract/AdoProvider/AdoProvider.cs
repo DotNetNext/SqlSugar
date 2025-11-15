@@ -1604,6 +1604,10 @@ namespace SqlSugar
                     {//Oracle bug
                         gobalOutputParamter = this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName.TrimStart(outputParameter.ParameterName.First()));
                     }
+                    if (gobalOutputParamter == null)
+                    {//Dm bug
+                        gobalOutputParamter = this.OutputParameters.FirstOrDefault(it => it.ParameterName == ":" + outputParameter.ParameterName.TrimStart(outputParameter.ParameterName.First()));
+                    }
                     outputParameter.Value = gobalOutputParamter.Value;
                     this.OutputParameters.Remove(gobalOutputParamter);
                 }

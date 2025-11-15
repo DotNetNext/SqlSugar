@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class DmInserttable<T> : InsertableProvider<T> where T : class, new()
+    public class DmInsertable<T> : InsertableProvider<T> where T : class, new()
     {
        
     }

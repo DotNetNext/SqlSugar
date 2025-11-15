@@ -207,6 +207,7 @@ namespace SqlSugar
         #region Core Logic
         private void GetDifferenceTables(TableDifferenceProvider result, Type type)
         {
+            var isCreate = false;
             var tempTableName = "TempDiff" + DateTime.Now.ToString("yyMMssHHmmssfff");
             var oldTableName = this.Context.EntityMaintenance.GetEntityInfo(type).DbTableName;
             var db = new SqlSugarProvider(UtilMethods.CopyConfig(this.Context.CurrentConnectionConfig));
@@ -224,6 +225,7 @@ namespace SqlSugar
                 var codeFirst=db.CodeFirst;
                 codeFirst.SetStringDefaultLength(this.DefultLength);
                 codeFirst.InitTables(type);
+                isCreate = true;
                 var tables = db.DbMaintenance.GetTableInfoList(false);
                 var oldTableInfo = tables.FirstOrDefault(it=>it.Name.EqualCase(oldTableName));
                 var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
@@ -248,7 +250,10 @@ namespace SqlSugar
             }
             finally
             {
-                db.DbMaintenance.DropTable(tempTableName);
+                if (isCreate)
+                {
+                    db.DbMaintenance.DropTable(tempTableName);
+                }
             }
         }
         protected virtual void Execute(Type entityType,EntityInfo entityInfo)

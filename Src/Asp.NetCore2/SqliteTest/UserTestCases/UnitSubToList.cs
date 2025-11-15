@@ -21,6 +21,8 @@ namespace OrmTest
             }
             //   db.Aop.OnLogExecuting = null;
 
+
+            db.CodeFirst.InitTables<Order, OrderItem, Custom>();
             db.DbMaintenance.TruncateTable<Order, OrderItem, Custom>();
 
             db.Insertable(new Order() { Id = 1, Name = "订单01", CustomId = 1, Price = 111, CreateTime = DateTime.Now }).ExecuteCommand();
