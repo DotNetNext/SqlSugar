@@ -1976,6 +1976,8 @@ namespace SqlSugar
 
         internal static object DateOnlyToDateTime(object value)
         {
+            if (value is DateTime)
+                return value;
             if (value == null) return null;
             var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToShortDateString");
             return method.Invoke(value, new object[] { });
