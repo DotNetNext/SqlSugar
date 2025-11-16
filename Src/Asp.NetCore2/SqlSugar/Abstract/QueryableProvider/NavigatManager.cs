@@ -566,7 +566,7 @@ namespace SqlSugar
                 listItemPkColumn = listItemEntity.Columns.Where(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
                 Check.ExceptionEasy(listItemPkColumn == null, $"{navObjectNameColumnInfo.PropertyName} Navigate is error ", $"{navObjectNameColumnInfo.PropertyName}导航配置错误,可能顺序反了。");
             }
-            var ids = list.Select(it => it.GetType().GetProperty(navColumn.PropertyName).GetValue(it)).SelectMany(it => (it as IEnumerable).Cast<object>()).Distinct().ToList();
+            var ids = list.Select(it => it.GetType().GetProperty(navColumn.PropertyName).GetValue(it)).Where(it=>it!=null).SelectMany(it => (it as IEnumerable).Cast<object>()).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             if (IsEnumNumber(navColumn))
             {
