@@ -1135,7 +1135,7 @@ namespace SqlSugar
             var isMemoryExtensionsContainsArray = false;
             if (express.Method.DeclaringType.Name == "MemoryExtensions" && methodName == "Contains")
             {
-                if (express.Arguments.Count() == 2)
+                if (express.Arguments.Count() == 2|| express.Arguments.Count() == 3)
                 {
                     if (express.Arguments.First() is MethodCallExpression callExpression)
                     {

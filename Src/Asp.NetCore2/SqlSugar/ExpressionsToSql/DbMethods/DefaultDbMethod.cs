@@ -181,7 +181,7 @@ namespace SqlSugar
             var isNvarchar = model.Args.Count == 3;
             if (inValues != null && inValues.Count > 0)
             {
-                if (isNvarchar && model.Args[2].MemberValue.Equals(true))
+                if (isNvarchar && model.Args[2].MemberValue?.Equals(true)==true)
                 {
                     inValueString = inValues.ToArray().ToJoinSqlInValsN();
                 }
