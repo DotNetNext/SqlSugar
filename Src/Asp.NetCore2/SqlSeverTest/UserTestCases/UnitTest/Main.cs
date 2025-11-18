@@ -151,6 +151,7 @@ namespace OrmTest
             UCustom02.Init();
             UCustom03.Init();
             //UnitUtilConvert.Init(); pull  unit test is  error
+            UnitUtilMethods.Init();
             Bulk();
             Filter();
             Insert();
