@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSFADSAFSY2.Init();
             Unitsadsfasdfys.Init();
             Unitsdfyasfs3lsss.Init();
             Unitadsfasyss.Init();
