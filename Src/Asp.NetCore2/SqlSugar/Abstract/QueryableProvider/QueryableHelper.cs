@@ -662,7 +662,11 @@ namespace SqlSugar
                     var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name2);
                     if (name1Column != null)
                     {
-                        if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                        if (navColumn.Navigat.NavigatType == NavigateType.OneToMany&& name1Column.DbColumnName==null)
+                        {
+                            //empty
+                        }
+                        else if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
                             navInfo.AppendProperties.Add(name1Column.PropertyName, name1Column.DbColumnName);
                     }
                     if (name2Column != null)
