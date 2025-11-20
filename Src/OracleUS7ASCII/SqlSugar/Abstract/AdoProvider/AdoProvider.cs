@@ -186,7 +186,7 @@ namespace SqlSugar
             {
                 try
                 {
-                    await (this.Connection as DbConnection).OpenAsync();
+                    await (this.Connection as DbConnection).OpenAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -213,9 +213,10 @@ namespace SqlSugar
         }
         public virtual async Task BeginTranAsync()
         {
-            await CheckConnectionAsync();
+            await CheckConnectionAsync().ConfigureAwait(false);
             if (this.Transaction == null)
-                this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync();
+                this.Transaction = await (this.Connection as DbConnection).BeginTransactionAsync().ConfigureAwait(false);
+        }ginTransactionAsync();
         }
         public virtual void BeginTran(IsolationLevel iso)
         {
@@ -225,9 +226,9 @@ namespace SqlSugar
         }
         public virtual async Task BeginTranAsync(IsolationLevel iso)
         {
-            await CheckConnectionAsync();
+            await CheckConnectionAsync().ConfigureAwait(false);
             if (this.Transaction == null)
-                this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync(iso);
+                this.Transaction = await (this.Connection as DbConnection).BeginTransactionAsync(iso).ConfigureAwait(false);
         }
         public virtual void RollbackTran()
         {
@@ -243,9 +244,10 @@ namespace SqlSugar
         {
             if (this.Transaction != null)
             {
-                await (this.Transaction as DbTransaction).RollbackAsync();
+                await (this.Transaction as DbTransaction).RollbackAsync().ConfigureAwait(false);
                 this.Transaction = null;
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) await this.CloseAsync();
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+                    await this.CloseAsync().ConfigureAwait(false);
             }
         }
         public virtual void CommitTran()
@@ -261,9 +263,10 @@ namespace SqlSugar
         {
             if (this.Transaction != null)
             {
-                await (this.Transaction as DbTransaction).CommitAsync();
+                await (this.Transaction as DbTransaction).CommitAsync().ConfigureAwait(false);
                 this.Transaction = null;
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) await this.CloseAsync();
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+                    await this.CloseAsync().ConfigureAwait(false);
             }
         }
         #endregion
@@ -295,7 +298,8 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                this.RollbackTran();
+                // FIX: Use async version of RollbackTran
+                await this.RollbackTranAsync().ConfigureAwait(false);
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
@@ -309,10 +313,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                await this.BeginTranAsync();
+                await this.BeginTranAsync().ConfigureAwait(false);
                 if (action != null)
-                    await action();
-                await this.CommitTranAsync();
+                    await action().ConfigureAwait(false);
+                await this.CommitTranAsync().ConfigureAwait(false);
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -320,7 +324,7 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                await this.RollbackTranAsync();
+                await this.RollbackTranAsync().ConfigureAwait(false);
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
@@ -359,10 +363,11 @@ namespace SqlSugar
             var result = new DbResult<T>();
             try
             {
-                this.BeginTran();
+                // FIX: Use async version of BeginTran and CommitTran
+                await this.BeginTranAsync().ConfigureAwait(false);
                 if (action != null)
-                    result.Data = await action();
-                this.CommitTran();
+                    result.Data = await action().ConfigureAwait(false);
+                await this.CommitTranAsync().ConfigureAwait(false);
                 result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -565,7 +570,7 @@ namespace SqlSugar
                 if (IsFormat(parameters))
                     sql = FormatSql(sql);
                 if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
-                    return await this.Context.CurrentConnectionConfig.SqlMiddle.ExecuteCommandAsync(sql, parameters);
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.ExecuteCommandAsync(sql, parameters).ConfigureAwait(false);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -573,9 +578,9 @@ namespace SqlSugar
                 var sqlCommand = GetCommand(sql, parameters);
                 int count;
                 if (this.CancellationToken == null)
-                    count=await sqlCommand.ExecuteNonQueryAsync();
+                    count = await sqlCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
                 else
-                    count=await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
+                    count = await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value).ConfigureAwait(false);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
@@ -605,7 +610,7 @@ namespace SqlSugar
                 if (IsFormat(parameters))
                     sql = FormatSql(sql);
                 if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
-                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetDataReaderAsync(sql, parameters);
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetDataReaderAsync(sql, parameters).ConfigureAwait(false);
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
@@ -614,9 +619,9 @@ namespace SqlSugar
                 var sqlCommand = GetCommand(sql, parameters);
                 DbDataReader sqlDataReader;
                 if(this.CancellationToken==null)
-                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                    sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default).ConfigureAwait(false);
                 else
-                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default,this.CancellationToken.Value);
+                    sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default, this.CancellationToken.Value).ConfigureAwait(false);
                 if (isSp)
                     DataReaderParameters = sqlCommand.Parameters;
                 if (this.IsClearParameters)
@@ -645,7 +650,7 @@ namespace SqlSugar
                 if (IsFormat(parameters))
                     sql = FormatSql(sql);
                 if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
-                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetScalarAsync(sql, parameters);
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetScalarAsync(sql, parameters).ConfigureAwait(false);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -653,9 +658,9 @@ namespace SqlSugar
                 var sqlCommand = GetCommand(sql, parameters);
                 object scalar;
                 if(CancellationToken==null)
-                    scalar=await sqlCommand.ExecuteScalarAsync();
+                    scalar = await sqlCommand.ExecuteScalarAsync().ConfigureAwait(false);
                 else
-                    scalar = await sqlCommand.ExecuteScalarAsync(this.CancellationToken.Value);
+                    scalar = await sqlCommand.ExecuteScalarAsync(this.CancellationToken.Value).ConfigureAwait(false);
                 //scalar = (scalar == null ? 0 : scalar);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
@@ -714,7 +719,7 @@ namespace SqlSugar
         }
         public virtual async Task<string> GetStringAsync(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToString(await GetScalarAsync(sql, parameters));
+            return Convert.ToString(await GetScalarAsync(sql, parameters).ConfigureAwait(false));
         }
         public virtual Task<string> GetStringAsync(string sql, List<SugarParameter> parameters)
         {
@@ -736,7 +741,7 @@ namespace SqlSugar
         }
         public virtual async Task<long> GetLongAsync(string sql, object parameters = null)
         {
-            return Convert.ToInt64(await GetScalarAsync(sql, GetParameters(parameters)));
+            return Convert.ToInt64(await GetScalarAsync(sql, GetParameters(parameters)).ConfigureAwait(false));
         }
 
 
@@ -777,7 +782,7 @@ namespace SqlSugar
         }
         public virtual async Task<int> GetIntAsync(string sql, params SugarParameter[] parameters)
         {
-            var list = await GetScalarAsync(sql, parameters);
+            var list = await GetScalarAsync(sql, parameters).ConfigureAwait(false);
             return list.ObjToInt();
         }
 
@@ -807,7 +812,7 @@ namespace SqlSugar
         }
         public virtual async Task<Double> GetDoubleAsync(string sql, params SugarParameter[] parameters)
         {
-            var result = await GetScalarAsync(sql, parameters);
+            var result = await GetScalarAsync(sql, parameters).ConfigureAwait(false);
             return result.ObjToMoney();
         }
         public virtual Task<Double> GetDoubleAsync(string sql, List<SugarParameter> parameters)
@@ -850,7 +855,7 @@ namespace SqlSugar
         }
         public virtual async Task<decimal> GetDecimalAsync(string sql, params SugarParameter[] parameters)
         {
-            var result = await GetScalarAsync(sql, parameters);
+            var result = await GetScalarAsync(sql, parameters).ConfigureAwait(false);
             return result.ObjToDecimal();
         }
         public virtual Task<decimal> GetDecimalAsync(string sql, List<SugarParameter> parameters)
@@ -896,7 +901,7 @@ namespace SqlSugar
         }
         public virtual async Task<DateTime> GetDateTimeAsync(string sql, params SugarParameter[] parameters)
         {
-            var list = await GetScalarAsync(sql, parameters);
+            var list = await GetScalarAsync(sql, parameters).ConfigureAwait(false);
             return list.ObjToDate();
         }
         public virtual Task<DateTime> GetDateTimeAsync(string sql, List<SugarParameter> parameters)
@@ -933,7 +938,8 @@ namespace SqlSugar
         {
             var oldValue = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
-            var result = await this.Context.Ado.SqlQueryAsync<T>(sql, parameters);
+            var result = await this.Context.Ado.SqlQueryAsync<T>(sql, parameters).ConfigureAwait(false);
+            this.Context.Ado.IsDisableMasterSlaveSeparation = oldValue;
             return result;
         }
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
@@ -1051,7 +1057,7 @@ namespace SqlSugar
         }
         public virtual async Task<List<T>> SqlQueryAsync<T>(string sql, params SugarParameter[] parameters)
         {
-            var result = await SqlQueryAsync<T, object, object, object, object, object, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, object, object, object, object, object, object>(sql, parameters).ConfigureAwait(false);
             return result.Item1;
         }
         public virtual Task<List<T>> SqlQueryAsync<T>(string sql, List<SugarParameter> parameters)
@@ -1067,27 +1073,27 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>>> SqlQueryAsync<T, T2>(string sql, object parameters = null)
         {
-            var result = await SqlQueryAsync<T, T2, object, object, object, object, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, object, object, object, object, object>(sql, parameters).ConfigureAwait(false);
             return new Tuple<List<T>, List<T2>>(result.Item1, result.Item2);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>>> SqlQueryAsync<T, T2, T3>(string sql, object parameters = null)
         {
-            var result = await SqlQueryAsync<T, T2, T3, object, object, object, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, T3, object, object, object, object>(sql, parameters).ConfigureAwait(false);
             return new Tuple<List<T>, List<T2>, List<T3>>(result.Item1, result.Item2, result.Item3);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SqlQueryAsync<T, T2, T3, T4>(string sql, object parameters = null)
         {
-            var result = await SqlQueryAsync<T, T2, T3, T4, object, object, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, T3, T4, object, object, object>(sql, parameters).ConfigureAwait(false);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>>(result.Item1, result.Item2, result.Item3, result.Item4);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SqlQueryAsync<T, T2, T3, T4, T5>(string sql, object parameters = null)
         {
-            var result = await SqlQueryAsync<T, T2, T3, T4, T5, object, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, T3, T4, T5, object, object>(sql, parameters).ConfigureAwait(false);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SqlQueryAsync<T, T2, T3, T4, T5, T6>(string sql, object parameters = null)
         {
-            var result =await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters).ConfigureAwait(false);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5, result.Item6);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
