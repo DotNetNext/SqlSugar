@@ -166,6 +166,7 @@ namespace OrmTest
             Queryable2();
             QueryableAsync();
             SecurityParameterHandling();
+            ExceptionHandling();
             //Thread();
             //Thread2();
             //Thread3();
