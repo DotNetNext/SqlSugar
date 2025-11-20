@@ -120,7 +120,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ExecuteCommandAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
@@ -156,7 +156,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ExecuteReturnIdentityAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
@@ -191,7 +191,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ExecuteReturnBigIdentityAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var order = new Order
@@ -219,7 +219,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ExecuteReturnEntityAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var order = new Order
@@ -251,7 +251,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ExecuteReturnPkListAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var orders = new List<Order>();
@@ -290,7 +290,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: MultipleEntitiesAsync");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
@@ -328,7 +328,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: SnowflakeIdBasic");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<OrderSnowflake>();
             db.Deleteable<OrderSnowflake>().ExecuteCommand();
 
@@ -361,7 +361,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: SnowflakeIdList");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<OrderSnowflake>();
             db.Deleteable<OrderSnowflake>().ExecuteCommand();
 
@@ -398,7 +398,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: SnowflakeIdUniqueness");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<OrderSnowflake>();
             db.Deleteable<OrderSnowflake>().ExecuteCommand();
 
@@ -432,7 +432,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: SnowflakeId_Concurrent");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<OrderSnowflake>();
             db.Deleteable<OrderSnowflake>().ExecuteCommand();
 
@@ -444,7 +444,7 @@ namespace OrmTest
                 int threadId = threadNum;
                 var task = Task.Run(async () =>
                 {
-                    var threadDb = GetInstance();
+                    var threadDb = Db;
                     for (int i = 0; i < 10; i++)
                     {
                         var order = new OrderSnowflake
@@ -481,7 +481,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: CancellationToken_Basic");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var cts = new CancellationTokenSource(100);
@@ -516,7 +516,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: CancellationToken_Immediate");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var cts = new CancellationTokenSource();
@@ -549,7 +549,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: CancellationToken_SnowflakeId");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<OrderSnowflake>();
 
             var cts = new CancellationTokenSource(50);
@@ -580,7 +580,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: CancellationToken_Transaction");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.BeginTran();
 
@@ -626,7 +626,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: NullEntity");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             Order nullOrder = null;
@@ -660,7 +660,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: DuplicateKey");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
 
             var order1 = new Order
@@ -702,7 +702,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: ConcurrentInserts");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
@@ -713,7 +713,7 @@ namespace OrmTest
                 int threadId = i;
                 var task = Task.Run(async () =>
                 {
-                    var threadDb = GetInstance();
+                    var threadDb = Db;
                     var order = new Order
                     {
                         Name = $"Concurrent Thread {threadId}",
@@ -741,7 +741,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: TransactionRollback");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
@@ -783,7 +783,7 @@ namespace OrmTest
         {
             Console.WriteLine("Test: Performance");
             
-            var db = GetInstance();
+            var db = Db;
             db.CodeFirst.InitTables<Order>();
             db.Deleteable<Order>().ExecuteCommand();
 
