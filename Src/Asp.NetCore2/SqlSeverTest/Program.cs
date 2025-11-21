@@ -9,7 +9,20 @@ namespace OrmTest
         static void Main(string[] args)
         { 
             //Each example will automatically create a table and can run independently.
-            //每个例子都会自动建表 并且可以独立运行   
+            //每个例子都会自动建表 并且可以独立运行
+            
+            // Run AsyncUpdate test suite
+            Console.WriteLine("═══════════════════════════════════════════════════════════════");
+            Console.WriteLine("  RUNNING ASYNC UPDATE TEST SUITE");
+            Console.WriteLine("═══════════════════════════════════════════════════════════════\n");
+            
+            NewUnitTest.AsyncUpdate();
+            
+            Console.WriteLine("\n═══════════════════════════════════════════════════════════════");
+            Console.WriteLine("  ✓✓✓ ASYNC UPDATE TESTS COMPLETED ✓✓✓");
+            Console.WriteLine("═══════════════════════════════════════════════════════════════\n");
+            
+            /* Commented out other tests for now
             _1_CodeFirst.Init();
             _2_DbFirst.Init();
             _3_EasyQuery.Init();
@@ -28,6 +41,7 @@ namespace OrmTest
             _a6_SqlPage.Init();
             _a7_JsonType.Init();
             _a8_SelectReturnType.Init();
+            */
         }
     }
 

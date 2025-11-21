@@ -169,6 +169,7 @@ namespace OrmTest
             SecurityParameterHandling();
             ExceptionHandling();
             AsyncInsert();
+            AsyncUpdate();
             //Thread();
             //Thread2();
             //Thread3();
