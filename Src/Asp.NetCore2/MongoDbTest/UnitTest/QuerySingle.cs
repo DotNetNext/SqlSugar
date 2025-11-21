@@ -52,6 +52,16 @@ namespace MongoDbTest
             var list4=db.Queryable<Student2>().ToList();
             db.Insertable(new List<Student2>() { new Student2() { Bytes = new byte[] { 2, 3 } }, new Student2() { Bytes = new byte[] { 3, 3 } } }).ExecuteCommand();
             var list5 = db.Queryable<Student2>().ToList();
+            var list6 = db.Queryable<School>().OrderBy(it=>it.Name).ToList();
+            var list7 = db.Queryable<School>().OrderByDescending(it => it.Name).ToList();
+            var list8 = db.Queryable<School>().OrderBy("Name asc").ToList();
+            var list9 = db.Queryable<School>().OrderBy(new List<SqlSugar.OrderByModel>() {
+             new SqlSugar.OrderByModel(){ FieldName="Name", OrderByType=SqlSugar.OrderByType.Desc }
+            }).ToList();
+            var list10 = db.Queryable<School>().OrderBy(new List<SqlSugar.OrderByModel>() {
+                     new SqlSugar.OrderByModel(){ FieldName="Name", OrderByType=SqlSugar.OrderByType.Asc },
+                     new SqlSugar.OrderByModel(){ FieldName="_id", OrderByType=SqlSugar.OrderByType.Desc }
+            }).ToList();
         }
     }
     [SqlSugar.SugarTable("UnitStudent12313122")]
