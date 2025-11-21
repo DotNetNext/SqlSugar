@@ -235,7 +235,7 @@ namespace SqlSugar
             var times = GetDateRange(valueArray.FirstOrDefault(), valueArray.LastOrDefault());
             var parameterNameFirst = parameterName + "_01";
             var parameterNameLast = parameterName + "_02";
-            builder.AppendFormat("( {0}>={1} AND {0}<{2} )", item.FieldName.ToSqlFilter(), parameterNameFirst, parameterNameLast);
+            builder.AppendFormat(type+"( {0}>={1} AND {0}<{2} )", item.FieldName.ToSqlFilter(), parameterNameFirst, parameterNameLast);
             parameters.Add(new SugarParameter(parameterNameFirst, times.First()));
             parameters.Add(new SugarParameter(parameterNameLast, times.Last()));
         }
