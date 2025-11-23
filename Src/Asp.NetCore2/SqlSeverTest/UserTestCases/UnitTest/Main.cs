@@ -170,6 +170,7 @@ namespace OrmTest
             ExceptionHandling();
             AsyncInsert();
             AsyncUpdate();
+            AsyncDelete();
             //Thread();
             //Thread2();
             //Thread3();
