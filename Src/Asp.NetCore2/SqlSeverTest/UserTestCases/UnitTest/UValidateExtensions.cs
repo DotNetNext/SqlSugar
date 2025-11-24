@@ -7,7 +7,7 @@ using System.Reflection;
 namespace OrmTest
 {
     /// <summary>
-    /// Comprehensive test suite for ValidateExtensions utility class
+    /// Comprehensive test suite for ValidateExtensions utility class.
     /// Tests 60 validation scenarios across multiple categories:
     /// - IsInRange/IsIn (9 tests)
     /// - IsNullOrEmpty/HasValue (8 tests)
@@ -15,32 +15,50 @@ namespace OrmTest
     /// - Regex Validation (10 tests)
     /// - String Type Detection (6 tests)
     /// - Comprehensive Edge Cases (21 tests)
-    /// Note: ValidateExtensions is internal, so we use reflection to access the methods
+    /// 
+    /// Note: ValidateExtensions is internal, so reflection is used to access methods.
+    /// All tests use helper methods to invoke extension methods dynamically.
     /// </summary>
     public class UValidateExtensions
     {
-        // Cache the ValidateExtensions type for reflection
+        #region Fields and Constructor
+        
+        /// <summary>Cached Type reference for ValidateExtensions class</summary>
         private static Type _validateExtensionsType;
         
+        /// <summary>
+        /// Static constructor - initializes reflection type cache.
+        /// Loads the internal ValidateExtensions type from SqlSugar assembly.
+        /// </summary>
         static UValidateExtensions()
         {
-            // Get the internal ValidateExtensions type from SqlSugar assembly
             var sqlSugarAssembly = typeof(SqlSugarClient).Assembly;
             _validateExtensionsType = sqlSugarAssembly.GetType("SqlSugar.ValidateExtensions");
+            
             if (_validateExtensionsType == null)
             {
                 throw new Exception("Could not find SqlSugar.ValidateExtensions type");
             }
         }
         
-        /// <summary>Helper method to invoke extension methods via reflection</summary>
+        #endregion
+        
+        #region Reflection Helper Methods
+        
+        /// <summary>
+        /// Invokes non-generic extension methods via reflection.
+        /// Handles method overloads, params arrays, and type matching.
+        /// </summary>
+        /// <param name="methodName">Name of the extension method to invoke</param>
+        /// <param name="instance">The 'this' parameter (first parameter)</param>
+        /// <param name="parameters">Additional method parameters</param>
+        /// <returns>Boolean result from the validation method</returns>
         private static bool InvokeExtensionMethod(string methodName, object instance, params object[] parameters)
         {
-            // Get all methods with this name
+            // Get all non-generic methods with matching name, prefer specific types over object
             var methods = _validateExtensionsType.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(m => m.Name == methodName && !m.IsGenericMethod)
                 .OrderBy(m => {
-                    // Prefer more specific types over object
                     var firstParam = m.GetParameters()[0];
                     return firstParam.ParameterType == typeof(object) ? 1 : 0;
                 });
@@ -51,17 +69,16 @@ namespace OrmTest
                 {
                     var methodParams = method.GetParameters();
                     
-                    // Check if first parameter type matches
+                    // Verify first parameter type is compatible
                     var firstParamType = methodParams[0].ParameterType;
                     if (instance != null && !firstParamType.IsAssignableFrom(instance.GetType()))
                     {
                         continue;
                     }
                     
-                    // Check if last parameter is params array
+                    // Handle params array (e.g., IsIn, IsContainsIn)
                     if (methodParams.Length >= 2 && methodParams[methodParams.Length - 1].IsDefined(typeof(ParamArrayAttribute), false))
                     {
-                        // Handle params array
                         var paramsArrayType = methodParams[methodParams.Length - 1].ParameterType.GetElementType();
                         var paramsArray = Array.CreateInstance(paramsArrayType, parameters.Length);
                         for (int i = 0; i < parameters.Length; i++)
@@ -72,12 +89,11 @@ namespace OrmTest
                     }
                     else
                     {
-                        // Regular parameters
+                        // Handle regular parameters
                         var allParams = new object[parameters.Length + 1];
                         allParams[0] = instance;
                         Array.Copy(parameters, 0, allParams, 1, parameters.Length);
                         
-                        // Check if parameter count matches
                         if (methodParams.Length == allParams.Length)
                         {
                             return (bool)method.Invoke(null, allParams);
@@ -90,7 +106,15 @@ namespace OrmTest
             throw new Exception($"Method {methodName} with matching parameters not found in ValidateExtensions");
         }
         
-        /// <summary>Helper method to invoke generic extension methods via reflection</summary>
+        /// <summary>
+        /// Invokes generic extension methods via reflection.
+        /// Handles generic type parameters and params arrays.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter</typeparam>
+        /// <param name="methodName">Name of the generic extension method</param>
+        /// <param name="instance">The 'this' parameter (first parameter)</param>
+        /// <param name="parameters">Additional method parameters</param>
+        /// <returns>Boolean result from the validation method</returns>
         private static bool InvokeGenericExtensionMethod<T>(string methodName, T instance, params object[] parameters)
         {
             var methods = _validateExtensionsType.GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -103,10 +127,9 @@ namespace OrmTest
                     var genericMethod = method.MakeGenericMethod(typeof(T));
                     var methodParams = genericMethod.GetParameters();
                     
-                    // Check if the second parameter is a params array
+                    // Handle params array for generic methods (e.g., IsIn<T>)
                     if (methodParams.Length == 2 && methodParams[1].IsDefined(typeof(ParamArrayAttribute), false))
                     {
-                        // Create array for params
                         var paramsArray = Array.CreateInstance(typeof(T), parameters.Length);
                         for (int i = 0; i < parameters.Length; i++)
                         {
@@ -116,7 +139,7 @@ namespace OrmTest
                     }
                     else
                     {
-                        // Regular parameters
+                        // Handle regular generic parameters
                         var allParams = new object[parameters.Length + 1];
                         allParams[0] = instance;
                         Array.Copy(parameters, 0, allParams, 1, parameters.Length);
@@ -129,11 +152,20 @@ namespace OrmTest
             throw new Exception($"Generic method {methodName} not found or could not be invoked");
         }
         
+        #endregion
+        
+        #region Test Initialization
+        
+        /// <summary>
+        /// Main entry point for test suite execution.
+        /// Runs all 60 validation tests in organized categories.
+        /// Throws exception on first failure for quick debugging.
+        /// </summary>
         public static void Init()
         {
             Console.WriteLine("\n========== UValidateExtensions Test Suite Started ==========");
             
-            // Category 1: IsInRange/IsIn Tests (9 tests)
+            // Category 1: Range and Collection Membership (9 tests)
             Test_IsInRange_Int_WithinRange();
             Test_IsInRange_Int_BelowRange();
             Test_IsInRange_Int_AboveRange();
@@ -144,7 +176,7 @@ namespace OrmTest
             Test_IsIn_Int_Found();
             Test_IsIn_Int_NotFound();
             
-            // Category 2: IsNullOrEmpty/HasValue Tests (8 tests)
+            // Category 2: Null/Empty Checks (8 tests)
             Test_IsNullOrEmpty_Object_Null();
             Test_IsNullOrEmpty_Object_Empty();
             Test_IsNullOrEmpty_Object_WithValue();
@@ -154,7 +186,7 @@ namespace OrmTest
             Test_HasValue_Object_WithValue();
             Test_HasValue_Collection_WithItems();
             
-            // Category 3: Type Validation Tests (6 tests)
+            // Category 3: Type Format Validation (6 tests)
             Test_IsInt_ValidInteger();
             Test_IsInt_InvalidInteger();
             Test_IsMoney_ValidDecimal();
@@ -162,7 +194,7 @@ namespace OrmTest
             Test_IsDate_ValidDate();
             Test_IsZero_ZeroValue();
             
-            // Category 4: Regex Validation Tests (10 tests)
+            // Category 4: Regex Pattern Matching (10 tests)
             Test_IsEamil_ValidEmail();
             Test_IsEamil_InvalidEmail();
             Test_IsMobile_ValidMobile();
@@ -174,7 +206,7 @@ namespace OrmTest
             Test_IsFax_ValidFax();
             Test_IsMatch_CustomPattern();
             
-            // Category 5: String Type Detection Tests (6 tests)
+            // Category 5: Type Name Detection (6 tests)
             Test_IsCollectionsList_ValidList();
             Test_IsCollectionsList_InvalidType();
             Test_IsStringArray_ValidArray();
@@ -182,7 +214,7 @@ namespace OrmTest
             Test_IsContainsIn_Found();
             Test_IsContainsStartWithIn_Found();
             
-            // Category 6: Comprehensive Edge Cases (21 tests)
+            // Category 6: Edge Cases and Boundaries (21 tests)
             Test_IsInRange_Int_BoundaryMin();
             Test_IsInRange_Int_BoundaryMax();
             Test_IsInRange_DateTime_BoundaryMin();
@@ -207,6 +239,8 @@ namespace OrmTest
             
             Console.WriteLine("\n========== All 60 Tests Passed Successfully! ==========");
         }
+        
+        #endregion
         
         #region Category 1: IsInRange/IsIn Tests (9 tests)
         
