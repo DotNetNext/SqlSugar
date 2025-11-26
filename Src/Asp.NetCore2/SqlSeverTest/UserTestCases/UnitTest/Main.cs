@@ -34,6 +34,10 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UValidateExtensions.Init();
+            UUtilExtensions.Init();
+            UnitDateRange.Init();
+            UnitSFADSAFSY2.Init();
             Unitsadsfasdfys.Init();
             Unitsdfyasfs3lsss.Init();
             Unitadsfasyss.Init();
@@ -166,6 +170,10 @@ namespace OrmTest
             Queryable2();
             QueryableAsync();
             SecurityParameterHandling();
+            ExceptionHandling();
+            AsyncInsert();
+            AsyncUpdate();
+            AsyncDelete();
             //Thread();
             //Thread2();
             //Thread3();

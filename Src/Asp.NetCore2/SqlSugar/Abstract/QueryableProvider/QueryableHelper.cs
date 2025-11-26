@@ -662,7 +662,11 @@ namespace SqlSugar
                     var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name2);
                     if (name1Column != null)
                     {
-                        if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                        if (navColumn.Navigat.NavigatType == NavigateType.OneToMany&& name1Column.DbColumnName==null)
+                        {
+                            //empty
+                        }
+                        else if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
                             navInfo.AppendProperties.Add(name1Column.PropertyName, name1Column.DbColumnName);
                     }
                     if (name2Column != null)
@@ -1795,7 +1799,12 @@ namespace SqlSugar
                     foreach (var item in s.Arguments)
                     { 
                             var q = this.Context.Queryable<object>().QueryBuilder;
-                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.WhereMultiple).GetResultString();
+                            var resolveExpressType = isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.WhereMultiple;
+                            if(item is MemberExpression&&resolveExpressType == ResolveExpressType.WhereMultiple) 
+                            {
+                               resolveExpressType = ResolveExpressType.FieldMultiple;
+                            }
+                            var itemObj= q.GetExpressionValue(item, resolveExpressType).GetResultString();
                             if (q.Parameters.Any())
                             {
                                 var itemGroupBySql = UtilMethods.GetSqlString(DbType.SqlServer, itemObj, q.Parameters.ToArray());
