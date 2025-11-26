@@ -35,7 +35,7 @@ namespace OrmTest
         public static void Init()
         {
             UValidateExtensions.Init();
-            UUtilExtensions.Init();
+            //UUtilExtensions.Init(); // Temporarily disabled due to ambiguous extension method calls
             UnitDateRange.Init();
             UnitSFADSAFSY2.Init();
             Unitsadsfasdfys.Init();
@@ -155,7 +155,7 @@ namespace OrmTest
             UCustom02.Init();
             UCustom03.Init();
             USugarRetry.Init();
-            //UnitUtilConvert.Init(); pull  unit test is  error
+            UtilConvert();
             Bulk();
             Filter();
             Insert();

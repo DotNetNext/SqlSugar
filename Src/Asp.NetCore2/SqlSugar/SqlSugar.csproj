@@ -14,6 +14,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>SqlSeverTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="dll\**" />
     <EmbeddedResource Remove="dll\**" />
     <None Remove="dll\**" />
