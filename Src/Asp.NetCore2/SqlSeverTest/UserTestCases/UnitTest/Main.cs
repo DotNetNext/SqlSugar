@@ -35,7 +35,7 @@ namespace OrmTest
         public static void Init()
         {
             UValidateExtensions.Init();
-            UUtilMethods.Init();
+            UUtilExtensions.Init();
             UnitDateRange.Init();
             UnitSFADSAFSY2.Init();
             Unitsadsfasdfys.Init();
