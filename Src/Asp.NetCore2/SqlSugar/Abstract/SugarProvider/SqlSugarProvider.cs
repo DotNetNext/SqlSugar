@@ -19,7 +19,6 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarProvider : ISqlSugarClient
     {
-
         #region Constructor
         public SqlSugarProvider(ConnectionConfig config)
         {
@@ -79,6 +78,7 @@ namespace SqlSugar
             }
             set { ContextRewritableMethods = value; }
         }
+
         #endregion
 
         #region Queryable

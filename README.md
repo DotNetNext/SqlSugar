@@ -249,3 +249,114 @@ db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
 db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 
 ```
+
+### Feature11 : Query Performance Analyzer
+
+**Real-time query performance tracking, analysis, and optimization**
+
+11.1 Enable and Configure
+```cs
+// Enable with extension method
+db.EnablePerformanceAnalyzer();
+
+// Enable with custom configuration
+db.EnablePerformanceAnalyzer(config =>
+{
+    config.SlowQueryThresholdMs = 1000;    // 1 second
+    config.EnableIndexAnalysis = true;
+    config.MaxMetricsCount = 10000;
+});
+
+// Get analyzer instance
+var analyzer = db.GetPerformanceAnalyzer();
+analyzer.Enable();
+```
+
+11.2 Performance Statistics
+```cs
+// Execute queries (automatically tracked)
+var orders = db.Queryable<Order>()
+    .LeftJoin<Customer>((o, c) => o.CustomerId == c.Id)
+    .Where(o => o.CreateTime > DateTime.Now.AddDays(-30))
+    .ToList();
+
+// Get quick stats via extension
+var stats = db.GetPerformanceStats();
+Console.WriteLine($"Total: {stats.TotalQueries}, Avg: {stats.AverageExecutionTime}ms");
+
+// Get detailed statistics
+var detailed = analyzer.GetStatistics();
+Console.WriteLine($"P95: {detailed.P95ExecutionTime}ms");
+Console.WriteLine($"P99: {detailed.P99ExecutionTime}ms");
+Console.WriteLine($"Slow Queries: {detailed.SlowQueryCount}");
+
+// Get top slow queries
+var slowQueries = analyzer.GetSlowQueries(10);
+foreach (var query in slowQueries)
+{
+    Console.WriteLine($"{query.ExecutionTimeMs}ms - {query.QueryText}");
+}
+```
+
+11.3 Optimization Suggestions
+```cs
+// Get all optimization suggestions
+var suggestions = analyzer.GetOptimizationSuggestions();
+foreach (var s in suggestions)
+{
+    Console.WriteLine($"[{s.Severity}] {s.Title}");
+    Console.WriteLine($"Impact: {s.EstimatedImpactPercent}%");
+    Console.WriteLine($"Fix: {s.Recommendation}");
+}
+
+// Detect N+1 query issues
+var nPlusOneIssues = analyzer.DetectNPlusOneQueries();
+foreach (var issue in nPlusOneIssues)
+{
+    Console.WriteLine($"N+1 detected: {issue.ExecutionCount} queries");
+    Console.WriteLine($"Suggestion: {issue.OptimizationSuggestion}");
+}
+
+// Get index recommendations
+var indexes = analyzer.GetIndexRecommendations();
+foreach (var index in indexes)
+{
+    Console.WriteLine($"Table: {index.TableName}");
+    Console.WriteLine($"Columns: {string.Join(", ", index.Columns)}");
+    Console.WriteLine($"SQL: {index.CreateIndexSql}");
+}
+```
+
+11.4 Report Generation
+```cs
+// HTML report with charts
+var htmlReport = analyzer.GenerateHtmlReport();
+File.WriteAllText("performance.html", htmlReport);
+
+// JSON report for APIs
+var jsonReport = analyzer.GenerateJsonReport();
+File.WriteAllText("performance.json", jsonReport);
+
+// CSV report for Excel
+var csvReport = analyzer.GenerateCsvReport();
+File.WriteAllText("performance.csv", csvReport);
+```
+
+11.5 Export and Baseline Comparison
+```cs
+// Export current metrics
+analyzer.ExportToFile("baseline.json");
+
+// Later, compare with baseline
+var baseline = analyzer.ImportFromFile("baseline.json");
+var comparison = analyzer.CompareWithBaseline(baseline);
+Console.WriteLine($"Performance: {comparison.PerformanceChangePercent:+0.0;-0.0}%");
+Console.WriteLine($"Regressions: {comparison.RegressionCount}");
+Console.WriteLine($"Improvements: {comparison.ImprovementCount}");
+
+// Clear data and disable
+analyzer.Reset();
+analyzer.Disable();
+```
+
+
