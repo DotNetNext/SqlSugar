@@ -137,6 +137,10 @@ namespace SqlSugar.MongoDb
         }
         public static bool IsValidObjectId(string id)
         {
+            if (MongoDbConfig.NoObjectIdFunc != null&& MongoDbConfig.NoObjectIdFunc(id))
+            {
+                return false;
+            }
             return id != null && id.Length == 24 && ObjectId.TryParse(id, out _);
         }
         internal static JoinQueryInfo BuilderJoinInfo(Expression joinExpression, JoinType joinType, QueryBuilder queryBuilder, SqlSugarProvider context)

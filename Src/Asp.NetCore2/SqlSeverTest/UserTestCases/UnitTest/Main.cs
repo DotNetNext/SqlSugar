@@ -34,6 +34,10 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UValidateExtensions.Init();
+            UUtilExtensions.Init();
+            UnitDateRange.Init();
+            UnitSFADSAFSY2.Init();
             Unitsadsfasdfys.Init();
             Unitsdfyasfs3lsss.Init();
             Unitadsfasyss.Init();
@@ -150,7 +154,7 @@ namespace OrmTest
             UCustom01.Init();
             UCustom02.Init();
             UCustom03.Init();
-            UConfigSettings.Init();
+            USugarRetry.Init();
             //UnitUtilConvert.Init(); pull  unit test is  error
             Bulk();
             Filter();
@@ -166,6 +170,10 @@ namespace OrmTest
             Queryable2();
             QueryableAsync();
             SecurityParameterHandling();
+            ExceptionHandling();
+            AsyncInsert();
+            AsyncUpdate();
+            AsyncDelete();
             //Thread();
             //Thread2();
             //Thread3();

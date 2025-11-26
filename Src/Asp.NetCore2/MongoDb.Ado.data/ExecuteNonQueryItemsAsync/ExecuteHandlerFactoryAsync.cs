@@ -12,7 +12,7 @@ namespace MongoDb.Ado.data
 {
     public class ExecuteHandlerFactoryAsync
     {
-        public readonly static Dictionary<string, IMongoOperationHandlerAsync> Items = new Dictionary<string, IMongoOperationHandlerAsync>(StringComparer.OrdinalIgnoreCase)
+        public readonly Dictionary<string, IMongoOperationHandlerAsync> Items = new Dictionary<string, IMongoOperationHandlerAsync>(StringComparer.OrdinalIgnoreCase)
             {
                 { "insert", new InsertHandlerAsync() },
                 { "insertmany", new InsertManyHandlerAsync() },
@@ -28,7 +28,7 @@ namespace MongoDb.Ado.data
         public static Task<int> HandlerAsync(string operation, string json, IMongoCollection<BsonDocument> collection,CancellationToken cancellationToken, HandlerContext handlerContext)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
-            var handlers = ExecuteHandlerFactoryAsync.Items;
+            var handlers = new ExecuteHandlerFactoryAsync().Items;
 
             if (!handlers.TryGetValue(operation, out var handler))
                 throw new NotSupportedException($"不支持的操作类型: {operation}");

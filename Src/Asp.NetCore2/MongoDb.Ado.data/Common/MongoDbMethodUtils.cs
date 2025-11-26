@@ -63,7 +63,7 @@ namespace MongoDb.Ado.data
 
         public static void ValidateOperation(string operation)
         {
-            if (ExecuteHandlerFactory.Items.TryGetValue(operation, out var handler))
+            if (new ExecuteHandlerFactory().Items.TryGetValue(operation, out var handler))
             {
                 return ;
             }

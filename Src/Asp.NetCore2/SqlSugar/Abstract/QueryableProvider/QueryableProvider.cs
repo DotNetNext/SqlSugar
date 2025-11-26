@@ -8,7 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using Newtonsoft.Json.Converters;
 
 namespace SqlSugar
 {
@@ -814,8 +815,15 @@ namespace SqlSugar
                         });
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
-                            data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
-                            data.Value.CSharpTypeName = "int";
+                            if (column.SqlParameterDbType is Type type&&type?.Name== "EnumToStringConvert")
+                            {
+                                data.Value.CSharpTypeName = "string";
+                            }
+                            else
+                            {
+                                data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
+                                data.Value.CSharpTypeName = "int";
+                            }
                         }
                         else if (value != null&&column.UnderType==UtilConstants.DateType) 
                         {
