@@ -249,3 +249,57 @@ db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
 db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 
 ```
+
+### Feature11 : Database Migrations
+```cs
+11.1 Create Migration
+[Migration(20251126001, "Create Users table")]
+public class CreateUsersTable_20251126001 : Migration
+{
+    public override void Up(SchemaBuilder schema)
+    {
+        schema.CreateTable("Users", table =>
+        {
+            table.Int("Id").PrimaryKey().AutoIncrement();
+            table.String("Username", 50).NotNull();
+            table.String("Email", 255).NotNull();
+            table.DateTime("CreatedAt").NotNull().Default("GETDATE()");
+        });
+        schema.CreateIndex("Users", "IX_Users_Email", "Email");
+    }
+
+    public override void Down(SchemaBuilder schema)
+    {
+        schema.DropTable("Users");
+    }
+}
+
+11.2 Run Migrations
+db.Migrations().RunPending(); // Run all pending
+db.Migrations().MigrateTo(20251126001); // Migrate to specific version
+db.Migrations().Rollback(); // Rollback last
+db.Migrations().Reset(); // Rollback all
+
+11.3 Migration Info
+var pending = db.Migrations().GetPendingMigrations();
+var applied = db.Migrations().GetAppliedMigrations();
+var current = db.Migrations().GetCurrentVersion();
+
+11.4 Configuration
+db.Migrations(config =>
+{
+    config.HistoryTableName = "__MigrationHistory";
+    config.UseTransaction = true;
+    config.MigrationAssembly = Assembly.GetExecutingAssembly();
+}).RunPending();
+
+11.5 Schema Builder Operations
+schema.CreateTable("TableName", table => { });
+schema.DropTable("TableName");
+schema.RenameTable("OldName", "NewName");
+schema.AlterTable("TableName", table => { });
+schema.AddColumn("TableName", "ColumnName", col => col.String(50));
+schema.DropColumn("TableName", "ColumnName");
+schema.CreateIndex("TableName", "IndexName", "Column1", "Column2");
+schema.Sql("CREATE TRIGGER ...");
+```
