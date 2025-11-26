@@ -150,6 +150,7 @@ namespace OrmTest
             UCustom01.Init();
             UCustom02.Init();
             UCustom03.Init();
+            USugarRetry.Init();
             //UnitUtilConvert.Init(); pull  unit test is  error
             Bulk();
             Filter();
