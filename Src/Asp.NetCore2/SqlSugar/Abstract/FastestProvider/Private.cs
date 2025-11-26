@@ -101,7 +101,7 @@ namespace SqlSugar
             }
 
             bool supportIdentity = true;
-            if (this.context.CurrentConnectionConfig.DbType == DbType.PostgreSQL || this.context.CurrentConnectionConfig.DbType == DbType.Vastbase)
+            if (this.context.CurrentConnectionConfig.DbType == DbType.Dm || this.context.CurrentConnectionConfig.DbType == DbType.PostgreSQL || this.context.CurrentConnectionConfig.DbType == DbType.Vastbase)
             {
                 supportIdentity = false;
             }

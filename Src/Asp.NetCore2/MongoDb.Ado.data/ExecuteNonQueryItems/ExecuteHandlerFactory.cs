@@ -9,7 +9,7 @@ namespace MongoDb.Ado.data
 {
     public class ExecuteHandlerFactory
     {
-        public readonly static Dictionary<string, IMongoOperationHandler> Items = new Dictionary<string, IMongoOperationHandler>(StringComparer.OrdinalIgnoreCase)
+        public readonly  Dictionary<string, IMongoOperationHandler> Items = new Dictionary<string, IMongoOperationHandler>(StringComparer.OrdinalIgnoreCase)
             {
                 { "insert", new InsertHandler() },
                 { "insertmany", new InsertManyHandler() },
@@ -25,7 +25,7 @@ namespace MongoDb.Ado.data
         public static int Handler(string operation, string json, IMongoCollection<BsonDocument> collection, HandlerContext handlerContext)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
-            var handlers = ExecuteHandlerFactory.Items;
+            var handlers =new  ExecuteHandlerFactory().Items;
 
             if (!handlers.TryGetValue(operation, out var handler))
                 throw new NotSupportedException($"不支持的操作类型: {operation}");

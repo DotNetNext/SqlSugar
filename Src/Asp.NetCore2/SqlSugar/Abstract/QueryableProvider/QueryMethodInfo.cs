@@ -236,6 +236,18 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { ignoreColumns });
             return this;
         }
+        public QueryMethodInfo Take(int takeNumber)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Take", 1, typeof(int));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { takeNumber });
+            return this;
+        }
+        public QueryMethodInfo Skip(int skipNumber)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Skip", 1, typeof(int));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { skipNumber });
+            return this;
+        }
         public QueryMethodInfo Includes(string navProperyName,string thenNavProperyName2)
         {
             var method = QueryableObj.GetType().GetMyMethod("IncludesByNameString", 2, typeof(string),typeof(string));

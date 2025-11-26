@@ -14,7 +14,7 @@
     <OutputType>Exe</OutputType>
     
     <!-- Target .NET 6.0 for modern performance features / 目标 .NET 6.0 以获得现代性能特性 -->
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <!-- 

@@ -177,12 +177,20 @@ namespace SqlSugar.MongoDb
                         jsonPart = str;
                         directionPart = "ASC";
                     }
-                    var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
-                    if (bson.Contains(UtilConstants.FieldName))
+                    if (jsonPart?.StartsWith("{") == false && jsonPart?.StartsWith("[") == false)
                     {
-                        var field = bson[UtilConstants.FieldName].AsString;
                         var direction = directionPart == "DESC" ? -1 : 1;
-                        sortDoc[field] = direction;
+                        sortDoc[jsonPart?.Replace(" ASC","")?.TrimEnd('\"')?.TrimStart('\"')] = direction;
+                    }
+                    else
+                    {
+                        var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
+                        if (bson.Contains(UtilConstants.FieldName))
+                        {
+                            var field = bson[UtilConstants.FieldName].AsString;
+                            var direction = directionPart == "DESC" ? -1 : 1;
+                            sortDoc[field] = direction;
+                        }
                     }
                 }
                 if (sortDoc.ElementCount > 0)
