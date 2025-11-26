@@ -249,3 +249,42 @@ db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
 db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 
 ```
+
+### Feature11 : Soft Delete
+```cs
+11.1 Enable
+db.EnableSoftDelete();
+db.EnableSoftDelete(config =>
+{
+    config.EnableCascadeDelete = true;
+    config.AutoFilter = true;
+    config.PermanentDeleteAfterDays = 30;
+});
+
+11.2 Soft Delete
+db.SoftDelete<Order>(orderId, "reason");
+db.SoftDeleteBatch<Order>(o => o.Status == "Cancelled", "reason");
+
+11.3 Restore
+db.RestoreSoftDeleted<Order>(orderId);
+db.RestoreSoftDeletedBatch<Order>(o => o.DeletedAt > DateTime.Now.AddDays(-7));
+
+11.4 Query
+var activeOrders = db.Queryable<Order>().ToList(); // Auto-filters soft deleted
+var allOrders = db.Queryable<Order>().WithSoftDeleted().ToList();
+var deletedOnly = db.Queryable<Order>().OnlySoftDeleted(db).ToList();
+
+11.5 Permanent Delete
+db.PermanentDelete<Order>(orderId); // Bypass soft delete
+db.CleanupExpiredSoftDeletes(); // Auto-cleanup
+
+11.6 Entity
+[SoftDelete]
+public class Order
+{
+    public int Id { get; set; }
+    public bool IsDeleted { get; set; }      // Auto-detected
+    public DateTime? DeletedAt { get; set; } // Auto-detected
+    public string DeletedBy { get; set; }    // Auto-detected
+}
+```
