@@ -48,6 +48,8 @@ namespace OrmTest
             UnitUpdateNavOneToOneFalse.Init();
             UnitCreateType.Init();
             UnitSubToList.Init();
+            UStorageable.Init();
+            UFastest.Init();
             Bulk();
             CodeFirst();
             Updateable();
