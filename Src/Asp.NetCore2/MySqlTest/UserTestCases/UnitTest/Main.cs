@@ -50,6 +50,7 @@ namespace OrmTest
             UnitSubToList.Init();
             UStorageable.Init();
             UFastest.Init();
+            UNavigationProperties.Init();
             Bulk();
             CodeFirst();
             Updateable();
