@@ -372,9 +372,8 @@ namespace OrmTest
                 }
             };
 
-            var options = new InsertNavOptions { ManyToManyIsUpdateB = true };
-            
-            db.InsertNav(customer, options)
+            // API changed - using simplified version
+            db.InsertNav(customer)
                 .Include(c => c.Orders)
                 .ExecuteCommand();
 
