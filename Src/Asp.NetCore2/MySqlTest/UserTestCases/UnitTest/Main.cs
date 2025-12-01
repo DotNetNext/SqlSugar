@@ -51,8 +51,7 @@ namespace OrmTest
             UStorageable.Init();
             UFastest.Init();
             UNavigationProperties.Init();
-            //USplitTable.Init(); // TODO: File not found
-            UReportable.Init();
+            USplitTable.Init();
             Bulk();
             CodeFirst();
             Updateable();
