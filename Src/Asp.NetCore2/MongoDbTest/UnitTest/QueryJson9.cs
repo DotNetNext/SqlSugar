@@ -25,7 +25,20 @@ namespace MongoDbTest
             var val1 = db.Queryable<SysUser>().Where(it => it.Name.ToString().Contains("部")).ToList();
             if (val1.Count != 1) Cases.ThrowUnitError();
             var val2 = db.Queryable<SysUser>().Where(it => it.EntInfo.Any(x => x.DeptName.Any())).ToList();
-            if (val2.Count != 1) Cases.ThrowUnitError(); 
+            if (val2.Count != 1) Cases.ThrowUnitError();
+
+            db.CodeFirst.InitTables<MinuteData>();
+            var item = new Dictionary<string, MinuteDataItem>();
+            item.Add("a", new MinuteDataItem() { Value=1 });
+            item.Add("a2", new MinuteDataItem() { Value = 2 });
+            db.DbMaintenance.TruncateTable<MinuteData>();
+            db.Insertable(new MinuteData()
+            {
+                StationCode = "a",
+                DataItems = item
+            }).ExecuteCommand();
+            var list = db.Queryable<MinuteData>().First();
+            if(list.DataItems.Count!=2) Cases.ThrowUnitError();
         }
 
         private static void InsertSampleUser(SqlSugarClient db)
@@ -229,6 +242,21 @@ namespace MongoDbTest
             /// </summary>        
             [SugarColumn(IsJson = true)]
             public List<string> DeptRmk { get; set; } = new();
+        }
+
+        [SugarTable("d_minute")]
+        public class MinuteData : MongoDbBase
+        {
+            public string StationCode { get; set; } 
+
+            [SugarColumn(IsJson = true)]
+            public Dictionary<string, MinuteDataItem> DataItems { get; set; }
+        }
+
+        public class MinuteDataItem
+        {
+            public double Value { get; set; }
+            public string Flag { get; set; }
         }
 
     }
