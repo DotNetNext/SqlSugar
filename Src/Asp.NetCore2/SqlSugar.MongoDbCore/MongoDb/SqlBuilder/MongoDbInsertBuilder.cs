@@ -40,6 +40,12 @@ namespace SqlSugar.MongoDb
                             var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
                             list.Add(doc);
                         }
+                        else if (realType.Name== "KeyValuePair`2")
+                        {
+                            var bson = e.ToBson(realType); // 序列化为 byte[]
+                            var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
+                            list.Add(doc);
+                        }
                         else 
                         {
                             if (e is string s && UtilMethods.IsValidObjectId(s))
@@ -81,6 +87,10 @@ namespace SqlSugar.MongoDb
 
                     // 再用 BsonSerializer 反序列化为 T
                     return BsonSerializer.Deserialize(bsonDoc, type);
+                }
+                else if(type.Name== "Dictionary`2") 
+                { 
+                    return BsonSerializer.Deserialize(json+"", type);
                 }
                 else if (json is BsonDocument bsons)
                 {
@@ -173,7 +183,7 @@ namespace SqlSugar.MongoDb
                         else
                         {
                             var obj = MongoDbDataReaderHelper.ConvertBsonValue(item);
-                            if (obj is DBNull) 
+                            if (obj is DBNull)
                             {
                                 obj = null;
                             }
