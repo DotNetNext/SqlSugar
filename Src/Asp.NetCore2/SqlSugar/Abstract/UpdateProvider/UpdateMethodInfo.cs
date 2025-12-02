@@ -74,7 +74,7 @@ namespace SqlSugar
         public UpdateCommonMethodInfo IgnoreNullColumns()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
-            var newMethod = inertable.GetType().GetMyMethod("IgnoreNullColumns", 0);
+            var newMethod = inertable.GetType().GetMyMethod("IgnoreColumnsNull", 0);
             var result = newMethod.Invoke(inertable, new object[] {   });
             return new UpdateCommonMethodInfo()
             {
