@@ -35,10 +35,12 @@ namespace MongoDbTest
             db.Insertable(new MinuteData()
             {
                 StationCode = "a",
-                DataItems = item
+                DataItems = item,
+                CreateDateTime = DateTime.Parse("2025-09-15 00:00:01")
             }).ExecuteCommand();
             var list = db.Queryable<MinuteData>().First();
             if(list.DataItems.Count!=2) Cases.ThrowUnitError();
+            if (list.CreateDateTime!= DateTime.Parse("2025-09-15 00:00:01")) Cases.ThrowUnitError();
         }
 
         private static void InsertSampleUser(SqlSugarClient db)
@@ -247,7 +249,8 @@ namespace MongoDbTest
         [SugarTable("d_minute")]
         public class MinuteData : MongoDbBase
         {
-            public string StationCode { get; set; } 
+            public string StationCode { get; set; }
+            public DateTime CreateDateTime { get; set; }
 
             [SugarColumn(IsJson = true)]
             public Dictionary<string, MinuteDataItem> DataItems { get; set; }
