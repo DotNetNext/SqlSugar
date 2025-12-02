@@ -1,9 +1,11 @@
-﻿using OrmTest;
+﻿using KdbndpTest.Models;
+using OrmTest;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
  
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +18,7 @@ namespace KdbndpTest.SqlServerDemo
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
-                ConnectionString = "Server=47.100.233.98;Port=54325;UID=system;PWD=12345678;database=test",
+                ConnectionString = "Server=8.137.16.241;Port=54321;UID=system;PWD=123456;database=test;CommandTimeout=120;DbVersion=sqlserver;Search Path=dbo,public;ErrorThrow=true;",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 MoreSettings = new ConnMoreSettings()
@@ -43,6 +45,18 @@ namespace KdbndpTest.SqlServerDemo
             DeleteDemo(Db); 
 
             GetTableInfos(Db);
+
+            BytesTest(Db);
+        }
+
+        private static void BytesTest(SqlSugarClient db)
+        {
+            db.CodeFirst.InitTables<ByteArrayModel>();
+            db.DbMaintenance.TruncateTable<ByteArrayModel>();
+            db.Insertable(new List<ByteArrayModel>() {
+                new ByteArrayModel() { Id = 1, Bytes = new byte[] { 0, 1 } },
+                new ByteArrayModel() { Id = 2, Bytes = new byte[] { 0, 1 } } }).ExecuteCommand();
+            var list=db.Queryable<ByteArrayModel>().ToList();
         }
 
         private static void QueryDemo(SqlSugarClient Db)
