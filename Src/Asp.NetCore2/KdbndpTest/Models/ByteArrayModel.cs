@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace KdbndpTest.Models
-{ 
+{
+    [SqlSugar.SugarTable("ByteArrayModel02")] 
+    
     public class ByteArrayModel
     {
         [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
