@@ -196,6 +196,11 @@ namespace SqlSugar
                                 dbType = "nchar(4000)";
                             }
                         }
+                       if (IsSqlServerModel()&&it.Value is byte[] bytes)
+                        {
+                            string bytesString = "0x" + BitConverter.ToString(bytes).Replace("-", "");
+                            return bytesString;
+                        }
                         return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value)), dbType);
 
                     })) + ")");
