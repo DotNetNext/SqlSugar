@@ -3,7 +3,7 @@ using OrmTest;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
- 
+
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,7 +18,7 @@ namespace KdbndpTest.SqlServerDemo
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
-                ConnectionString = "Server=8.137.16.241;Port=54321;UID=system;PWD=123456;database=test;CommandTimeout=120;DbVersion=sqlserver;Search Path=dbo;ErrorThrow=true;",
+                ConnectionString = "Server=8.137.16.241;Port=54321;UID=system;PWD=123456;database=test;CommandTimeout=120;DbVersion=sqlserver;Search Path=dbo,public;ErrorThrow=true;",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 MoreSettings = new ConnMoreSettings()
@@ -34,8 +34,17 @@ namespace KdbndpTest.SqlServerDemo
                 };
             });
 
-            InitDatas(Db); 
- 
+            InitDatas(Db);
+
+            InsertDemo(Db);
+
+            UpdateDemo(Db);
+
+            QueryDemo(Db);
+
+            DeleteDemo(Db);
+
+            GetTableInfos(Db);
 
             BytesTest(Db);
         }
@@ -47,15 +56,12 @@ namespace KdbndpTest.SqlServerDemo
             db.Insertable(new List<ByteArrayModel>() {
                 new ByteArrayModel() { Id = 1, Bytes = new byte[] { 0, 1 } },
                 new ByteArrayModel() { Id = 2, Bytes = new byte[] { 0, 1 } } }).ExecuteCommand();
-            var list=db.Queryable<ByteArrayModel>().ToList();
-            db.Updateable(new List<ByteArrayModel>() {
-                new ByteArrayModel() { Id = 1, Bytes = new byte[] { 0, 1 } },
-                new ByteArrayModel() { Id = 2, Bytes = new byte[] { 0, 1 } } }).ExecuteCommand();
+            var list = db.Queryable<ByteArrayModel>().ToList();
         }
 
         private static void QueryDemo(SqlSugarClient Db)
         {
-            var list1 = Db.Queryable<Order>().Where(it => it.CreateTime.AddDays(1)>DateTime.Now).ToList();
+            var list1 = Db.Queryable<Order>().Where(it => it.CreateTime.AddDays(1) > DateTime.Now).ToList();
             var list2 = Db.Queryable<Order>().PartitionBy(it => it.Id).ToList();
             try
             {
@@ -95,16 +101,16 @@ namespace KdbndpTest.SqlServerDemo
                 .SetColumns(it => new Order()
                 {
 
-                     CreateTime=DateTime.Now
+                    CreateTime = DateTime.Now
                 })
-                .Where(it=>it.Id==1).ExecuteCommand();
+                .Where(it => it.Id == 1).ExecuteCommand();
 
             Db.Updateable(Db.Queryable<Order>().Take(2).ToList())
                .ExecuteCommand();
             Db.Updateable(Db.Queryable<Order>().Take(2).ToList())
-                .Where(it=>it.Name!=null).ExecuteCommand();
+                .Where(it => it.Name != null).ExecuteCommand();
 
-          
+
         }
 
         private static void GetTableInfos(SqlSugarClient Db)
