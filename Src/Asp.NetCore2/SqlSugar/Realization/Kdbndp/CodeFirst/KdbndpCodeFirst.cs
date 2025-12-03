@@ -76,6 +76,11 @@ namespace SqlSugar
                 {
                     item.Length = 0;
                 }
+                if (IsSqlServerModel()&&item.DataType == "bytea") 
+                {
+                    item.Length = 0;
+                    item.DataType = "varbinary(max)";
+                }
             }
         }
 

@@ -743,6 +743,11 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                     x.Scale = 0;
                 }
             }
+            if (IsSqlServerModel() && x.DataType == "bytea")
+            {
+                x.Length = 0;
+                x.DataType = "varbinary(max)";
+            }
         }
         private bool IsPgModel()
         {

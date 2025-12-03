@@ -93,7 +93,12 @@ namespace SqlSugar
                             else if (it.Value is bool&& (IsMySqlModel()|| IsSqlServerModel()))
                             {
                                 return Convert.ToBoolean(it.Value)?"1":"0";
-                            } 
+                            }
+                            else if (it.Value is byte[] bytes)
+                            {
+                                string bytesString = "0x" + BitConverter.ToString(bytes).Replace("-", "");
+                                return bytesString;
+                            }
                             else
                             {
                                 value = it.Value;
