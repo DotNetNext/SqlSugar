@@ -44,6 +44,16 @@ namespace SqlSugar
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
+                if (IsSqlServerModel()&&this.EntityInfo?.Type?.Name== "Dictionary`2") 
+                {
+                    foreach (var item in this.Parameters)
+                    {
+                        if (item.Value == null || item.Value == DBNull.Value)
+                        {
+                            item.CustomDbType = "DictionaryNull";
+                        }
+                    }
+                }
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else

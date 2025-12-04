@@ -155,6 +155,10 @@ namespace SqlSugar
                 {
                     sqlParameter.KdbndpDbType = ((KdbndpDbType)parameter.CustomDbType);
                 }
+                else if (parameter?.CustomDbType?.Equals("DictionaryNull")==true)
+                {
+                    sqlParameter.NoType = true; 
+                }
                 ++index;
             }
             return result;
