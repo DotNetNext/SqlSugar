@@ -18,7 +18,7 @@ namespace KdbndpTest.SqlServerDemo
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
-                ConnectionString = "Server=8.137.16.241;Port=543;UID=system;PWD=123456;database=test;CommandTimeout=120;DbVersion=sqlserver;Search Path=dbo,public;ErrorThrow=true;",
+                ConnectionString = "Server=8.137.16.241;Port=321;UID=system;PWD=123456;database=test;CommandTimeout=120;DbVersion=sqlserver;Search Path=dbo;ErrorThrow=true;",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 MoreSettings = new ConnMoreSettings()
@@ -47,6 +47,21 @@ namespace KdbndpTest.SqlServerDemo
             GetTableInfos(Db);
 
             BytesTest(Db);
+
+            DataTableTest(Db);
+        }
+
+        private static void DataTableTest(SqlSugarClient db)
+        {
+            db.CodeFirst.InitTables<ByteArrayModel>();
+            db.DbMaintenance.TruncateTable<ByteArrayModel>();
+            db.Insertable(new List<ByteArrayModel>() {
+                new ByteArrayModel() { Id = 1, Bytes = new byte[] { 0, 1 } } }).ExecuteCommand();
+            var list = db.Queryable<ByteArrayModel>().ToDataTable();
+            db.DbMaintenance.TruncateTable<ByteArrayModel>();
+            List<Dictionary<string, object>> dc = db.Utilities.DataTableToDictionaryList(list);//5.0.23版本支持
+            db.Insertable(dc).AS("ByteArrayModel02").ExecuteCommand();
+            var list2 = db.Queryable<ByteArrayModel>().ToList();
         }
 
         private static void BytesTest(SqlSugarClient db)
