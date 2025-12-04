@@ -12,6 +12,7 @@ namespace KdbndpTest.Models
     {
         [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
+        [SqlSugar.SugarColumn(IsNullable =true)]
         public byte[] Bytes { get; set; }
     }
 }

@@ -57,11 +57,16 @@ namespace KdbndpTest.SqlServerDemo
             db.DbMaintenance.TruncateTable<ByteArrayModel>();
             db.Insertable(new List<ByteArrayModel>() {
                 new ByteArrayModel() { Id = 1, Bytes = new byte[] { 0, 1 } } }).ExecuteCommand();
-            var list = db.Queryable<ByteArrayModel>().ToDataTable();
+            var dt = db.Queryable<ByteArrayModel>().ToDataTable();
             db.DbMaintenance.TruncateTable<ByteArrayModel>();
-            List<Dictionary<string, object>> dc = db.Utilities.DataTableToDictionaryList(list);//5.0.23版本支持
+            List<Dictionary<string, object>> dc = db.Utilities.DataTableToDictionaryList(dt);//5.0.23版本支持
             db.Insertable(dc).AS("ByteArrayModel02").ExecuteCommand();
             var list2 = db.Queryable<ByteArrayModel>().ToList();
+            db.DbMaintenance.TruncateTable<ByteArrayModel>();
+            dt.TableName= "ByteArrayModel02";
+            dt.Rows[0][1] = DBNull.Value;
+            var x= db.Storageable(dt).WhereColumns("id").ToStorage();
+            x.AsInsertable.ExecuteCommand();
         }
 
         private static void BytesTest(SqlSugarClient db)
