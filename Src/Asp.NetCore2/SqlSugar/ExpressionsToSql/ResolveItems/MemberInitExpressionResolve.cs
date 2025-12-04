@@ -201,6 +201,11 @@ namespace SqlSugar
                         base.Context.Result.CurrentParameter = null;
                     }
                 }
+                else if (item is BinaryExpression&&ExpressionTool.NoParameterOrSqlfunc(item))
+                {
+                    var result = LambdaExpression.Lambda(item).Compile().DynamicInvoke();
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName, AppendParameter(result)));
+                }
                 else if (item is BinaryExpression)
                 {
                     var result = GetNewExpressionValue(item);
