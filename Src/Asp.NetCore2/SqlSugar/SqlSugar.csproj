@@ -27,7 +27,7 @@
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="Oscar.Data.SqlClient" Version="4.0.4" />
     <PackageReference Include="SqlSugarCore.Dm" Version="8.8.1" />
-    <PackageReference Include="SqlSugarCore.Kdbndp" Version="9.3.7.1204" />
+    <PackageReference Include="SqlSugarCore.Kdbndp" Version="9.3.7.1205" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
 	<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
