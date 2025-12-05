@@ -397,6 +397,13 @@ namespace SqlSugar
                 model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.GaussDB)
             {
                 var parameter = model.Args[0];
+                if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.InnerTemp is DbType dbType)
+                {
+                    if (dbType == DbType.PostgreSQL)
+                    {
+                        return base.IsNullOrEmpty(model);
+                    }
+                }
                 return string.Format("( {0} IS NULL )", parameter.MemberName);
             }
             else

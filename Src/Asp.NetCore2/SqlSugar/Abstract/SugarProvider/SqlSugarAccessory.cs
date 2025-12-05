@@ -515,6 +515,10 @@ namespace SqlSugar
                     {
                         this.CurrentConnectionConfig.MoreSettings.InnerTemp = DbType.MySql;
                     }
+                    else if (this.CurrentConnectionConfig.MoreSettings.DatabaseModel == DbType.PostgreSQL)
+                    {
+                        this.CurrentConnectionConfig.MoreSettings.InnerTemp = DbType.PostgreSQL;
+                    }
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
                 case DbType.OceanBase:
