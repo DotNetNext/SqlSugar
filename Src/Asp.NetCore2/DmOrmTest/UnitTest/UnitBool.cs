@@ -21,6 +21,14 @@ namespace OrmTest
                 })
                 .Where(it=>it.id==1)
                 .ExecuteCommand();
+
+            db.Updateable<UnitADFA>()
+                  .SetColumns(it => new UnitADFA()
+                  {
+                      a = it.id > 1
+                  })
+                  .Where(it => it.id == 1)
+                  .ExecuteCommand();
         }
         public class UnitADFA
         {
