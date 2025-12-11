@@ -33,6 +33,9 @@ namespace OrmTest
                       .Includes(lm => lm.TB)
                       .Where(lm => lm.IdA == Ids.FirstOrDefault())
                       .ToList();
+
+            db.CodeFirst.InitTables<TestC>();
+            db.Insertable(new TestC()).ExecuteCommand();
              
         }
         //建类
@@ -60,6 +63,12 @@ namespace OrmTest
             [DataMember]
             [SugarColumn(IsNullable = false)]
             public DateTime StartTime { get; set; }
+        }
+        [SqlSugar.SugarTable("UnitdsfafasTestC")]
+        public class TestC
+        {
+            [SugarColumn(IsNullable =true)]
+            public TimeOnly? StartTime { get; set; }
         }
     }
 }
