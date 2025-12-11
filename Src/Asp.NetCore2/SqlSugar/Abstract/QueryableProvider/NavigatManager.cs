@@ -428,7 +428,10 @@ namespace SqlSugar
                     var firstObj = navObjectNamePropety.GetValue(item);
                     if (OneToOneGlobalInstanceRegistry.IsNavigationInitializerCreated(firstObj))
                     {
-                        navObjectNamePropety.SetValue(item, null);
+                        if (StaticConfig.QueryOneToOneEnableDefaultValue==false)
+                        {
+                            navObjectNamePropety.SetValue(item, null);
+                        }
                     }
                 }
             }

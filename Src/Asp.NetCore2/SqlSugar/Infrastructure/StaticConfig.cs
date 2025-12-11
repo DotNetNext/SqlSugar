@@ -40,5 +40,7 @@ namespace SqlSugar
         public static Action<ICacheService, string> CacheRemoveByLikeStringFunc { get; set; }
         public static Guid TableQuerySqlKey { get; set; }
         public static string BulkCopy_MySqlCsvPath { get; set; }
+
+        public static bool QueryOneToOneEnableDefaultValue { get; set; }
     }
 }
