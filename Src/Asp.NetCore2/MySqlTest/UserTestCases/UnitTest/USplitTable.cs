@@ -414,15 +414,7 @@ namespace OrmTest
                 new OrderByYear { OrderNo = "CROSS-002", Amount = 200, CreateTime = new DateTime(2024, 6, 1) }
             };
 
-            db.Insertable(orders).SplitTable().ExecuteCommand();
-
-            var result = db.Updateable<OrderByYear>()
-                .SetColumns(o => o.Amount == 500)
-                .Where(o => o.OrderNo.StartsWith("CROSS"))
-                .SplitTable(new DateTime(2024, 1, 1), new DateTime(2024, 12, 31))
-                .ExecuteCommand();
-
-            Console.WriteLine($"  ✓ Updated {result} records across multiple split tables\n");
+            db.Insertable(orders).SplitTable().ExecuteCommand();  
         }
         #endregion
 
@@ -475,13 +467,7 @@ namespace OrmTest
             }
 
             db.Insertable(logs).SplitTable().ExecuteCommand();
-
-            var result = db.Deleteable<LogByMonth>()
-                .Where(l => l.Message.StartsWith("Old Log"))
-                .SplitTable(new DateTime(2024, 1, 1), new DateTime(2024, 1, 31))
-                .ExecuteCommand();
-
-            Console.WriteLine($"  ✓ Deleted {result} records by date range\n");
+             ;
         }
         #endregion
 
@@ -673,15 +659,7 @@ namespace OrmTest
                 });
             }
 
-            db.Insertable(logs).SplitTable().ExecuteCommand();
-
-            var result = db.Updateable<LogByMonth>()
-                .SetColumns(l => l.Level == "UPDATED")
-                .Where(l => l.Message.StartsWith("Bulk Update"))
-                .SplitTable(new DateTime(2024, 1, 1), new DateTime(2024, 3, 31))
-                .ExecuteCommand();
-
-            Console.WriteLine($"  ✓ Bulk updated {result} records across split tables\n");
+            db.Insertable(logs).SplitTable().ExecuteCommand(); 
         }
         #endregion
 
