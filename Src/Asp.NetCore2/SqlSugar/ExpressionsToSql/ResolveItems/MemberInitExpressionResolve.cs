@@ -213,17 +213,20 @@ namespace SqlSugar
                     {
                         result = result.Replace(",", UtilConstants.ReplaceCommaKey);
                     }
-                    var trueValue = AppendParameter(true);
-                    var falseValue = AppendParameter(false);
-                    result = new DefaultDbMethod().IIF(new MethodCallExpressionModel()
+                    if (item.Type == UtilConstants.BoolType)
                     {
-                         Args=new List<MethodCallExpressionArgs>() 
+                        var trueValue = AppendParameter(true);
+                        var falseValue = AppendParameter(false);
+                        result = new DefaultDbMethod().IIF(new MethodCallExpressionModel()
+                        {
+                            Args = new List<MethodCallExpressionArgs>()
                          {
                              new MethodCallExpressionArgs(){ MemberValue=result,MemberName=result },
                              new MethodCallExpressionArgs(){ MemberValue=trueValue,MemberName=trueValue },
                              new MethodCallExpressionArgs(){ MemberValue=falseValue,MemberName=falseValue }
                          }
-                    });
+                        });
+                    }
                     this.Context.Result.Append(base.Context.GetEqString(memberName, result));
                 }
                 else if (item is MemberInitExpression)
