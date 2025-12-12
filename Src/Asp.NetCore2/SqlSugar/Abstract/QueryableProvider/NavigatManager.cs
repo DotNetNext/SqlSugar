@@ -435,7 +435,15 @@ namespace SqlSugar
                     }
                 }
             }
-            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
+            var isFill = list.Any() && navObjectNamePropety.GetValue(list.First()) == null;
+            if (StaticConfig.QueryOneToOneEnableDefaultValue == true && isFill == false) 
+            {
+                if (OneToOneGlobalInstanceRegistry.IsNavWithDefaultValue(navObjectNamePropety))
+                {
+                    isFill = list.Any() && navObjectNamePropety.GetValue(list.First()) == OneToOneGlobalInstanceRegistry.Instances[navObjectNamePropety.PropertyType];
+                }
+            }
+            if (isFill)
             {
                 var sqlObj = GetWhereSql(db, navObjectNameColumnInfo.Navigat.Name);
                 if (sqlObj.SelectString == null)
@@ -540,6 +548,13 @@ namespace SqlSugar
                         {
                             navObjectNamePropety.SetValue(item.l, item.n);
                         }
+                        else if (OneToOneGlobalInstanceRegistry.IsNavWithDefaultValue(navObjectNamePropety))
+                        {
+                            if (navObjectNamePropety.GetValue(item.l) == OneToOneGlobalInstanceRegistry.Instances[navObjectNamePropety.PropertyType])
+                            {
+                                navObjectNamePropety.SetValue(item.l, item.n);
+                            }
+                        }
                         else
                         {
                             //The reserved
@@ -549,6 +564,8 @@ namespace SqlSugar
                 }
             }
         }
+
+
         private void OneToManyByArrayList(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             Check.ExceptionEasy(!navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments().Any(), navObjectNamePropety?.Name + "Navigation configuration error one to many should be List<T>", navObjectNamePropety?.Name + "导航配置错误一对多应该是List<T>");

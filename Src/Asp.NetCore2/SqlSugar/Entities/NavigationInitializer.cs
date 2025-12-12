@@ -14,6 +14,10 @@ namespace SqlSugar
 
         public static Dictionary<Type, object> Instances => _instances;
 
+        public static bool IsNavWithDefaultValue(PropertyInfo navObjectNamePropety)
+        {
+            return OneToOneGlobalInstanceRegistry.Instances?.ContainsKey(navObjectNamePropety.PropertyType) == true;
+        }
         public static bool IsAny() 
         {
             return _instances?.Count>0;
