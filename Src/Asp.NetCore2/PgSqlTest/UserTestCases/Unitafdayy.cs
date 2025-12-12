@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Microsoft.Identity.Client;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace OrmTest
         {
             Initdb().GetAwaiter().GetResult();
             TestInsert4().GetAwaiter().GetResult();
+            var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<UnitWatchData>();
+            db.Insertable(new List<UnitWatchData>()
+            {
+                new UnitWatchData(){ Id=1, WatchName="a", WatchValue=new byte[]{ 1} },
+                  new UnitWatchData(){ Id=1, WatchName="a", WatchValue=new byte[]{ 1} }
+            }).ExecuteCommand();
         }
         public static async Task TestInsert4()
         {
@@ -70,5 +78,23 @@ namespace OrmTest
         public byte[] byte_col { get; set; }
         public int int_col { get; set; }
     }
+    public class UnitWatchData
 
+    {
+
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "Id")]
+
+        public long Id { get; set; }
+
+
+
+        public string WatchName { get; set; }
+
+
+
+        [SugarColumn(ColumnDataType = "bytea")]
+
+        public byte[] WatchValue { get; set; }
+
+    }
 }
