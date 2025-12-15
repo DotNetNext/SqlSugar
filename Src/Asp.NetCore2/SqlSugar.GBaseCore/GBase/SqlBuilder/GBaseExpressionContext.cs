@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar.GBase
 {
@@ -49,7 +49,7 @@ namespace SqlSugar.GBase
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS BOOLEAN)", parameter.MemberName);
-        } 
+        }
         public override string IsNull(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -60,7 +60,7 @@ namespace SqlSugar.GBase
             {
                 if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
                 {
-                     str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::"+_dateTimeType);
+                    str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::"+_dateTimeType);
                 }
             }
             return str;
@@ -118,6 +118,9 @@ namespace SqlSugar.GBase
                     case "second":
                         str = string.Format(" to_char('{0}' :: {1}, 'ss') ", parameter.MemberName, _dateTimeType);
                         break;
+                    case "quarter":
+                        str = string.Format(" quarter({0}  ::  {1}) ", parameter.MemberName, _dateTimeType);
+                        break;
                 }
             }
             else
@@ -141,6 +144,9 @@ namespace SqlSugar.GBase
                         break;
                     case "second":
                         str = string.Format(" to_char({0}  ::  {1}, 'ss') ", parameter.MemberName, _dateTimeType);
+                        break;
+                    case "quarter":
+                        str = string.Format(" quarter({0}  ::  {1}) ", parameter.MemberName, _dateTimeType);
                         break;
                 }
             }
@@ -239,6 +245,11 @@ namespace SqlSugar.GBase
             }
 
             return str;
+        }
+
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            return string.Format(" week({0}  ::  {1},1) ", mode.Args[0].MemberName, _dateTimeType);
         }
     }
 }
