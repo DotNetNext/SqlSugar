@@ -9,7 +9,8 @@ namespace TDSQLForPGOBDCTest
         {
             Console.WriteLine("");
             Console.WriteLine("#### MasterSlave Start ####");
-
+            InstanceFactory.CustomAssemblies = new System.Reflection.Assembly[] {
+            typeof(SqlSugar.TDSQLForPGODBC.TDSQLForPGODBCAdapter).Assembly };
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,//Master Connection
