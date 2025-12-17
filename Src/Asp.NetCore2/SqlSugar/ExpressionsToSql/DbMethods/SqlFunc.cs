@@ -377,6 +377,7 @@ namespace SqlSugar
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateDistinctCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateDistinctSum<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int AggregateDistinctAvg<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult MappingColumn<TResult>(TResult type,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult MappingColumn<TResult>(string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
