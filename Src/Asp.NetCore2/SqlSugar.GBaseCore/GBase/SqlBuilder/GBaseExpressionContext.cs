@@ -13,18 +13,33 @@ namespace SqlSugar.GBase
     public partial class GBaseExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarProvider Context { get; set; }
+
         public GBaseExpressionContext()
         {
             base.DbMehtods = new GBaseMethod();
         }
-        public override string SqlTranslationLeft { get { return ""; } }
-        public override string SqlTranslationRight { get { return ""; } }
+
+        public override string SqlTranslationLeft
+        {
+            get { return ""; }
+        }
+
+        public override string SqlTranslationRight
+        {
+            get { return ""; }
+        }
+
         public override bool IsTranslationText(string name)
         {
             var result = name.IsContainsIn(UtilConstants.Space, "(", ")");
             return result;
         }
-        public override string GetLimit() { return ""; }
+
+        public override string GetLimit()
+        {
+            return "";
+        }
+
         public override string GetTranslationText(string name)
         {
             if (name.Contains('.'))
@@ -37,19 +52,23 @@ namespace SqlSugar.GBase
             return base.GetTranslationText(name);
         }
     }
+
     public partial class GBaseMethod : DefaultDbMethod, IDbMethods
     {
         private string _dateTimeType = "datetime year to fraction(5)";
+
         public override string Length(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0}) ", parameter.MemberName);
         }
+
         public override string ToBool(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS BOOLEAN)", parameter.MemberName);
         }
+
         public override string IsNull(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -60,9 +79,11 @@ namespace SqlSugar.GBase
             {
                 if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
                 {
-                    str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::" + _dateTimeType);
+                    str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName,
+                        "::" + _dateTimeType);
                 }
             }
+
             return str;
         }
 
@@ -75,10 +96,12 @@ namespace SqlSugar.GBase
         {
             return " SYS_GUID() ";
         }
+
         public override string GetForXmlPath()
         {
             return string.Empty;
         }
+
         public override string GetStringJoinSelector(string result, string separator)
         {
             if (separator.Trim() == ",")
@@ -88,9 +111,11 @@ namespace SqlSugar.GBase
             else
             {
                 string guid_separator = UtilConstants.ReplaceKey.Replace("{", "").Replace("}", "");
-                return $" REPLACE(REPLACE(WM_CONCAT('{guid_separator}' || {result}), ',{guid_separator}', '{separator}'), '{guid_separator}', '')";
+                return
+                    $" REPLACE(REPLACE(WM_CONCAT('{guid_separator}' || {result}), ',{guid_separator}', '{separator}'), '{guid_separator}', '')";
             }
         }
+
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -156,8 +181,10 @@ namespace SqlSugar.GBase
                         break;
                 }
             }
+
             return str;
         }
+
         public override string GetDate()
         {
             return " sysdate  ";
@@ -176,35 +203,43 @@ namespace SqlSugar.GBase
                 return string.Format("( {0}<>'' AND {0} IS NOT NULL )", parameter.MemberName);
             }
         }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+
         public override string Contains(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'||{1}||'%') ", parameter.MemberName, parameter2.MemberName);
         }
+
         public override string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like {1}||'%') ", parameter.MemberName, parameter2.MemberName);
         }
+
         public override string EndsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format("  ({0} like '%'||{1}) ", parameter.MemberName, parameter2.MemberName);
         }
+
         public override string DateDiff(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" timestampdiff('{0}',{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
+            var intervalType = parameter.MemberValue?.ToString().ToSqlFilter()?.ToLower();
+            return string.Format(" timestampdiff('{0}',{1},{2}) ", intervalType, parameter2.MemberName,
+                parameter3.MemberName);
         }
+
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -231,22 +266,28 @@ namespace SqlSugar.GBase
             switch (parameter3.MemberValue.ToString().ToLower())
             {
                 case "year":
-                    str = string.Format(" ({0}::{2}+ {1} units year)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units year)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
                 case "month":
-                    str = string.Format(" ({0}::{2}+ {1} units month)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units month)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
                 case "day":
-                    str = string.Format(" ({0}::{2}+ {1} units day)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units day)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
                 case "hour":
-                    str = string.Format(" ({0}::{2}+ {1} units hour)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units hour)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
                 case "minute":
-                    str = string.Format(" ({0}::{2}+ {1} units minute)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units minute)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
                 case "second":
-                    str = string.Format(" ({0}::{2}+ {1} units second)", parameter.MemberName, parameter2.MemberName, _dateTimeType);
+                    str = string.Format(" ({0}::{2}+ {1} units second)", parameter.MemberName, parameter2.MemberName,
+                        _dateTimeType);
                     break;
             }
 
