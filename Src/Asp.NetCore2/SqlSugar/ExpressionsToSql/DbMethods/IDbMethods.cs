@@ -56,6 +56,7 @@ namespace SqlSugar
         string AggregateCount(MethodCallExpressionModel model);
         string AggregateDistinctCount(MethodCallExpressionModel model);
         string AggregateDistinctSum(MethodCallExpressionModel model);
+        string AggregateDistinctAvg(MethodCallExpressionModel model);
         string MappingColumn(MethodCallExpressionModel model);
         string IsNull(MethodCallExpressionModel model);
         string GetSelfAndAutoFill(string shortName,bool isSingle);
