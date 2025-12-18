@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
 namespace SqlSugar.GBase
 {
@@ -21,7 +21,7 @@ namespace SqlSugar.GBase
         public override string SqlTranslationRight { get { return ""; } }
         public override bool IsTranslationText(string name)
         {
-            var result = name.IsContainsIn( UtilConstants.Space,"(",")");
+            var result = name.IsContainsIn(UtilConstants.Space, "(", ")");
             return result;
         }
         public override string GetLimit() { return ""; }
@@ -60,7 +60,7 @@ namespace SqlSugar.GBase
             {
                 if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
                 {
-                    str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::"+_dateTimeType);
+                    str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::" + _dateTimeType);
                 }
             }
             return str;
@@ -101,13 +101,16 @@ namespace SqlSugar.GBase
                 switch (parameter2.MemberValue.ToString().ToLower())
                 {
                     case "year":
-                        str = string.Format(" year('{0}'::{1}) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" year({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" to_char({0} :: {1},'yyyy')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "month":
-                        str = string.Format(" month('{0}' :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" month({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0} :: {1},'MM')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "day":
-                        str = string.Format(" day('{0}' :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" day({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0} :: {1},'dd')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "hour":
                         str = string.Format(" to_char('{0}' :: {1},'hh24') ", parameter.MemberName, _dateTimeType);
@@ -129,12 +132,15 @@ namespace SqlSugar.GBase
                 {
                     case "year":
                         str = string.Format(" year({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" to_char({0} :: {1},'yyyy')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "month":
-                        str = string.Format(" month({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" month({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0} :: {1},'MM')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "day":
-                        str = string.Format(" day({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        //str = string.Format(" day({0} :: {1}) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0} :: {1},'dd')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "hour":
                         str = string.Format(" to_char({0} :: {1},'hh24')  ", parameter.MemberName, _dateTimeType);
@@ -249,7 +255,7 @@ namespace SqlSugar.GBase
 
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
-            return string.Format(" week({0}  ::  {1},1) ", mode.Args[0].MemberName, _dateTimeType);
+            return string.Format("lpad(week({0}  ::  {1},1),2,'0') ", mode.Args[0].MemberName, _dateTimeType);
         }
     }
 }
