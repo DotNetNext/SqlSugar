@@ -88,7 +88,8 @@ namespace SqlSugar
             string oldOrderValue = this.OrderByValue;
             string result = null;
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, "Count(*)", GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            var hints = this.Hints.HasValue() ? $" {this.Hints} Count(*)": "Count(*)";
+            sql.AppendFormat(SqlTemplate,hints, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) 
             {
                 if (sql.ToString().Contains("-- No table")) 
