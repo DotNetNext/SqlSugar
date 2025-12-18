@@ -202,7 +202,7 @@ namespace SqlSugar
         {
             get
             {
-                return "  SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM pg_indexes )";
+                return "  SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM pg_indexes WHERE schemaname = '"+GetSchema()+"' )";
             }
         }
         protected override string IsAnyProcedureSql => throw new NotImplementedException();
