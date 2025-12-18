@@ -208,7 +208,15 @@ namespace SqlSugar.GBase
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS NVARCHAR(4000))", parameter.MemberName);
+
+            if (parameter.MemberName.ToString().Contains("datetime year to fraction(5)"))
+            {
+                return string.Format(" CAST({0} AS NVARCHAR(4))", parameter.MemberName);
+            }
+            else
+            {
+                return string.Format(" CAST({0} AS NVARCHAR(4000))", parameter.MemberName);
+            }
         }
 
         public override string EqualTrue(string fieldName)
