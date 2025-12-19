@@ -58,7 +58,11 @@ namespace SqlSugar
         public static bool HasValue(this object thisValue)
         {
             if (thisValue == null || thisValue == DBNull.Value) return false;
-            return thisValue.ToString() != "";
+            if (thisValue is string s) 
+            {
+                return !string.IsNullOrEmpty(s);
+            }
+            return thisValue != null;
         }
 
         public static bool HasValue(this IEnumerable<object> thisValue)
