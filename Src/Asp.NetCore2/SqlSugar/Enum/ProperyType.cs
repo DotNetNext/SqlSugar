@@ -8,6 +8,7 @@ namespace SqlSugar
     public enum CSharpDataType
     {
         @int,
+        @uint,
         @bool,
         @string,
         @DateTime,
@@ -18,7 +19,9 @@ namespace SqlSugar
         @sbyte,
         @enum,
         @short,
+        @ushort,
         @long,
+        @ulong,
         @object,
         @other,
         @byteArray,
