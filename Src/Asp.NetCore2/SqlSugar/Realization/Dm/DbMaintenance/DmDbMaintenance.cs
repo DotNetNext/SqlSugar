@@ -581,6 +581,7 @@ WHERE table_name = '" + tableName + "'");
                     this.Context.Ado.IsEnableLogEvent = false;
                     string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
+                            and cu.OWNER = SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID())
                             and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper(IsUppper) + @"'";
                     var pks = this.Context.Ado.SqlQuery<string>(sql);
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
