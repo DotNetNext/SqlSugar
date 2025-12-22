@@ -179,7 +179,7 @@ where a.OWNER = SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID())";
         {
             get
             {
-                return "select * from user_col_comments where Table_Name='{1}' AND COLUMN_NAME='{0}' order by column_name";
+                return "select * from user_col_comments where Table_Name='{1}' AND COLUMN_NAME='{0}' AND OWNER = SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID())  order by column_name";
             }
         }
 
