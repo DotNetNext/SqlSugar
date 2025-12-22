@@ -104,11 +104,11 @@ namespace SqlSugar.TDengine
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 if (attr != null && attr.Tag1 != null)
                 {
-                    entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false
-                    || it.DbColumnName?.ToLower() == attr.Tag1?.ToLower()
+                    entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false || string.IsNullOrEmpty(it.DbColumnName) ==false &&
+                    ( it.DbColumnName?.ToLower() == attr.Tag1?.ToLower()
                      || it.DbColumnName?.ToLower() == attr.Tag2?.ToLower()
                       || it.DbColumnName?.ToLower() == attr.Tag3?.ToLower()
-                       || it.DbColumnName?.ToLower() == attr.Tag4?.ToLower()
+                       || it.DbColumnName?.ToLower() == attr.Tag4?.ToLower())  
                   ).ToList();
                     foreach (var item in entityColumns)
                     {
