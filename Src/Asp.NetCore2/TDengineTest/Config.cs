@@ -16,7 +16,7 @@ namespace TDengineTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=test";
+        public static string ConnectionString = "Host=dikong.chengdan.com;Port=6030;Username=root;Password=taosdata;Database=test";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号

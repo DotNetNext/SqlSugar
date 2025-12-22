@@ -32,6 +32,7 @@ namespace TDengineTest
             db.Insertable(new CodeFirst0311()
             {
                 Ts = DateTime.Now,
+                DeviceType = 1,
                 Boolean = true,
                 Char = 'a',
                 Decimal = Convert.ToDecimal(18.2),
@@ -39,16 +40,16 @@ namespace TDengineTest
                 Int32 = 32,
                 Int64 = 64,
                 String = "string",
-                SByte=3,
+                SByte = 3,
                 Byte = 2,
                 Decimal2 = Convert.ToDecimal(18.3),
                 Double = Convert.ToDouble(18.44),
                 Float = Convert.ToSingle(18.45),
                 String2 = "2",
-                 UInt16=116,
-                  UInt32=332,
-                   UInt64=664
-            }).ExecuteCommand();
+                UInt16 = 116,
+                UInt32 = 332,
+                UInt64 = 664
+            }).SetTDengineChildTableName((stableName, it) => $"mytbname_{it.DeviceType}").ExecuteCommand();
             var dt = db.Ado.GetDataTable("select * from  CodeFirst0311 ");
             var list3 = db.Queryable<CodeFirst0311>().ToList();
         }
