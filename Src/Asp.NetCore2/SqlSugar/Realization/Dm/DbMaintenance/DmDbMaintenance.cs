@@ -489,6 +489,7 @@ WHERE table_name = '" + tableName + "'");
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 List<DbColumnInfo> result = new List<DbColumnInfo>();
                 var schemaTable = reader.GetSchemaTable();
+                var pks = GetPrimaryKeyByTableNames(tableName);
                 foreach (System.Data.DataRow row in schemaTable.Rows)
                 {
                     DbColumnInfo column = new DbColumnInfo()
@@ -500,7 +501,7 @@ WHERE table_name = '" + tableName + "'");
                         ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
                         DbColumnName = row["ColumnName"].ToString(),
                         //DefaultValue = row["defaultValue"].ToString(),
-                        IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
+                        IsPrimarykey = pks.Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
                         Length = row["ColumnSize"].ObjToInt(),
                         Scale = row["numericscale"].ObjToInt()
                     };
@@ -572,21 +573,22 @@ WHERE table_name = '" + tableName + "'");
 
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
-            cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                () =>
-                {
+            //string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            //cacheKey = GetCacheKey(cacheKey);
+            //return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+            //    () =>
+            //    {
                     var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                     this.Context.Ado.IsEnableLogEvent = false;
-                    string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
+                    string sql = @" select distinct cu.COLUMN_name KEYNAME  from all_cons_columns cu, all_constraints au 
                             where cu.constraint_name = au.constraint_name
                             and cu.OWNER = SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID())
+                            and au.OWNER = SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID())
                             and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper(IsUppper) + @"'";
                     var pks = this.Context.Ado.SqlQuery<string>(sql);
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
-                });
+                //});
         }
 
         public string GetTableComment(string tableName)
