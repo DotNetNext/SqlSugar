@@ -614,7 +614,15 @@ namespace SqlSugar
             ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             _WhereColumn(columnName);
-            this.WhereColumnList.Add(columnName);
+            var columnInfo = this.EntityInfo?.Columns?.FirstOrDefault(it => it.PropertyName.EqualCase(columnName));
+            if (columnInfo != null)
+            {
+                this.WhereColumnList.Add(columnInfo.DbColumnName);
+            }
+            else
+            {
+                this.WhereColumnList.Add(columnName);
+            }
             return this;
         }
 
