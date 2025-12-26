@@ -11,11 +11,15 @@ namespace SqlSugar.TDengine
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
                 return "bytea";
             if (csharpTypeName.ToLower() == "int32")
-                csharpTypeName = "int";
+                csharpTypeName = "int"; 
+            if (csharpTypeName.ToLower() == "uint32")
+                csharpTypeName = "uint";
             if (csharpTypeName.ToLower() == "int16")
                 csharpTypeName = "short";
             if (csharpTypeName.ToLower() == "int64")
                 csharpTypeName = "long";
+            if (csharpTypeName.ToLower() == "uint64")
+                csharpTypeName = "ulong";
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
             if (csharpTypeName == "DateTimeOffset")
@@ -121,16 +125,14 @@ namespace SqlSugar.TDengine
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>(){
 
                     new KeyValuePair<string, CSharpDataType>("BOOL",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@byte),
-                     new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@int),
+                    new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@sbyte),
                     new KeyValuePair<string, CSharpDataType>("SMALLINT",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("INT",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("BIGINT",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("TINYINT UNSIGNED",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("TINYINT UNSIGNED",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("SMALLINT UNSIGNED",CSharpDataType.@short),
-                    new KeyValuePair<string, CSharpDataType>("INT UNSIGNED",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("BIGINT UNSIGNED",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("SMALLINT UNSIGNED",CSharpDataType.@ushort),
+                    new KeyValuePair<string, CSharpDataType>("INT UNSIGNED",CSharpDataType.@uint),
+                    new KeyValuePair<string, CSharpDataType>("BIGINT UNSIGNED",CSharpDataType.@ulong),
                     new KeyValuePair<string, CSharpDataType>("FLOAT",CSharpDataType.Single),
                     new KeyValuePair<string, CSharpDataType>("DOUBLE",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("float8",CSharpDataType.@double),
