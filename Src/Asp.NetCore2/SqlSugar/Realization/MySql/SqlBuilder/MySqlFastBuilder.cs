@@ -64,6 +64,11 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                //执行成功才删除文件
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
                 if (ex.Message == "The used command is not allowed with this MySQL version")
                 {
                     Check.ExceptionEasy("connection string add : AllowLoadLocalInfile=true", "BulkCopy MySql连接字符串需要添加 AllowLoadLocalInfile=true; 添加后如果还不行Mysql数据库执行一下 SET GLOBAL local_infile=1 ");
