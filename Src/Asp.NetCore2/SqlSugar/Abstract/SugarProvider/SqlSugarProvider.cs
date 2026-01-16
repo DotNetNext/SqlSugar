@@ -30,6 +30,10 @@ namespace SqlSugar
             CheckDbDependency(config);
             if (StaticConfig.CompleteDbFunc != null) 
             {
+                if (this.CurrentConnectionConfig.AopEvents == null) 
+                {
+                    this.CurrentConnectionConfig.AopEvents = new AopEvents();
+                }
                 StaticConfig.CompleteDbFunc(this);
             }
         }
