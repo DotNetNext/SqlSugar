@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitetdgsatsdfaffa.Init();
             UnitOneToOneDefault.Init();
             UValidateExtensions.Init();
             UUtilExtensions.Init();
