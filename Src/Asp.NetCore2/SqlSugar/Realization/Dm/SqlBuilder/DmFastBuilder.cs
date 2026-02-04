@@ -64,6 +64,10 @@ namespace SqlSugar
         {
             DmBulkCopy bulkCopy = GetBulkCopyInstance();
             bulkCopy.DestinationTableName = dt.TableName;
+            if (DbFastestProperties?.Size > 0)
+            {
+                bulkCopy.BatchSize = DbFastestProperties.Size;
+            }
             try
             {
                 bulkCopy.WriteToServer(dt);
