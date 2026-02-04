@@ -16,6 +16,6 @@ namespace SqlSugar
         public bool IsConvertDateTimeOffsetToDateTime { get; set; }
         public bool NoPage { get; set; }
         public bool IsIgnoreInsertError { get; internal set; }
-        public int Size { get; set; }
+        public int BatchSize { get; set; }
     }
 }
