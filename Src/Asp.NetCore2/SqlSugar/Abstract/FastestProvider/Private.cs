@@ -40,6 +40,7 @@ namespace SqlSugar
                 case DbType.Dm:
                     var result3= new DmFastBuilder();
                     result3.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    result3.DbFastestProperties.BatchSize = this.BatchsSize;
                     return result3;
                 case DbType.ClickHouse:
                     var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");

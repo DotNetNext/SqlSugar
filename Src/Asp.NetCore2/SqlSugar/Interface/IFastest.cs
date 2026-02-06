@@ -14,6 +14,7 @@ namespace SqlSugar
         IFastest<T> RemoveDataCache(string cacheKey);
         IFastest<T> AS(string tableName);
         IFastest<T> PageSize(int Size);
+        IFastest<T> BatchSize(int batchSize);
         IFastest<T> OffIdentity();
         IFastest<T> SetCharacterSet(string CharacterSet);
         IFastest<T> EnableDataAop();
