@@ -642,7 +642,7 @@ WHERE table_name = '" + tableName + "'");
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
                     {
                         item.Length = 10;
-                    }
+                    } 
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
@@ -675,6 +675,14 @@ WHERE upper(t.TABLE_NAME) = upper('{tableName}')
             else {
                 return base.IsAnyTable(tableName, isCache);
             }
+        }
+        protected override string GetSize(DbColumnInfo item)
+        {
+            if (item.DataType != null && item.DataType.ToLower().Equals("varchar") && item.Length > 0 && this.Context.CurrentConnectionConfig?.MoreSettings?.DmCodeFirstEnableCharInLength == true)
+            {
+                return string.Format("({0} CHAR)", item.Length);
+            }
+            return base.GetSize(item);
         }
         #endregion
 
