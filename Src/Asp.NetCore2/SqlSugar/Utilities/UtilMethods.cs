@@ -964,7 +964,8 @@ namespace SqlSugar
                     PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema,
                     EnableJsonb=it.MoreSettings.EnableJsonb,
                     PostgresIdentityStrategy = it.MoreSettings.PostgresIdentityStrategy,
-                    InnerTemp=it.MoreSettings?.InnerTemp
+                    InnerTemp=it.MoreSettings?.InnerTemp,
+                    DmCodeFirstEnableCharInLength=it.MoreSettings.DmCodeFirstEnableCharInLength
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
