@@ -344,5 +344,11 @@ namespace SqlSugar
             var searchWord = mode.Args[1].MemberName;
             return $" CONTAINS({columns}, {searchWord}, 1) ";
         }
+
+        public override string ToGuid(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS VARCHAR(36))", parameter.MemberName);
+        }
     }
 }
