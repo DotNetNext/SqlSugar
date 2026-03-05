@@ -296,6 +296,33 @@ namespace SqlSugar
                 }
             }
             var temColumnsList = tempDataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).ToList();
+            bool supportIdentity = true;
+            if (this.context.CurrentConnectionConfig.DbType == DbType.Dm || this.context.CurrentConnectionConfig.DbType == DbType.PostgreSQL || this.context.CurrentConnectionConfig.DbType == DbType.Vastbase)
+            {
+                supportIdentity = false;
+            }
+            if (!supportIdentity)
+            {
+                if (builder.DbFastestProperties == null || builder.DbFastestProperties.IsOffIdentity == false)
+                {
+                    string isIdFiledName = "";
+                    if (AsName != null)
+                    {
+                        var dts = context.DbMaintenance.GetColumnInfosByTableName(AsName).Find(f => f.IsIdentity == true);
+                        isIdFiledName = dts?.DbColumnName;
+                    }
+                    else
+                    {
+                        var identitys = entityInfo.Columns.Find(f => f.IsIdentity == true);
+                        isIdFiledName = identitys?.DbColumnName;
+                    }
+                    if (!string.IsNullOrEmpty(isIdFiledName))
+                    {
+                        if (tempDataTable.Columns.Contains(isIdFiledName))
+                            tempDataTable.Columns.Remove(isIdFiledName);
+                    }
+                }
+            }
             var columns = dt.Columns.Cast<DataColumn>().Where(it => temColumnsList.Contains(it.ColumnName.ToLower())).ToList();
             foreach (DataRow item in dt.Rows)
             {
