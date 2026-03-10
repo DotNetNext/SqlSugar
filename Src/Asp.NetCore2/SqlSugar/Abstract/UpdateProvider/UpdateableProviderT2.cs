@@ -47,7 +47,11 @@ namespace SqlSugar
                 if (item.Value?.Type?.IsEnum == true&&ExpressionTool.NoParameterOrSqlfunc(ExpressionTool.RemoveConvert(item.Value)))
                 {
                     var expValue = ExpressionTool.DynamicInvoke(item.Value);
-                    var parameterValue = Convert.ToInt64(expValue);
+                    var parameterValue = Convert.ToInt64(expValue); 
+                    if (this.updateableObj.UpdateBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString==true) 
+                    { 
+                        expValue = expValue?.ToString();
+                    }
                     this.updateableObj.UpdateBuilder.LambdaExpressions.ParameterIndex++;
                     var parameterName =item.Key+this.updateableObj.UpdateBuilder.LambdaExpressions.ParameterIndex;
                     var p=new SugarParameter(this.updateableObj.UpdateBuilder.Builder.SqlParameterKeyWord + parameterName, parameterValue);
