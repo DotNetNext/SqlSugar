@@ -40,7 +40,20 @@ namespace SqlSugar
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
-            this.Context.Utilities.PageEach(objects, 60, pagelist =>
+            var pageSize = 60;
+            if (columns?.Count > 100) 
+            {
+                pageSize = 10;
+            }
+            else if (columns?.Count > 60)
+            {
+                pageSize = 20;
+            }
+            else if (columns?.Count > 40)
+            {
+                pageSize = 30;
+            }
+            this.Context.Utilities.PageEach(objects, pageSize, pagelist =>
             {
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     this.Context.AddQueue("begin");
