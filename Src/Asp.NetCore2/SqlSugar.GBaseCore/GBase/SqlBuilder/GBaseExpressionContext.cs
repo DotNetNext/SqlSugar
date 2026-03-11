@@ -17,8 +17,8 @@ namespace SqlSugar.GBase
         {
             base.DbMehtods = new GBaseMethod(this);
         }
-        public override string SqlTranslationLeft { get { return GBaseConfig.SqlTranslationLeft(this.SugarContext.Context); } }
-        public override string SqlTranslationRight { get { return GBaseConfig.SqlTranslationRight(this.SugarContext.Context); } }
+        public override string SqlTranslationLeft { get { return GBaseConfig.SqlTranslationLeft(this?.SugarContext?.Context); } }
+        public override string SqlTranslationRight { get { return GBaseConfig.SqlTranslationRight(this?.SugarContext?.Context); } }
         public override bool IsTranslationText(string name)
         {
             var result = name.IsContainsIn(UtilConstants.Space, "(", ")");
