@@ -178,7 +178,11 @@ namespace SqlSugar.GBase
                 }
                 else if (type == UtilConstants.BoolType)
                 {
-                    return string.Format("CAST({0} AS boolean)", value.ObjToBool()?1:0) ;
+                    if (GBaseConfig.IsMySqlMode(this.Context))
+                    {
+                        return string.Format("CAST({0} AS signed)", value.ObjToBool() ? 1 : 0);
+                    }
+                    return string.Format("CAST({0} AS boolean)", value.ObjToBool() ? 1 : 0);
                 }
                 else if (type == UtilConstants.IntType || 
                     type == UtilConstants.LongType ||
