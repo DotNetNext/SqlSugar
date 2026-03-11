@@ -175,15 +175,15 @@ namespace SqlSugar
             var columnCount = this.Updateable.UpdateBuilder.DbColumnInfoList.GroupBy(it=>it.TableId)?.FirstOrDefault()?.Count();
             if (columnCount > 100)
             {
-                pageSize = 10;
+                pageSize = 20;
             }
             else if (columnCount > 60)
             {
-                pageSize = 20;
+                pageSize = 30;
             }
             else if (columnCount > 40)
             {
-                pageSize = 30;
+                pageSize = 50;
             }
             return pageSize;
         }
