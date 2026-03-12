@@ -602,9 +602,13 @@ namespace SqlSugar
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
-                        else if (type.FullName == "System.DateOnly"|| type.FullName == "System.TimeSpan") 
+                        else if (type.FullName == "System.DateOnly") 
                         {
                             addValue = Convert.ToDateTime(addValue).ToString("yyyy-MM-dd");
+                        }
+                        else if (type.FullName == "System.TimeOnly" || type.FullName == "System.TimeSpan")
+                        {
+                            addValue = Convert.ToDateTime(addValue).ToString("HH:mm:ss");
                         } 
                         result.Add(name, addValue);
                     }
