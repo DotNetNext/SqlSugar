@@ -157,6 +157,10 @@ namespace SqlSugar
                     item = (item as UnaryExpression).Operand;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, GetNewExpressionValue(item)));
                 }
+                else if (UtilMethods.GetUnderType(item.Type) == UtilConstants.BoolType&&item is MemberExpression m&&m?.Expression is MemberExpression m2&&ExpressionTool.NoParameterOrSqlfunc(item))
+                { 
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName,AppendParameter(ExpressionTool.DynamicInvoke(item))));
+                }
                 else if (IsConst(item))
                 {
                     base.Expression = ExpressionTool.RemoveConvertThanOne(item);
