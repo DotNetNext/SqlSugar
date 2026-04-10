@@ -6,11 +6,15 @@ using System.Text;
 
 namespace TDengineTest
 {
-  
+    [STableAttribute(STableName= "CodeFirst0311", Tag1 =nameof(DeviceType))]
+
     public class CodeFirst0311 : STable
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
+
+        [SqlSugar.SugarColumn(ColumnDataType = "INT UNSIGNED",IsOnlyIgnoreInsert =true,IsOnlyIgnoreUpdate =true)]
+        public uint DeviceType { get; set; }
         public bool Boolean { get; set; } 
         public byte Byte { get; set; } 
         public sbyte SByte { get; set; }
