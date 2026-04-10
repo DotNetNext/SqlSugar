@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using System.Threading;
- 
+
 namespace SqlSugar
 {
 
@@ -28,7 +28,7 @@ namespace SqlSugar
 
         public virtual async Task<T> InSingleAsync(object pkValue)
         {
-            if (pkValue == null) 
+            if (pkValue == null)
             {
                 return default(T);
             }
@@ -74,35 +74,37 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public virtual Task<T> FirstAsync(CancellationToken token) 
+        public virtual Task<T> FirstAsync(CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return FirstAsync();
         }
         public virtual async Task<T> FirstAsync()
         {
-            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            var query = this.Clone();
+            if (query.QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
-                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+                query.QueryBuilder.OrderByValue = query.QueryBuilder.DefaultOrderByTemplate;
             }
-            if (QueryBuilder.Skip.HasValue)
+            if (query.QueryBuilder.Skip.HasValue)
             {
-                QueryBuilder.Take = 1;
-                var list = await this.ToListAsync();
+                query.QueryBuilder.Take = 1;
+                var list = await query.ToListAsync();
                 return list.FirstOrDefault();
             }
             else
             {
-                QueryBuilder.Skip = 0;
-                QueryBuilder.Take = 1;
-                var result = await this.ToListAsync();
-                if (result.HasValue())
-                    return result.FirstOrDefault();
-                else
-                    return default(T);
+                query.QueryBuilder.Skip = 0;
+                query.QueryBuilder.Take = 1;
             }
+
+            var result = await query.ToListAsync();
+            if (result.HasValue())
+                return result.FirstOrDefault();
+            else
+                return default(T);
         }
-        public virtual Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        public virtual Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return FirstAsync(expression);
@@ -110,9 +112,14 @@ namespace SqlSugar
         public virtual async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            var result = await FirstAsync();
-            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
-            return result;
+            try
+            {
+                return await FirstAsync();
+            }
+            finally
+            {
+                this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            }
         }
 
         public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
@@ -123,7 +130,7 @@ namespace SqlSugar
             return result;
         }
 
-        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return AnyAsync(expression);
@@ -131,7 +138,7 @@ namespace SqlSugar
 
         public virtual async Task<bool> AnyAsync()
         {
-            return  (await this.Clone().Take(1).Select("1").ToListAsync()).Count() > 0; ;
+            return (await this.Clone().Take(1).Select("1").ToListAsync()).Count() > 0; ;
         }
         public virtual async Task<bool> AnyAsync(CancellationToken token)
         {
@@ -139,7 +146,7 @@ namespace SqlSugar
             return await this.AnyAsync();
         }
 
-        public virtual Task<int> CountAsync(CancellationToken token) 
+        public virtual Task<int> CountAsync(CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return CountAsync();
@@ -157,10 +164,10 @@ namespace SqlSugar
                 var list = await this.Clone().Select<int>(" COUNT(1) ").ToListAsync();
                 return list.FirstOrDefault();
             }
-            if (this.QueryBuilder.AsTables?.Any() == true) 
+            if (this.QueryBuilder.AsTables?.Any() == true)
             {
-                var tableName= this.QueryBuilder.AsTables.FirstOrDefault().Value;
-                if (tableName.StartsWith(" (SELECT * FROM  (")) 
+                var tableName = this.QueryBuilder.AsTables.FirstOrDefault().Value;
+                if (tableName.StartsWith(" (SELECT * FROM  ("))
                 {
                     var copyDb = this.Clone();
                     copyDb.QueryBuilder.OrderByValue = null;
@@ -192,7 +199,7 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<int> CountAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        public Task<int> CountAsync(Expression<Func<T, bool>> expression, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return CountAsync(expression);
@@ -206,9 +213,9 @@ namespace SqlSugar
             return result;
         }
 
-        public virtual Task<TResult> MaxAsync<TResult>(string maxField, CancellationToken token) 
+        public virtual Task<TResult> MaxAsync<TResult>(string maxField, CancellationToken token)
         {
-            this.Context.Ado.CancellationToken= token;
+            this.Context.Ado.CancellationToken = token;
             return MaxAsync<TResult>(maxField);
         }
 
@@ -217,7 +224,7 @@ namespace SqlSugar
             return _MaxAsync<TResult>(expression);
         }
 
-        public virtual Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression, CancellationToken token) 
+        public virtual Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return MaxAsync(expression);
@@ -277,12 +284,12 @@ namespace SqlSugar
             return _ToListAsync<T>();
         }
 
-        public Task<List<T>> ToListAsync(CancellationToken token) 
+        public Task<List<T>> ToListAsync(CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return ToListAsync();
         }
-        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, CancellationToken token) 
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return ToPageListAsync(pageNumber, pageSize);
@@ -310,9 +317,9 @@ namespace SqlSugar
                 return list;
             }
         }
-        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token) 
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token)
         {
-            this.Context.Ado.CancellationToken= token;
+            this.Context.Ado.CancellationToken = token;
             return ToPageListAsync(pageNumber, pageSize, totalNumber);
         }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
@@ -334,10 +341,10 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token) 
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
-            return ToPageListAsync(pageNumber,pageSize,totalNumber,totalPage);
+            return ToPageListAsync(pageNumber, pageSize, totalNumber, totalPage);
         }
 
         public async Task<string> ToJsonAsync()
@@ -369,11 +376,11 @@ namespace SqlSugar
         }
         public async virtual Task<DataTable> ToDataTableByEntityAsync()
         {
-            var list =await this.ToListAsync();
+            var list = await this.ToListAsync();
             return this.Context.Utilities.ListToDataTable(list);
         }
 
-        public Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize) 
+        public Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
@@ -386,7 +393,7 @@ namespace SqlSugar
                 return this.ToDataTableAsync();
             }
         }
-        public async Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        public async Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
@@ -400,9 +407,9 @@ namespace SqlSugar
                 return await this.Clone().ToDataTableAsync();
             }
         }
-        public async Task<DataTable> ToOffsetDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        public async Task<DataTable> ToOffsetDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber)
         {
-            return this.Context.Utilities.ListToDataTable(await ToOffsetPageAsync(pageNumber,pageSize,totalNumber));
+            return this.Context.Utilities.ListToDataTable(await ToOffsetPageAsync(pageNumber, pageSize, totalNumber));
         }
 
         public async Task<DataTable> ToDataTableAsync()
@@ -435,9 +442,9 @@ namespace SqlSugar
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
         }
-        public async Task<DataTable> ToDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        public async Task<DataTable> ToDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber)
         {
-            var list =await this.ToPageListAsync(pageNumber, pageSize, totalNumber);
+            var list = await this.ToPageListAsync(pageNumber, pageSize, totalNumber);
             return this.Context.Utilities.ListToDataTable(list);
         }
         public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token)
@@ -445,7 +452,7 @@ namespace SqlSugar
             this.Context.Ado.CancellationToken = token;
             return ToOffsetPageAsync(pageNumber, pageSize, totalNumber);
         }
-        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token) 
+        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token)
         {
             this.Context.Ado.CancellationToken = token;
             return ToOffsetPageAsync(pageNumber, pageSize, totalNumber, totalPage);
@@ -470,7 +477,7 @@ namespace SqlSugar
                 return await this.Clone().ToListAsync();
             }
         }
-        
+
         public virtual async Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
@@ -528,7 +535,7 @@ namespace SqlSugar
             }
             totalNumber.Value = count;
         }
-        
+
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
 Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
 ParameterT parameter)
@@ -625,7 +632,7 @@ ParameterT parameter)
         }
         public async Task<Dictionary<string, ValueType>> ToDictionaryAsync<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
-            return  (await  this.ToDictionaryAsync(key, value)).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
+            return (await this.ToDictionaryAsync(key, value)).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
         }
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
@@ -653,10 +660,10 @@ ParameterT parameter)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = primaryKeyPropertyName;
-            var list =await this.ToListAsync();
+            var list = await this.ToListAsync();
             Expression<Func<T, IEnumerable<object>>> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), childPropertyName, typeof(IEnumerable<object>));
             Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName);
-            return  GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
         {
@@ -666,7 +673,7 @@ ParameterT parameter)
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds, Expression<Func<T, object>> primaryKeyExpression)
         {
             var list = await this.ToListAsync();
-            return TreeAndFilterIds(childListExpression, parentIdExpression,primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
+            return TreeAndFilterIds(childListExpression, parentIdExpression, primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
@@ -731,7 +738,7 @@ ParameterT parameter)
             var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
             if (isTreeKey)
             {
-                return await _ToParentListByTreeKeyAsync(parentIdExpression, primaryKeyValue,parentWhereExpression);
+                return await _ToParentListByTreeKeyAsync(parentIdExpression, primaryKeyValue, parentWhereExpression);
             }
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
             var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
@@ -749,16 +756,16 @@ ParameterT parameter)
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
+            var current = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -778,7 +785,7 @@ ParameterT parameter)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
-            var list =await this.ToListAsync();
+            var list = await this.ToListAsync();
             List<T> result = new List<T>();
             foreach (var item in primaryKeyValues)
             {
@@ -792,7 +799,7 @@ ParameterT parameter)
         }
         public Task<int> IntoTableAsync<TableEntityType>(string TableName, CancellationToken cancellationToken = default)
         {
-            return IntoTableAsync(typeof(TableEntityType), TableName, cancellationToken );
+            return IntoTableAsync(typeof(TableEntityType), TableName, cancellationToken);
         }
         public Task<int> IntoTableAsync(Type TableEntityType, CancellationToken cancellationToken = default)
         {
@@ -802,10 +809,10 @@ ParameterT parameter)
         }
         public async Task<int> IntoTableAsync(Type TableEntityType, string TableName, CancellationToken cancellationToken = default)
         {
-            this.Context.Ado.CancellationToken= cancellationToken;
+            this.Context.Ado.CancellationToken = cancellationToken;
             KeyValuePair<string, List<SugarParameter>> sqlInfo;
             string sql;
-            OutIntoTableSql(TableName, out sqlInfo, out sql,TableEntityType);
+            OutIntoTableSql(TableName, out sqlInfo, out sql, TableEntityType);
             return await this.Context.Ado.ExecuteCommandAsync(sql, sqlInfo.Value);
         }
     }

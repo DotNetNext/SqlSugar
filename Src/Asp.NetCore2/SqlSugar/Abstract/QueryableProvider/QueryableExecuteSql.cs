@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
- 
+
 namespace SqlSugar
 {
 
@@ -56,32 +56,40 @@ namespace SqlSugar
 
         public virtual T First()
         {
-            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            var query = this.Clone();
+
+            if (query.QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
-                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+                query.QueryBuilder.OrderByValue = query.QueryBuilder.DefaultOrderByTemplate;
             }
-            if (QueryBuilder.Skip.HasValue)
+            if (query.QueryBuilder.Skip.HasValue)
             {
-                QueryBuilder.Take = 1;
-                return this.ToList().FirstOrDefault();
+                query.QueryBuilder.Take = 1;
+                return query.ToList().FirstOrDefault();
             }
             else
             {
-                QueryBuilder.Skip = 0;
-                QueryBuilder.Take = 1;
-                var result = this.ToList();
-                if (result.HasValue())
-                    return result.FirstOrDefault();
-                else
-                    return default(T);
+                query.QueryBuilder.Skip = 0;
+                query.QueryBuilder.Take = 1;
             }
+
+            var result = query.ToList();
+            if (result.HasValue())
+                return result.FirstOrDefault();
+            else
+                return default(T);
         }
         public virtual T First(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            var result = First();
-            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
-            return result;
+            try
+            {
+                return First();
+            }
+            finally
+            {
+                this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            }
         }
 
         public virtual bool Any(Expression<Func<T, bool>> expression)
@@ -121,10 +129,10 @@ namespace SqlSugar
                 this.QueryBuilder.Includes == null &&
                 this.QueryBuilder.IsDistinct == false)
             {
-                if (StaticConfig.EnableAot) 
+                if (StaticConfig.EnableAot)
                 {
                     var sqlobj = this.Clone().Select<int>(" COUNT(1) ").ToSql();
-                    return this.Context.Ado.GetInt(sqlobj.Key,sqlobj.Value);
+                    return this.Context.Ado.GetInt(sqlobj.Key, sqlobj.Value);
                 }
                 return this.Clone().Select<int>(" COUNT(1) ").ToList().FirstOrDefault();
             }
@@ -291,7 +299,7 @@ namespace SqlSugar
             var list = this.ToList();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
-        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object [] primaryKeyValues, bool isContainOneself = true)
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object[] primaryKeyValues, bool isContainOneself = true)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
@@ -328,7 +336,7 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache,this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).ClearFilter(this.QueryBuilder.RemoveFilters).InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).ClearFilter(this.QueryBuilder.RemoveFilters).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
@@ -351,7 +359,7 @@ namespace SqlSugar
             var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
             if (isTreeKey)
             {
-                return _ToParentListByTreeKey(parentIdExpression, primaryKeyValue,parentWhereExpression);
+                return _ToParentListByTreeKey(parentIdExpression, primaryKeyValue, parentWhereExpression);
             }
             List<T> result = new List<T>() { };
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
@@ -370,16 +378,16 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
                 {
                     Check.Exception(i > 200, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（200），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -393,8 +401,8 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = primaryKeyPropertyName;
             var list = this.ToList();
-            Expression<Func<T,IEnumerable<object> >> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T),childPropertyName,typeof(IEnumerable<object>));
-            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName); 
+            Expression<Func<T, IEnumerable<object>>> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), childPropertyName, typeof(IEnumerable<object>));
+            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName);
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, Expression<Func<T, object>> primaryKeyExpression)
@@ -409,17 +417,17 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = this.ToList();
-            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue)??new List<T>();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
-        public  List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
+        public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
         {
-            var list =  this.ToList();
+            var list = this.ToList();
             return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list) ?? new List<T>();
-        } 
+        }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds, Expression<Func<T, object>> primaryKeyExpression)
         {
             var list = this.ToList();
-            return TreeAndFilterIds(childListExpression, parentIdExpression,primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
+            return TreeAndFilterIds(childListExpression, parentIdExpression, primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
         public virtual DataTable ToDataTableByEntity()
         {
@@ -465,7 +473,7 @@ namespace SqlSugar
             return ToDataTable();
         }
 
-        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize) 
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
@@ -478,7 +486,7 @@ namespace SqlSugar
                 return this.ToDataTable();
             }
         }
-        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber) 
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
@@ -492,19 +500,19 @@ namespace SqlSugar
                 return this.Clone().ToDataTable();
             }
         }
-        public DataTable ToOffsetDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber) 
+        public DataTable ToOffsetDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber)
         {
-            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize,ref totalNumber));
+            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize, ref totalNumber));
         }
-        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber, ref int totalPage) 
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber, ref int totalPage)
         {
-            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize, ref totalNumber,ref totalPage));
+            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize, ref totalNumber, ref totalPage));
         }
 
-        public DataTable ToDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber) 
+        public DataTable ToDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber)
         {
-            var  list=this.ToPageList(pageNumber, pageSize,ref totalNumber);
-            return this.Context.Utilities.ListToDataTable(list);    
+            var list = this.ToPageList(pageNumber, pageSize, ref totalNumber);
+            return this.Context.Utilities.ListToDataTable(list);
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
@@ -526,9 +534,9 @@ namespace SqlSugar
         }
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
-            if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null||this.QueryBuilder.AsTables.Count==0)) 
+            if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null || this.QueryBuilder.AsTables.Count == 0))
             {
-                return this.MergeTable().ToDictionary(key,value);
+                return this.MergeTable().ToDictionary(key, value);
             }
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
@@ -538,19 +546,19 @@ namespace SqlSugar
                 keyName = this.QueryBuilder.TableShortName + "." + keyName;
                 valueName = this.QueryBuilder.TableShortName + "." + valueName;
             }
-            var isJson=this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(value)).Any();
+            var isJson = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(value)).Any();
             if (isJson)
             {
                 var result = this.Select<T>(keyName + "," + valueName).ToList().ToDictionary(ExpressionTool.GetMemberName(key), ExpressionTool.GetMemberName(value));
                 return result;
             }
-            else if (valueName == null) 
+            else if (valueName == null)
             {
                 // 编译key和value的表达式树为委托
                 var keySelector = key.Compile();
                 var valueSelector = value.Compile();
-                Dictionary<object,object> objDic= this.ToList().ToDictionary(keySelector, valueSelector); 
-                return objDic.ToDictionary(it=>it.Key?.ToString(),it=>it.Value);
+                Dictionary<object, object> objDic = this.ToList().ToDictionary(keySelector, valueSelector);
+                return objDic.ToDictionary(it => it.Key?.ToString(), it => it.Value);
             }
             else
             {
@@ -581,19 +589,19 @@ namespace SqlSugar
             InitMapping();
             return _ToList<T>();
         }
-        public List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter) 
+        public List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter)
         {
             var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
             var rootList = queryableContext.list;
             List<ISugarQueryable<object>> queryableList = new List<ISugarQueryable<object>>();
             var index = rootList.IndexOf(parameter);
-            var selector = this.Clone().QueryBuilder.GetSelectValue+$",{index} as ";
-            var sqlObj=this.Clone().Where(whereExpression).Select(selector+"")
-            .Select(it => (object) new { it, sql_sugar_index = index });
+            var selector = this.Clone().QueryBuilder.GetSelectValue + $",{index} as ";
+            var sqlObj = this.Clone().Where(whereExpression).Select(selector + "")
+            .Select(it => (object)new { it, sql_sugar_index = index });
             queryableList.Add(sqlObj);
 
             var allList = this.Context.Union(queryableList)
-                .Select(it=>new { it=default(T), sql_sugar_index =0})
+                .Select(it => new { it = default(T), sql_sugar_index = 0 })
                 .Select("*").ToList();
             var result = new List<T>();
             throw new Exception("开发中");
@@ -696,18 +704,18 @@ namespace SqlSugar
             var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
             return newResult;
         }
-        public void ForEachDataReader(Action<T> action) 
+        public void ForEachDataReader(Action<T> action)
         {
             var queryable = this.Clone();
-            var sql = queryable.ToSql(); 
-            var dr = this.Context.Ado.GetDataReader(sql.Key,sql.Value);
+            var sql = queryable.ToSql();
+            var dr = this.Context.Ado.GetDataReader(sql.Key, sql.Value);
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            var columns = UtilMethods.GetColumnInfo(dr); 
-            var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.Item1+it.Item2.Name+"_"));
+            var columns = UtilMethods.GetColumnInfo(dr);
+            var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
             IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
-                    columns.Select(it=>it.Item1).ToList()).CreateBuilder(typeof(T));
+                    columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
                 return cacheResult;
             });
             using (dr)
@@ -719,16 +727,16 @@ namespace SqlSugar
                     action(order);
                 }
             }
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
             {
                 this.Context.Ado.Close();
             }
         }
-        public async Task ForEachDataReaderAsync(Action<T> action) 
+        public async Task ForEachDataReaderAsync(Action<T> action)
         {
             var queryable = this.Clone();
             var sql = queryable.ToSql();
-            var dr =await this.Context.Ado.GetDataReaderAsync(sql.Key, sql.Value);
+            var dr = await this.Context.Ado.GetDataReaderAsync(sql.Key, sql.Value);
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var columns = UtilMethods.GetColumnInfo(dr);
             var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
@@ -782,7 +790,7 @@ namespace SqlSugar
                 this.Context.Ado.Close();
             }
 
-        } 
+        }
         public IEnumerable<T> GetEnumerable()
         {
             var queryable = this.Clone();
@@ -964,10 +972,10 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
-            if (this.EntityInfo?.Type?.IsInterface==true)
+            if (this.EntityInfo?.Type?.IsInterface == true)
             {
-               this.QueryBuilder.SelectValue = " * ";
-               this.AsType(this.EntityInfo.Type);
+                this.QueryBuilder.SelectValue = " * ";
+                this.AsType(this.EntityInfo.Type);
             }
             var sqlObj = this.Clone().ToSql();
             var result = sqlObj.Key;
@@ -1007,7 +1015,7 @@ namespace SqlSugar
             return result;
         }
 
-        public int IntoTable<TableEntityType>() 
+        public int IntoTable<TableEntityType>()
         {
             return IntoTable(typeof(TableEntityType));
         }
@@ -1015,18 +1023,18 @@ namespace SqlSugar
         {
             return IntoTable(typeof(TableEntityType), TableName);
         }
-        public int IntoTable(Type TableEntityType) 
+        public int IntoTable(Type TableEntityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
             return IntoTable(TableEntityType, name);
         }
-        public int IntoTable(Type TableEntityType,string TableName)
+        public int IntoTable(Type TableEntityType, string TableName)
         {
             KeyValuePair<string, List<SugarParameter>> sqlInfo;
             string sql;
             OutIntoTableSql(TableName, out sqlInfo, out sql, TableEntityType);
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
-  }
+    }
 }
