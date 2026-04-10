@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.TDSQLForPGODBC
 {
-    public class TDSQLForPGODBCInserttable<T> : InsertableProvider<T> where T : class, new()
+    public class TDSQLForPGODBCInsertable<T> : InsertableProvider<T> where T : class, new()
     {
         public override int ExecuteReturnIdentity()
         {
