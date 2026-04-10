@@ -403,7 +403,13 @@ namespace SqlSugar
             ToSqlBefore();
             sql = QueryBuilder.ToSqlString();
             sql = QueryBuilder.ToCountSql(sql);
+            var oldIsDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+            if (this.QueryBuilder.IsDisableMasterSlaveSeparation) 
+            {
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            }
             var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            this.Context.Ado.IsDisableMasterSlaveSeparation = oldIsDisableMasterSlaveSeparation;
             return result;
         }
         protected async Task<int> GetCountAsync()

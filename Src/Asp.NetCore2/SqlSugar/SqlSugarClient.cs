@@ -237,7 +237,10 @@ namespace SqlSugar
         {
             return  this.Context.DeleteNav(whereExpression);
         }
-
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(params object[] primaryKeys) where T : class, new()
+        {
+            return this.Context.DeleteNav<T>(primaryKeys);
+        }
         public DeleteNavTaskInit<T, T> DeleteNav<T>(T data, DeleteNavRootOptions options) where T : class, new()
         {
             return this.Context.DeleteNav(data, options);

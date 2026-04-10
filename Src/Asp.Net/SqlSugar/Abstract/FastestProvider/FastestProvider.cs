@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -442,6 +442,10 @@ namespace SqlSugar
                             else if (col.DataType == UtilConstants.DateType)
                             {
                                 item[col.ColumnName] =UtilMethods.GetMinDate(this.context.CurrentConnectionConfig);
+                            }
+                            else if (col.DataType == UtilConstants.ByteArrayType)
+                            {
+                                item[col.ColumnName] = null;
                             }
                             else
                             {

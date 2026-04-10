@@ -52,6 +52,10 @@ namespace SqlSugar.HG
                     var dbTypeName2 = dbTypeName.TrimStart('_');
                     return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
                 }
+                else if (dbTypeName.Contains(".") && dbTypeName.Split('.').Count() == 2)
+                {
+                    return GetPropertyTypeName(dbTypeName.Split('.').Last());
+                }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return null;
             }

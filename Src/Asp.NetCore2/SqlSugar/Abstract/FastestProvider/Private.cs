@@ -40,6 +40,7 @@ namespace SqlSugar
                 case DbType.Dm:
                     var result3= new DmFastBuilder();
                     result3.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    result3.DbFastestProperties.BatchSize = this.BatchsSize;
                     return result3;
                 case DbType.ClickHouse:
                     var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");
@@ -292,6 +293,33 @@ namespace SqlSugar
                 if (item.DataType == typeof(UInt64))
                 {
                     uInt64TypeName.Add(item.ColumnName);
+                }
+            }
+            bool supportIdentity = true;
+            if (this.context.CurrentConnectionConfig.DbType == DbType.Dm || this.context.CurrentConnectionConfig.DbType == DbType.PostgreSQL || this.context.CurrentConnectionConfig.DbType == DbType.Vastbase)
+            {
+                supportIdentity = false;
+            }
+            if (!supportIdentity)
+            {
+                if (builder.DbFastestProperties == null || builder.DbFastestProperties.IsOffIdentity == false)
+                {
+                    string isIdFiledName = "";
+                    if (AsName != null)
+                    {
+                        var dts = context.DbMaintenance.GetColumnInfosByTableName(AsName).Find(f => f.IsIdentity == true);
+                        isIdFiledName = dts?.DbColumnName;
+                    }
+                    else
+                    {
+                        var identitys = entityInfo.Columns.Find(f => f.IsIdentity == true);
+                        isIdFiledName = identitys?.DbColumnName;
+                    }
+                    if (!string.IsNullOrEmpty(isIdFiledName))
+                    {
+                        if (tempDataTable.Columns.Contains(isIdFiledName))
+                            tempDataTable.Columns.Remove(isIdFiledName);
+                    }
                 }
             }
             var temColumnsList = tempDataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).ToList();

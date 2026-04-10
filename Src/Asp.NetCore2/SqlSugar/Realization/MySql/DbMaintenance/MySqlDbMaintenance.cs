@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -749,6 +749,23 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 // Invoke the ExportToFile method
                 exportMethod.Invoke(mb, new object[] { fullFileName });
             }
+            return true;
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false)
+        {
+            var include = "";
+            if (IndexName.ToLower().Contains("{include:"))
+            {
+                include = Regex.Match(IndexName, @"\{include\:.+$").Value;
+                IndexName = IndexName.Replace(include, "");
+                if (include == null)
+                {
+                    throw new Exception("include format error");
+                }
+                include = "";
+            }
+            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})" + include, this.SqlBuilder.GetTranslationColumnName(tableName), string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
+            this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
 

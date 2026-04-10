@@ -43,7 +43,25 @@ namespace SqlSugar
             foreach (var item in items)
             {
                 var dbColumnName=updateableObj.UpdateBuilder.Context.EntityMaintenance.GetDbColumnName<T>(item.Key);
-                var value = updateableObj.UpdateBuilder.GetExpressionValue(ExpressionTool.RemoveConvert(item.Value), ResolveExpressType.WhereMultiple).GetString();
+                string value = null;
+                if (item.Value?.Type?.IsEnum == true&&ExpressionTool.NoParameterOrSqlfunc(ExpressionTool.RemoveConvert(item.Value)))
+                {
+                    var expValue = ExpressionTool.DynamicInvoke(item.Value);
+                    var parameterValue = Convert.ToInt64(expValue); 
+                    if (this.updateableObj.UpdateBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString==true) 
+                    { 
+                        expValue = expValue?.ToString();
+                    }
+                    this.updateableObj.UpdateBuilder.LambdaExpressions.ParameterIndex++;
+                    var parameterName =item.Key+this.updateableObj.UpdateBuilder.LambdaExpressions.ParameterIndex;
+                    var p=new SugarParameter(this.updateableObj.UpdateBuilder.Builder.SqlParameterKeyWord + parameterName, parameterValue);
+                    this.updateableObj.UpdateBuilder.Parameters.Add(p);
+                    value = p.ParameterName;
+                }
+                else 
+                {
+                    value=updateableObj.UpdateBuilder.GetExpressionValue(ExpressionTool.RemoveConvert(item.Value), ResolveExpressType.WhereMultiple).GetString();
+                }
                 if (ExpressionTool.GetMethodName(ExpressionTool.RemoveConvert(item.Value))=="End")
                 {
                     value = UtilMethods.RemoveEqualOne(value);

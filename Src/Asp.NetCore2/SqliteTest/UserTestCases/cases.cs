@@ -7,6 +7,7 @@ namespace SqliteTest.UnitTest
     {
         public static void Init()
         {
+            Unitsdfasysd12.Init();
             Unitafadsf12yy.Init();
             Unitadfadsyyy.Init();
             //Demo
