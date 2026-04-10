@@ -775,7 +775,12 @@ namespace SqlSugar
                         }
                         else
                         {
-                            var instance = CreateNavigationList(navObjectNamePropety, itemSelectList);
+                            var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                            var ilist = instance as IList;
+                            foreach (var value in itemSelectList.ToList())
+                            {
+                                ilist.Add(value);
+                            }
                             navObjectNamePropety.SetValue(item.Key, instance);
                         }
                     }
@@ -798,22 +803,6 @@ namespace SqlSugar
                     }
                 }
             }
-        }
-
-        private static object CreateNavigationList(PropertyInfo navProperty, IEnumerable<object> values)
-        {
-            Type propertyType = navProperty.PropertyType;
-            Type elementType = propertyType.GetGenericArguments()[0];
-
-            Type listType = typeof(List<>).MakeGenericType(elementType);
-            var list = (IList)Activator.CreateInstance(listType);
-
-            foreach (var v in values)
-            {
-                list.Add(v);
-            }
-
-            return list;
         }
 
         private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo,Expression expression)
