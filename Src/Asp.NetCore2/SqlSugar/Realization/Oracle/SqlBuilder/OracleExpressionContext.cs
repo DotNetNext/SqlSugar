@@ -322,7 +322,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ( cast({0} as date)= cast( {1} as date) ) ", parameter.MemberName, parameter2.MemberName); ;
+            return string.Format("(TRUNC({0}) = TRUNC({1}))", parameter.MemberName, parameter2.MemberName);
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
@@ -435,7 +435,7 @@ namespace SqlSugar
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return $" SUBSTR({parameterNameA}, (LENGTH({parameterNameA})-2), {parameterNameB})  ";
+            return $" SUBSTR({parameterNameA}, -{parameterNameB}, {parameterNameB})  ";  //hdl 20260121
         }
 
         public override string Ceil(MethodCallExpressionModel mode)

@@ -41,5 +41,6 @@ namespace SqlSugar
         public bool EnableJsonb { get;  set; }
         public PostgresIdentityStrategy PostgresIdentityStrategy { get; set; } = PostgresIdentityStrategy.Serial; // 兼容性处理，默认使用Serial
         internal object InnerTemp { get; set; }
+        public bool DmCodeFirstEnableCharInLength { get; set; }
     }
 }

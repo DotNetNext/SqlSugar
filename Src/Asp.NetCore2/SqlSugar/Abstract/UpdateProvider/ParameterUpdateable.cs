@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar
 {
@@ -172,19 +172,19 @@ namespace SqlSugar
 
         private  int GetPageSize(int pageSize, int count)
         {
-            if (pageSize * count > 2100)
-            {
-                pageSize = 50;
-            }
-            if (pageSize * count > 2100)
+            var columnCount = this.Updateable.UpdateBuilder.DbColumnInfoList.GroupBy(it=>it.TableId)?.FirstOrDefault()?.Count();
+            if (columnCount > 100)
             {
                 pageSize = 20;
             }
-            if (pageSize * count > 2100)
+            else if (columnCount > 60)
             {
-                pageSize = 10;
+                pageSize = 30;
             }
-
+            else if (columnCount > 40)
+            {
+                pageSize = 50;
+            }
             return pageSize;
         }
         private string FormatValue(Type type, string name, object value, List<SugarParameter> allParamter)

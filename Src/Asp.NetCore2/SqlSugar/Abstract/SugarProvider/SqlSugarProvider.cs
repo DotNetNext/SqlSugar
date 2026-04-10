@@ -30,6 +30,10 @@ namespace SqlSugar
             CheckDbDependency(config);
             if (StaticConfig.CompleteDbFunc != null) 
             {
+                if (this.CurrentConnectionConfig.AopEvents == null) 
+                {
+                    this.CurrentConnectionConfig.AopEvents = new AopEvents();
+                }
                 StaticConfig.CompleteDbFunc(this);
             }
         }
@@ -1256,6 +1260,10 @@ namespace SqlSugar
         public DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression) where T : class, new() 
         {
             return DeleteNav(this.Queryable<T>().Where(whereExpression).ToList());
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(object[] primaryKeys) where T : class, new()
+        {
+            return this.Context.DeleteNav(this.Queryable<T>().In(primaryKeys).ToList());
         }
 
         public DeleteNavTaskInit<T, T> DeleteNav<T>(T data, DeleteNavRootOptions options) where T : class, new()

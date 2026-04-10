@@ -15,10 +15,10 @@ namespace SqlSugar.GBase
         public SqlSugarProvider Context { get; set; }
         public GBaseExpressionContext()
         {
-            base.DbMehtods = new GBaseMethod();
+            base.DbMehtods = new GBaseMethod(this);
         }
-        public override string SqlTranslationLeft { get { return ""; } }
-        public override string SqlTranslationRight { get { return ""; } }
+        public override string SqlTranslationLeft { get { return GBaseConfig.SqlTranslationLeft(this?.SugarContext?.Context); } }
+        public override string SqlTranslationRight { get { return GBaseConfig.SqlTranslationRight(this?.SugarContext?.Context); } }
         public override bool IsTranslationText(string name)
         {
             var result = name.IsContainsIn(UtilConstants.Space, "(", ")");
@@ -40,6 +40,13 @@ namespace SqlSugar.GBase
     public partial class GBaseMethod : DefaultDbMethod, IDbMethods
     {
         private string _dateTimeType = "datetime year to fraction(5)";
+        public GBaseExpressionContext _expressionContext = null;
+
+        public GBaseMethod(GBaseExpressionContext context)
+        {
+            this._expressionContext = context;
+        }
+
         public override string Length(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -48,6 +55,12 @@ namespace SqlSugar.GBase
         public override string ToBool(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (this._expressionContext != null &&
+                this._expressionContext.SugarContext != null &&
+                GBaseConfig.IsMySqlMode(this._expressionContext.SugarContext.Context))
+            {
+                return string.Format(" CAST({0} AS SIGNED)", parameter.MemberName);
+            }
             return string.Format(" CAST({0} AS BOOLEAN)", parameter.MemberName);
         }
         public override string IsNull(MethodCallExpressionModel model)

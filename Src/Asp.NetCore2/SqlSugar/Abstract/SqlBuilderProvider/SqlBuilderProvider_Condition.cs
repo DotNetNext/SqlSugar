@@ -319,8 +319,17 @@ namespace SqlSugar
             }
             else
             {
-                builder.Append("(");
-                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
+              
+                if (builder.Length > 0)
+                {
+
+                    builder.AppendFormat(" AND ("+temp, null, item.FieldName.ToSqlFilter(), "<>", parameterName);
+                }
+                else
+                {
+                    builder.Append("(");
+                    builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
+                }
                 parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                 builder.Append($"OR {item.FieldName.ToSqlFilter()} is null ");
                 builder.Append(")");

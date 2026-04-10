@@ -310,11 +310,12 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $" SUBSTR({parameterNameA}, 1, {parameterNameB})  ";
         }
+         
         public override string Right(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return $" SUBSTR({parameterNameA}, -2, {parameterNameB})  ";
+            return $" SUBSTR({parameterNameA}, -{parameterNameB}, {parameterNameB})  ";  //hdl 20260121
         }
 
         public override string Ceil(MethodCallExpressionModel mode)
@@ -342,6 +343,12 @@ namespace SqlSugar
             }
             var searchWord = mode.Args[1].MemberName;
             return $" CONTAINS({columns}, {searchWord}, 1) ";
+        }
+
+        public override string ToGuid(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS VARCHAR(36))", parameter.MemberName);
         }
     }
 }
