@@ -104,8 +104,14 @@ namespace SqlSugar
                 string value = null;
                 if (methodName.IsIn("ContainsArray", "ContainsArrayUseSqlParameters") &&i==1)
                 {
-                    var first = Regex.Split(item+"", ":").First();
-                    var last = Regex.Split(item + "", ":").Last();
+                    var splitItems = Regex.Split(item + "", ":");
+                    var splitCount = splitItems.Count();
+                    var first = splitItems.First();
+                    var last = splitItems.Last();
+                    if (splitCount > 2) 
+                    {
+                        last = string.Join("",splitItems.Skip(1));
+                    }
                     object[] array = this.Context.Utilities.DeserializeObject<object[]>(last);
                     value = GetParameterName(resPars, array);
                 }
