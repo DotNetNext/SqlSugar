@@ -43,7 +43,7 @@ namespace SqlSugar.OceanBaseForOracle
             {
                 return "short";
             }
-            else if (propertyTypes == null)
+            else if (propertyTypes == null || dbTypeName == "unknown" || dbTypeName == "binary_double" || dbTypeName == "binary_float")
             {
                 return "other";
             }

@@ -50,7 +50,7 @@ namespace SqlSugar.TDSQLForPGODBC
             dbTypeName = dbTypeName.ToLower();
             dbTypeName = GetValidCsharpTypeName(dbTypeName);
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
-            if (propertyTypes == null)
+            if (propertyTypes == null || dbTypeName == "unknown")
             {
                 return "other";
             }
