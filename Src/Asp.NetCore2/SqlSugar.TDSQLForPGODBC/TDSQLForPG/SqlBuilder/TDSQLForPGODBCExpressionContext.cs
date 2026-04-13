@@ -253,7 +253,7 @@ namespace SqlSugar.TDSQLForPGODBC
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like '%{1}%') ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string StartsWith(MethodCallExpressionModel model)
@@ -266,7 +266,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 parameter2Info.Value = parameter2.MemberValue + "%";
                 return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
             }
-            return string.Format(" ({0} like concat({1},'%')) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like '{1}%') ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string EndsWith(MethodCallExpressionModel model)
@@ -279,7 +279,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 parameter2Info.Value = "%" + parameter2.MemberValue;
                 return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
             }
-            return string.Format(" ({0} like concat('%',{1}))", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like '%{1}')", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)
@@ -417,8 +417,7 @@ namespace SqlSugar.TDSQLForPGODBC
         }
         public override string MergeString(params string[] strings)
         {
-            var key = Guid.NewGuid() + "";
-            return " concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
+            return string.Join("||", strings);
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
