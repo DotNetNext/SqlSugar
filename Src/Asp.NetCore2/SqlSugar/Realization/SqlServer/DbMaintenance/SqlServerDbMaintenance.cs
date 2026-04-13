@@ -324,8 +324,8 @@ namespace SqlSugar
         #region Methods
         public override bool DropIndex(string indexName, string tableName)
         {
-            indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
-            tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
+            indexName = this.SqlBuilder.GetTranslationColumnName(indexName);
+            tableName = this.SqlBuilder.GetTranslationColumnName(tableName);
             this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName}  ON {tableName}");
             return true;
         }
