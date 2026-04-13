@@ -253,7 +253,7 @@ namespace SqlSugar.TDSQLForPGODBC
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like '%{1}%') ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like '%'|| {1} ||'%') ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string StartsWith(MethodCallExpressionModel model)
@@ -266,7 +266,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 parameter2Info.Value = parameter2.MemberValue + "%";
                 return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
             }
-            return string.Format(" ({0} like '{1}%') ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like {1} || '%') ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string EndsWith(MethodCallExpressionModel model)
@@ -279,7 +279,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 parameter2Info.Value = "%" + parameter2.MemberValue;
                 return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
             }
-            return string.Format(" ({0} like '%{1}')", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} like '%' || {1})", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)
