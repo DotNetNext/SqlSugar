@@ -90,7 +90,16 @@ namespace SqlSugar
         private async Task<int> _ExecuteCommandAsync()
         {
             var result = 0;
+            var oldTableName=updateobj.UpdateBuilder.TableName; 
+            if (Tables?.Any() == true)
+            {
+                updateobj.UpdateBuilder.TableName=Tables.First().TableName;
+            }
             var sqlobj = updateobj.ToSql();
+            if (Tables?.Any() == true)
+            {
+                updateobj.UpdateBuilder.TableName = oldTableName;
+            }
             foreach (var item in Tables)
             {
                 var newsqlobj = GetSqlObj(sqlobj, item.TableName);
