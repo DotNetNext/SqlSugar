@@ -347,13 +347,13 @@ namespace SqlSugar
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return string.Format("ltrim({0},'{1}')", parameterNameA, parameterNameB);
+            return string.Format("ltrim({0},{1})", parameterNameA, parameterNameB);
         }
         public override string TrimEnd(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return string.Format("rtrim({0},'{1}')", parameterNameA, parameterNameB);
+            return string.Format("rtrim({0},{1})", parameterNameA, parameterNameB);
         } 
         public override string ToInt32(MethodCallExpressionModel model)
         {
