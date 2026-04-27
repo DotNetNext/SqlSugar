@@ -110,7 +110,7 @@ namespace SqlSugar
                     var last = splitItems.Last();
                     if (splitCount > 2) 
                     {
-                        last = string.Join("",splitItems.Skip(1));
+                        last = string.Join(":",splitItems.Skip(1));
                     }
                     object[] array = this.Context.Utilities.DeserializeObject<object[]>(last);
                     value = GetParameterName(resPars, array);

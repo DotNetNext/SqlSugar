@@ -268,8 +268,9 @@ namespace SqlSugar
             try
             {
                 Begin(datas, false, true);
+                Check.Exception(updateColumns == null || updateColumns.Count() == 0, "set columns count=0");
                 Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
-                Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+             
                 var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
                 var old = this.context.Ado.IsDisableMasterSlaveSeparation;

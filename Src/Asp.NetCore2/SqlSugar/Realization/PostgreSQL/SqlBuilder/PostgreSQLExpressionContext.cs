@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq; 
 namespace SqlSugar
 {
@@ -342,7 +343,18 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" ({0} + ({1}||'day')::INTERVAL) ", parameter.MemberName, parameter2.MemberName);
         }
-
+        public override string TrimStart(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return string.Format("ltrim({0},{1})", parameterNameA, parameterNameB);
+        }
+        public override string TrimEnd(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return string.Format("rtrim({0},{1})", parameterNameA, parameterNameB);
+        } 
         public override string ToInt32(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
