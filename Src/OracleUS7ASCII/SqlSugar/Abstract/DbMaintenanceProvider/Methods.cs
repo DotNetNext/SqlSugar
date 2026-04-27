@@ -628,8 +628,8 @@ namespace SqlSugar
             foreach (var item in columns)
             {
                 string columnName = this.SqlBuilder.GetTranslationTableName(item.DbColumnName);
-                string dataType = item.DataType;
                 string dataSize = GetSize(item);
+                string dataType = item.DataType;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
@@ -643,8 +643,8 @@ namespace SqlSugar
         {
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            string dataType = columnInfo.DataType;
             string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
             string identity = null;
