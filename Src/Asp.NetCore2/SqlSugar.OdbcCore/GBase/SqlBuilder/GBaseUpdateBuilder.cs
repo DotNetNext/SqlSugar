@@ -95,8 +95,12 @@ namespace SqlSugar.Odbc
                 {
                     return value;
                 }
-                else if (value is bool)
+                else if (value is bool v)
                 {
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+                    {
+                        return v?"1":"0";
+                    }
                     return value.ObjToString().ToLower();
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
