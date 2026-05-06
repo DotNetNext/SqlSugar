@@ -11,8 +11,10 @@ namespace SqlSugar
 {
     public class OracleProvider : AdoProvider
     {
+         
         public OracleProvider()
         {
+            this.IsOpenAsync = true;
             //this.FormatSql = sql =>
             //{
             //    sql = sql.Replace("+@", "+:");
@@ -142,6 +144,30 @@ namespace SqlSugar
                 sqlCommand.Parameters.AddRange((OracleParameter[])ipars);
             }
             CheckConnection();
+            return sqlCommand;
+        }
+        public override async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
+            if (sql?.EndsWith(";") == true && sql?.TrimStart()?.ToLower().StartsWith("begin") != true && sql?.TrimStart()?.ToLower().Contains("begin") != true)
+            {
+                sql = sql.TrimEnd(';');
+            }
+            OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
+            sqlCommand.BindByName = true;
+            sqlCommand.CommandType = this.CommandType;
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
+            sqlCommand.InitialLONGFetchSize = -1;
+            if (this.Transaction != null)
+            {
+                sqlCommand.Transaction = (OracleTransaction)this.Transaction;
+            }
+            if (parameters.HasValue())
+            {
+                IDataParameter[] ipars = ToIDbDataParameter(parameters);
+                sqlCommand.Parameters.AddRange((OracleParameter[])ipars);
+            }
+            await  CheckConnectionAsync();
             return sqlCommand;
         }
         private static string[] KeyWord = new string[] { ":asc", "@asc",":desc","@desc","@month",":month",":day", "@day","@group",":group",":index","@index","@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type",":year","@year","@date",":date" };
