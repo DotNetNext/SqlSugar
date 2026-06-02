@@ -31,6 +31,10 @@ namespace SqlSugar.OceanBaseForOracle
         {
             dbTypeName = dbTypeName.ToLower();
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
+            if (dbTypeName == "text")
+            {
+                return "other";
+            }
             if (dbTypeName == "int32")
             {
                 return "int";

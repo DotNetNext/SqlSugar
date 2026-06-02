@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SqlSugar.TDSQLForPGODBC
+namespace SqlSugar.TDSQLForOracleODBC
 {
-    public class TDSQLForPGODBCDbBind : DbBindProvider
+    public class TDSQLForOracleODBCDbBind : DbBindProvider
     {
         public override string GetDbTypeName(string csharpTypeName)
         {
