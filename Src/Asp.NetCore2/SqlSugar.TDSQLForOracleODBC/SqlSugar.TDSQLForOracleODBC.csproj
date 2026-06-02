@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Version>5.33.4.216</Version>
+		<Copyright>sun_kai_xuan,guoshun.du</Copyright>
+		<PackageProjectUrl>http://191.168.1.27:8080/back-end/xquant.sqlsugar</PackageProjectUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageId>xQuant.SqlSugar.TDSQLForOracleODBC</PackageId>
+		<Description>果糖大数据科技（南通）有限公司</Description>
+		<Company>果糖大数据科技（南通）有限公司</Company>
+		<Authors>果糖大数据科技（南通）有限公司</Authors>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Data.Odbc" Version="10.0.8" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+	</ItemGroup>
+</Project>
