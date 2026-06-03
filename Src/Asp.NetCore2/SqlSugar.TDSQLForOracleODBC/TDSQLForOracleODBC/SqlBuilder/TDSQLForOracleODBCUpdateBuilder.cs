@@ -8,54 +8,34 @@ namespace SqlSugar.TDSQLForOracleODBC
 {
     public class TDSQLForOracleODBCUpdateBuilder : UpdateBuilder
     {
-        public override string ReSetValueBySqlExpListType { get; set; } = "oracle";
-        protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        public override string SqlTemplateBatch
         {
-            if (groupList.Count == 0)
+            get
             {
-                return " select 0 from dual";
+                return @"UPDATE  {1} {2} SET {0} FROM  ${{0}}  ";
             }
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Begin");
-            sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
+        }
+        public override string SqlTemplateJoin
+        {
+            get
             {
-                var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
-                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Where(s => OldPrimaryKeys == null || !OldPrimaryKeys.Contains(s.DbColumnName)).Select(m => GetOracleUpdateColums(m)).ToArray());
-                var pkList = t.Where(s => s.IsPrimarykey).ToList();
-                if (this.IsWhereColumns && this.PrimaryKeys?.Any() == true)
-                {
-                    var whereColumns = pkList.Where(it => this.PrimaryKeys?.Any(p => p.EqualCase(it.PropertyName) || p.EqualCase(it.DbColumnName)) == true).ToList();
-                    if (whereColumns.Any())
-                    {
-                        pkList = whereColumns;
-                    }
-                }
-                List<string> whereList = new List<string>();
-                foreach (var item in pkList)
-                {
-                    var isFirst = pkList.First() == item;
-                    var whereString = isFirst ? " " : " AND ";
-                    whereString += GetOracleUpdateColums(item, true);
-                    whereList.Add(whereString);
-                }
-                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("", whereList));
-            }).ToArray()));
-            sb.AppendLine("End;");
-            return sb.ToString();
+                return @"            (VALUES
+              {0}
+
+            ) AS T ({2}) WHERE {1}
+                 ";
+            }
         }
 
-        private string GetOracleUpdateColums(DbColumnInfo m, bool isWhere = false)
+        public override string SqlTemplateBatchUnion
         {
-
-            var result = string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m, FormatValue(m.Value, m.IsPrimarykey, m.PropertyName)));
-            if (isWhere && m.Value == null)
+            get
             {
-                result = result.Replace("=NULL ", " is NULL ");
+                return ",";
             }
-            return result;
         }
-        int i = 0;
-        public object FormatValue(object value, bool isPrimaryKey, string name)
+
+        public object FormatValue(object value, string name, int i, DbColumnInfo columnInfo)
         {
             if (value == null)
             {
@@ -63,110 +43,250 @@ namespace SqlSugar.TDSQLForOracleODBC
             }
             else
             {
-                string N = this.Context.GetN();
-                if (isPrimaryKey)
-                {
-                    N = "";
-                }
                 var type = UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.DateType)
+                if (type == UtilConstants.ByteArrayType || type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
                 {
-                    var date = value.ObjToDate();
-                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + "_" + i;
+                    var paramter = new SugarParameter(parameterName, value);
+                    if (columnInfo.IsJson)
                     {
-                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                        paramter.IsJson = true;
                     }
-                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                    if (columnInfo.IsArray)
                     {
-                        return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";
+                        paramter.IsArray = true;
                     }
-                    else
-                    {
-                        return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
-                    }
+                    this.Parameters.Add(paramter);
+                    return parameterName;
                 }
-                else if (type.IsEnum())
+                else if (type == UtilConstants.DateTimeOffsetType)
                 {
-                    return Convert.ToInt64(value);
-                }
-                else if (type.IsIn(UtilConstants.IntType, UtilConstants.LongType, UtilConstants.ShortType))
-                {
-                    return value;
-                }
-                else if (type == UtilConstants.GuidType)
-                {
-                    return "'" + value.ToString() + "'";
+                    return FormatDateTimeOffset(value);
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value);
                     return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
                 }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
                 }
-                else if (value is TimeSpan ts)
-                {
-                    return string.Format(
-                   "INTERVAL '{0} {1:D2}:{2:D2}:{3:D2}.{4:D3}' DAY TO SECOND(3)",
-                   ts.Days,
-                   ts.Hours,
-                   ts.Minutes,
-                   ts.Seconds,
-                   ts.Milliseconds);
-                }
-                else if (type == UtilConstants.DateTimeOffsetType)
-                {
-                    var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
-                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
-                }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    if (value.ToString().Length > 1000)
+                    return "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
+                }
+                else if (value is double dou)
+                {
+                    return dou.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return "'" + value.ToString() + "'";
+                }
+            }
+        }
+
+        protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        {
+            Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
+            int pageSize = 200;
+            int pageIndex = 1;
+            int totalRecord = groupList.Count;
+            int pageCount = (totalRecord + pageSize - 1) / pageSize;
+            StringBuilder batchUpdateSql = new StringBuilder();
+            while (pageCount >= pageIndex)
+            {
+                StringBuilder updateTable = new StringBuilder();
+                string setValues = string.Join(",", groupList.First().Where(it => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Select(it =>
+                {
+                    if (SetValues.IsValuable())
                     {
-                        ++i;
-                        var parameterName = this.Builder.SqlParameterKeyWord + name + i;
-                        this.Parameters.Add(new SugarParameter(parameterName, value));
-                        return parameterName;
+                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                        if (setValue != null && setValue.Any())
+                        {
+                            return setValue.First().Value;
+                        }
+                    }
+                    var result = string.Format("{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
+                    return result;
+                }));
+                string tempColumnValue = string.Join(",", groupList.First().Select(it =>
+                {
+                    if (SetValues.IsValuable())
+                    {
+                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                        if (setValue != null && setValue.Any())
+                        {
+                            return setValue.First().Value;
+                        }
+                    }
+                    var result = Builder.GetTranslationColumnName(it.DbColumnName);
+                    return result;
+                }));
+                batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
+                int i = 0;
+                var tableColumnList = this.Context.DbMaintenance.GetColumnInfosByTableName(GetTableNameStringNoWith);
+
+                foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
+                {
+                    var isFirst = i == 0;
+                    if (!isFirst)
+                    {
+                        updateTable.Append(SqlTemplateBatchUnion);
+                    }
+                    updateTable.Append("\r\n (" + string.Join(",", columns.Select(it =>
+                    {
+                        var columnInfo = tableColumnList.FirstOrDefault(x => x.DbColumnName.Equals(it.DbColumnName, StringComparison.OrdinalIgnoreCase));
+                        var dbType = columnInfo?.DataType;
+                        if (dbType == null)
+                        {
+                            var typeName = it.PropertyType.Name.ToLower();
+                            if (columnInfo == null && it.PropertyType.IsEnum)
+                            {
+                                if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
+                                {
+                                    typeName = "int";
+                                }
+                            }
+                            if (typeName == "int32")
+                                typeName = "int";
+                            if (typeName == "int64")
+                                typeName = "long";
+                            if (typeName == "int16")
+                                typeName = "short";
+                            if (typeName == "boolean")
+                                typeName = "bool";
+
+                            var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
+                            if (isAnyType)
+                            {
+                                dbType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).FirstOrDefault().Key;
+                            }
+                            else
+                            {
+                                dbType = "varchar";
+                            }
+                        }
+                        if (it?.PropertyType?.FullName == "NetTopologySuite.Geometries.Geometry")
+                        {
+                            return string.Format(" {0} ", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
+                        }
+                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
+
+                    })) + ")");
+                    ++i;
+                }
+                pageIndex++;
+                updateTable.Append("\r\n");
+                string whereString = null;
+                if (this.WhereValues.HasValue())
+                {
+                    foreach (var item in WhereValues)
+                    {
+                        var isFirst = whereString == null;
+                        whereString += (isFirst ? null : " AND ");
+                        whereString += item;
+                    }
+                }
+                else if (PrimaryKeys.HasValue())
+                {
+                    foreach (var item in PrimaryKeys)
+                    {
+                        var isFirst = whereString == null;
+                        whereString += (isFirst ? null : " AND ");
+                        whereString += string.Format("{0}.{1}=T.{1}", GetTableNameStringNoWith, Builder.GetTranslationColumnName(item));
+                    }
+                }
+                var format = string.Format(SqlTemplateJoin, updateTable, whereString, tempColumnValue);
+                batchUpdateSql.Replace("${0}", format);
+                batchUpdateSql.Append(";");
+            }
+            batchUpdateSql = GetBatchUpdateSql(batchUpdateSql);
+            return batchUpdateSql.ToString();
+        }
+
+        private StringBuilder GetBatchUpdateSql(StringBuilder batchUpdateSql)
+        {
+            if (ReSetValueBySqlExpListType == null && ReSetValueBySqlExpList != null)
+            {
+                var result = batchUpdateSql.ToString();
+                foreach (var item in ReSetValueBySqlExpList)
+                {
+                    var dbColumnName = item.Value.DbColumnName;
+                    if (item.Value.Type == ReSetValueBySqlExpListModelType.List)
+                    {
+                        result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={GetTableNameString}.{dbColumnName}{item.Value.Sql}T.{dbColumnName}");
                     }
                     else
                     {
-                        return N + "'" + value.ToString().ToSqlFilter() + "'";
+                        if (item.Value?.Sql?.StartsWith("( CASE  WHEN") == true)
+                        {
+                            result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(" \"", $" {Builder.GetTranslationColumnName(this.TableName)}.\"")}");
+                        }
+                        else
+                        {
+                            result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(dbColumnName, $"{Builder.GetTranslationColumnName(this.TableName)}.{dbColumnName}")}");
+                        }
                     }
-                }
-                else
-                {
-                    return N + "'" + value.ToString() + "'";
+                    batchUpdateSql = new StringBuilder(result);
                 }
             }
+
+            return batchUpdateSql;
         }
         protected override string GetJoinUpdate(string columnsString, ref string whereString)
         {
-            var joinString = $"  {Builder.GetTranslationColumnName(this.TableName)}  {Builder.GetTranslationColumnName(this.ShortName)} ";
+            if (this.JoinInfos?.Count > 1)
+            {
+                return this.GetJoinUpdateMany(columnsString, whereString);
+            }
+            var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
+            var joinString = "";
             foreach (var item in this.JoinInfos)
             {
-                joinString += $"\r\n USING {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ON {item.JoinWhere} ";
+                whereString += " AND " + item.JoinWhere;
+                joinString += $"\r\n FROM {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ";
             }
-            var tableName = joinString + "\r\n ";
-            var newTemp = SqlTemplate.Replace("UPDATE", "MERGE INTO").Replace("SET", "WHEN MATCHED THEN \r\nUPDATE SET");
-            return string.Format(newTemp, tableName, columnsString, whereString);
+            var tableName = formString + "\r\n ";
+            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName) + ".", "") + joinString;
+            return string.Format(SqlTemplate, tableName, columnsString, whereString);
         }
-        #region Helper
-        public bool IsUppper
+        private string GetJoinUpdateMany(string columnsString, string where)
         {
-            get
+            var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
+            var joinString = "";
+            var i = 0;
+            foreach (var item in this.JoinInfos)
             {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
-                }
+                var whereString = " ON " + item.JoinWhere;
+                joinString += $"\r\n JOIN {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ";
+                joinString = joinString + whereString;
+                i++;
             }
+            var tableName = Builder.GetTranslationColumnName(this.TableName) + "\r\n ";
+            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName) + ".", "") + $" FROM {Builder.GetTranslationColumnName(this.TableName)} {Builder.GetTranslationColumnName(this.ShortName)}\r\n " + joinString;
+            return string.Format(SqlTemplate, tableName, columnsString, where);
         }
-        #endregion
+        public override string FormatDateTimeOffset(object value)
+        {
+            return "'" + ((DateTimeOffset)value).ToString("o") + "'";
+        }
     }
 }
+

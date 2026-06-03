@@ -20,4 +20,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="TDSQLForOracleODBC\Updateable\" />
+	</ItemGroup>
 </Project>

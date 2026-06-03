@@ -16,7 +16,7 @@ namespace TDSQLForOracleODBCTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Driver={TDSQL PostgreSQL Unicode(x64)};Server=172.19.4.37;Port=11001;Database=XIRBOC;Uid=XRFQ_APP;Pwd=xpar;ConnSettings=set search_path to XRFQ_APP;";
+        public static string ConnectionString = "Driver={TDSQL PostgreSQL Unicode(x64)};Server=172.19.4.37;Port=11001;Database=XIRBOC;Uid=XRFQ_APP;Pwd=xQuant.2026;ConnSettings=set search_path to XRFQ_APP;";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
