@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32414.318
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11822.322 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSeverTest", "SqlSeverTest\SqlSeverTest.csproj", "{B44F2513-E55B-480F-A41C-685DDD083355}"
 EndProject
@@ -108,6 +108,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDengine.Ado.Data", "TDengine.Ado.Data\SqlSugar.TDengine\TDengine.Ado.Data.csproj", "{14D14094-34AD-9085-1C96-B63177762C10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceBenchmarks", "PerformanceBenchmarks\PerformanceBenchmarks.csproj", "{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.TDSQLForOracleODBC", "SqlSugar.TDSQLForOracleODBC\SqlSugar.TDSQLForOracleODBC.csproj", "{789B91E8-8B09-5CE0-940A-5BE2324B0C08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4TDSQLForOracleODBCTest", "4TDSQLForOracleODBCTest\4TDSQLForOracleODBCTest.csproj", "{16D3E36A-2B43-EDEA-635A-243BB6C60D87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -707,6 +711,30 @@ Global
 		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Release|ARM32.Build.0 = Release|Any CPU
 		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Release|x86.Build.0 = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Debug|x86.Build.0 = Debug|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|ARM32.Build.0 = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|x86.ActiveCfg = Release|Any CPU
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08}.Release|x86.Build.0 = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Debug|x86.Build.0 = Debug|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|ARM32.Build.0 = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|x86.ActiveCfg = Release|Any CPU
+		{16D3E36A-2B43-EDEA-635A-243BB6C60D87}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -730,6 +758,7 @@ Global
 		{9D7D900A-01ED-4E7C-A97A-1D3325F67AA2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{47298939-4904-4997-848B-ADB32D4163D0} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 		{14D14094-34AD-9085-1C96-B63177762C10} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{789B91E8-8B09-5CE0-940A-5BE2324B0C08} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {230A85B9-54F1-41B1-B1DA-80086581B2B4}

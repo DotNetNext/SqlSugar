@@ -501,6 +501,10 @@ namespace SqlSugar
                     Check.Exception(SugarCompatible.IsFramework, "TDSQLForPGODBC only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDSQLForPGODBC" : "SqlSugar.TDSQLForPGODBC";
                     break;
+                case DbType.TDSQLForOracleODBC:
+                    Check.Exception(SugarCompatible.IsFramework, "TDSQLForOracleODBC only support .net core");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDSQLForOracleODBC" : "SqlSugar.TDSQLForOracleODBC";
+                    break;
                 case DbType.GaussDB:
                     config.DbType = DbType.PostgreSQL;
                     if (this.CurrentConnectionConfig.MoreSettings == null)
