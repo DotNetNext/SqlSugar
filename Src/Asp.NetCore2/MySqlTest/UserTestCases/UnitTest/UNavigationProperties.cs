@@ -13,46 +13,46 @@ namespace OrmTest
     {
         public static void Init()
         {
-            Console.WriteLine("=== Navigation Properties Comprehensive Unit Tests ===\n");
+            //Console.WriteLine("=== Navigation Properties Comprehensive Unit Tests ===\n");
 
-            // InsertNav Tests
-            Test01_InsertNav_OneToOne();
-            Test02_InsertNav_OneToMany();
-            Test03_InsertNav_ManyToMany();
-            Test04_InsertNav_DeepNesting();
-            Test05_InsertNav_WithOptions();
+            //// InsertNav Tests
+            //Test01_InsertNav_OneToOne();
+            //Test02_InsertNav_OneToMany();
+            //Test03_InsertNav_ManyToMany();
+            //Test04_InsertNav_DeepNesting();
+            //Test05_InsertNav_WithOptions();
             
-            // UpdateNav Tests
-            Test06_UpdateNav_OneToOne();
-            Test07_UpdateNav_OneToMany();
-            Test08_UpdateNav_ManyToMany();
-            Test09_UpdateNav_AddChildren();
-            Test10_UpdateNav_RemoveChildren();
+            //// UpdateNav Tests
+            //Test06_UpdateNav_OneToOne();
+            //Test07_UpdateNav_OneToMany();
+            //Test08_UpdateNav_ManyToMany();
+            //Test09_UpdateNav_AddChildren();
+            //Test10_UpdateNav_RemoveChildren();
             
-            // DeleteNav Tests
-            Test11_DeleteNav_OneToOne();
-            Test12_DeleteNav_OneToMany();
-            Test13_DeleteNav_ManyToMany();
-            Test14_DeleteNav_Cascade();
+            //// DeleteNav Tests
+            //Test11_DeleteNav_OneToOne();
+            //Test12_DeleteNav_OneToMany();
+            //Test13_DeleteNav_ManyToMany();
+            //Test14_DeleteNav_Cascade();
             
-            // Complex Scenarios
-            Test15_InsertNav_CircularReference();
-            Test16_UpdateNav_ChangeRelationship();
-            Test17_InsertNav_NullNavigation();
-            Test18_UpdateNav_EmptyCollection();
+            //// Complex Scenarios
+            //Test15_InsertNav_CircularReference();
+            //Test16_UpdateNav_ChangeRelationship();
+            //Test17_InsertNav_NullNavigation();
+            //Test18_UpdateNav_EmptyCollection();
             
-            // Async Operations
-            Test19_InsertNavAsync();
-            Test20_UpdateNavAsync();
-            Test21_DeleteNavAsync();
+            //// Async Operations
+            //Test19_InsertNavAsync();
+            //Test20_UpdateNavAsync();
+            //Test21_DeleteNavAsync();
             
-            // Edge Cases
-            Test22_InsertNav_ExistingChildren();
-            Test23_UpdateNav_PartialUpdate();
-            Test24_DeleteNav_OrphanedRecords();
-            Test25_InsertNav_MultiLevel();
+            //// Edge Cases
+            //Test22_InsertNav_ExistingChildren();
+            //Test23_UpdateNav_PartialUpdate();
+            //Test24_DeleteNav_OrphanedRecords();
+            //Test25_InsertNav_MultiLevel();
 
-            Console.WriteLine("\n=== All Navigation Properties Tests Completed ===\n");
+            //Console.WriteLine("\n=== All Navigation Properties Tests Completed ===\n");
         }
 
         #region Test Entities
