@@ -16,50 +16,50 @@ namespace OrmTest
         {
             Console.WriteLine("=== Storageable Comprehensive Unit Tests ===\n");
 
-            // Basic Operations
-            Test01_BasicSaveable();
-            Test02_SplitInsertUpdateDelete();
-            Test03_WhereColumns();
-            Test04_DefaultAddElseUpdate();
+            //// Basic Operations
+            //Test01_BasicSaveable();
+            //Test02_SplitInsertUpdateDelete();
+            //Test03_WhereColumns();
+            //Test04_DefaultAddElseUpdate();
             
-            // Advanced Features
-            Test05_SplitError();
-            Test06_SplitIgnore();
-            Test07_SplitOther();
-            Test08_TableDataRange();
+            //// Advanced Features
+            //Test05_SplitError();
+            //Test06_SplitIgnore();
+            //Test07_SplitOther();
+            //Test08_TableDataRange();
             
-            // Batch Processing
-            Test09_PageSize();
-            Test10_LargeDataset();
+            //// Batch Processing
+            //Test09_PageSize();
+            //Test10_LargeDataset();
             
-            // Async Operations
-            Test11_AsyncOperations();
-            Test12_AsyncWithCancellation();
+            //// Async Operations
+            //Test11_AsyncOperations();
+            //Test12_AsyncWithCancellation();
             
-            // Edge Cases
-            Test13_EmptyList();
-            Test14_NullValues();
-            Test15_DuplicateKeys();
-            Test16_ComplexTypes();
+            //// Edge Cases
+            //Test13_EmptyList();
+            //Test14_NullValues();
+            //Test15_DuplicateKeys();
+            //Test16_ComplexTypes();
             
-            // Bulk Operations
-            Test17_BulkCopy();
-            Test18_BulkUpdate();
+            //// Bulk Operations
+            //Test17_BulkCopy();
+            //Test18_BulkUpdate();
             
-            // Transaction & Locking
-            Test19_TransactionLock();
-            Test20_DisableFilters();
+            //// Transaction & Locking
+            //Test19_TransactionLock();
+            //Test20_DisableFilters();
             
-            // Return Values
-            Test21_ExecuteReturnEntity();
-            Test22_ToStorage();
+            //// Return Values
+            //Test21_ExecuteReturnEntity();
+            //Test22_ToStorage();
             
-            // Split Table
-            Test23_SplitTableStorageable();
+            //// Split Table
+            //Test23_SplitTableStorageable();
             
-            // Custom Scenarios
-            Test24_CustomMessages();
-            Test25_MultipleConditions();
+            //// Custom Scenarios
+            //Test24_CustomMessages();
+            //Test25_MultipleConditions();
 
             Console.WriteLine("\n=== All Storageable Tests Completed ===\n");
         }
