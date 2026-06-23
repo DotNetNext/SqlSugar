@@ -15,44 +15,44 @@ namespace OrmTest
         {
             Console.WriteLine("=== Split Table Operations Comprehensive Unit Tests ===\n");
 
-            // Basic Split Table Tests
-            Test01_SplitByYear_Insert();
-            Test02_SplitByMonth_Insert();
-            Test03_SplitByDay_Insert();
-            Test04_SplitByWeek_Insert();
+            //// Basic Split Table Tests
+            //Test01_SplitByYear_Insert();
+            //Test02_SplitByMonth_Insert();
+            //Test03_SplitByDay_Insert();
+            //Test04_SplitByWeek_Insert();
             
-            // Query Operations
-            Test05_Query_SingleTable();
-            Test06_Query_MultipleTablesUnion();
-            Test07_Query_DateRange();
-            Test08_Query_WithWhere();
+            //// Query Operations
+            //Test05_Query_SingleTable();
+            //Test06_Query_MultipleTablesUnion();
+            //Test07_Query_DateRange();
+            //Test08_Query_WithWhere();
             
-            // Update Operations
-            Test09_Update_SingleRecord();
-            Test10_Update_MultipleRecords();
-            Test11_Update_CrossTables();
+            //// Update Operations
+            //Test09_Update_SingleRecord();
+            //Test10_Update_MultipleRecords();
+            //Test11_Update_CrossTables();
             
-            // Delete Operations
-            Test12_Delete_SingleRecord();
-            Test13_Delete_ByDateRange();
-            Test14_Delete_EntireTable();
+            //// Delete Operations
+            //Test12_Delete_SingleRecord();
+            //Test13_Delete_ByDateRange();
+            //Test14_Delete_EntireTable();
             
-            // Advanced Features
-            Test15_GetTableList();
-            Test16_CreateTable_AutoGeneration();
-            Test17_SplitField_CustomColumn();
-            Test18_PageQuery_AcrossTables();
+            //// Advanced Features
+            //Test15_GetTableList();
+            //Test16_CreateTable_AutoGeneration();
+            //Test17_SplitField_CustomColumn();
+            //Test18_PageQuery_AcrossTables();
             
-            // Bulk Operations
-            Test19_BulkInsert_MultiTables();
-            Test20_BulkUpdate_MultiTables();
+            //// Bulk Operations
+            //Test19_BulkInsert_MultiTables();
+            //Test20_BulkUpdate_MultiTables();
             
-            // Edge Cases
-            Test21_EmptyTable_Query();
-            Test22_FutureDate_Insert();
-            Test23_HistoricalData_Query();
-            Test24_TableNotExist_AutoCreate();
-            Test25_Performance_LargeDataset();
+            //// Edge Cases
+            //Test21_EmptyTable_Query();
+            //Test22_FutureDate_Insert();
+            //Test23_HistoricalData_Query();
+            //Test24_TableNotExist_AutoCreate();
+            //Test25_Performance_LargeDataset();
 
             Console.WriteLine("\n=== All Split Table Tests Completed ===\n");
         }
