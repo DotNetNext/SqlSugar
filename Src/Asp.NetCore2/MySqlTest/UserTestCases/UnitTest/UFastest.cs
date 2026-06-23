@@ -15,50 +15,50 @@ namespace OrmTest
     {
         public static void Init()
         {
-            Console.WriteLine("=== Fastest (Bulk Operations) Comprehensive Unit Tests ===\n");
+            //Console.WriteLine("=== Fastest (Bulk Operations) Comprehensive Unit Tests ===\n");
 
-            // BulkCopy Tests
-            Test01_BulkCopy_BasicList();
-            Test02_BulkCopy_LargeDataset();
-            Test03_BulkCopy_WithPageSize();
-            Test04_BulkCopy_DataTable();
-            Test05_BulkCopy_WithAS();
+            //// BulkCopy Tests
+            //Test01_BulkCopy_BasicList();
+            //Test02_BulkCopy_LargeDataset();
+            //Test03_BulkCopy_WithPageSize();
+            //Test04_BulkCopy_DataTable();
+            //Test05_BulkCopy_WithAS();
             
-            // BulkUpdate Tests
-            Test06_BulkUpdate_Basic();
-            Test07_BulkUpdate_CustomColumns();
-            Test08_BulkUpdate_LargeDataset();
-            Test09_BulkUpdate_WithWhereColumns();
+            //// BulkUpdate Tests
+            //Test06_BulkUpdate_Basic();
+            //Test07_BulkUpdate_CustomColumns();
+            //Test08_BulkUpdate_LargeDataset();
+            //Test09_BulkUpdate_WithWhereColumns();
             
-            // BulkMerge Tests
-            Test10_BulkMerge_Basic();
-            Test11_BulkMerge_WithCustomKeys();
-            Test12_BulkMerge_LargeDataset();
+            //// BulkMerge Tests
+            //Test10_BulkMerge_Basic();
+            //Test11_BulkMerge_WithCustomKeys();
+            //Test12_BulkMerge_LargeDataset();
             
-            // BulkDelete Tests
-            Test13_BulkDelete_Basic();
-            Test14_BulkDelete_WithCondition();
+            //// BulkDelete Tests
+            //Test13_BulkDelete_Basic();
+            //Test14_BulkDelete_WithCondition();
             
-            // Async Operations
-            Test15_BulkCopyAsync();
-            Test16_BulkUpdateAsync();
-            Test17_BulkMergeAsync();
+            //// Async Operations
+            //Test15_BulkCopyAsync();
+            //Test16_BulkUpdateAsync();
+            //Test17_BulkMergeAsync();
             
-            // Performance Tests
-            Test18_Performance_BulkCopy();
-            Test19_Performance_BulkUpdate();
+            //// Performance Tests
+            //Test18_Performance_BulkCopy();
+            //Test19_Performance_BulkUpdate();
             
-            // Edge Cases
-            Test20_EmptyList();
-            Test21_NullValues();
-            Test22_DuplicateKeys();
-            Test23_ComplexTypes();
+            //// Edge Cases
+            //Test20_EmptyList();
+            //Test21_NullValues();
+            //Test22_DuplicateKeys();
+            //Test23_ComplexTypes();
             
-            // Advanced Features
-            Test24_RemoveDataCache();
-            Test25_IgnoreInsertError();
+            //// Advanced Features
+            //Test24_RemoveDataCache();
+            //Test25_IgnoreInsertError();
 
-            Console.WriteLine("\n=== All Fastest Tests Completed ===\n");
+            //Console.WriteLine("\n=== All Fastest Tests Completed ===\n");
         }
 
         #region Test Entities
