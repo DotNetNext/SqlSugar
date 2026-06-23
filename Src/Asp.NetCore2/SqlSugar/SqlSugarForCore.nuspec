@@ -17,7 +17,7 @@
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="Microsoft.Data.SqlClient" version="5.2.2" />
         <dependency id="Newtonsoft.Json" version="13.0.2" />
-        <dependency id="Microsoft.Data.Sqlite" version="9.0.0" />
+        <dependency id="Microsoft.Data.Sqlite" version="10.0.8" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
         <dependency id="MySqlConnector" version="2.2.5" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
