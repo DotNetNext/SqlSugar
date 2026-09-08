@@ -180,7 +180,29 @@ namespace SqlSugar.GBase
                 return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>(result, result2, result3, result4, result5, result6, result7);
             }
         }
-
+        public override async Task CheckConnectionAsync()
+        {
+            this.CheckConnectionBefore(this.Connection);
+            if (this.Connection.State != ConnectionState.Open)
+            {
+                try
+                {
+                    if (this.CancellationToken != null)
+                    {
+                        (this.Connection as DbConnection).OpenAsync(this.CancellationToken.Value).Wait(this.CancellationToken.Value);
+                    }
+                    else
+                    {
+                        await(this.Connection as DbConnection).OpenAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true, "Connection open error . {0} \", \" 连接数据库过程中发生错误，检查服务器是否正常连接字符串是否正确，错误信息：{0}.", ex.Message + $"DbType =\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
+                }
+            }
+            this.CheckConnectionAfter(this.Connection);
+        }
         public override object GetScalar(string sql, params SugarParameter[] parameters)
         {
             if (this.Context.Ado.Transaction != null)
@@ -352,6 +374,7 @@ namespace SqlSugar.GBase
         {
             return new GBaseDataAdapter();
         }
+
         public override async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
         {
             var helper = new GBaseInsertBuilder();
