@@ -14,7 +14,7 @@
     <tags>MongoDb Mongo db MongoDb ORM</tags>
     <dependencies>
 		  <group targetFramework=".NETStandard2.1">
-			  <dependency id="MongoDB.Driver" version="3.3.0" />
+			  <dependency id="MongoDB.Driver" version="3.11.1" />
 		  </group>
 	  </dependencies>
   </metadata>
