@@ -67,7 +67,10 @@ namespace SqlSugar
                 //执行成功才删除文件
                 if (File.Exists(fileName))
                 {
-                    File.Delete(fileName);
+                    try
+                    {
+                        File.Delete(fileName);
+                    } catch { }
                 }
                 if (ex.Message == "The used command is not allowed with this MySQL version")
                 {
