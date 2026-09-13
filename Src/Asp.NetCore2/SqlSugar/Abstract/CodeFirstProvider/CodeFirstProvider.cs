@@ -197,7 +197,7 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
-                    Check.ExceptionEasy($"实体{type.Name} 出错,具体错误:" + ex.Message, $" {type.Name} error." + ex.Message);
+                    Check.ExceptionEasy($" {type.Name} error." + ex.Message, $"实体{type.Name} 出错,具体错误:" + ex.Message);
                 }
             }
             return result;
