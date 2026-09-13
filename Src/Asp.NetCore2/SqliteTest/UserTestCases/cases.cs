@@ -1,7 +1,7 @@
 ﻿using System;
 using OrmTest;
 
-namespace SqliteTest.UnitTest
+namespace OrmTest
 {
     public class Cases
     {

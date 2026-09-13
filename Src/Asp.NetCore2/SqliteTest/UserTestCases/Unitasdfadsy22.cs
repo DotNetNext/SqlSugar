@@ -35,6 +35,12 @@ namespace OrmTest
                 Test002Count = SqlFunc.Subqueryable<Test002>().EnableTableFilter().Where(w => w.Test001Id == x.Id).Count()
             }, true);
             var list = data.ToList();
+
+            db.DbMaintenance.TruncateTable<Test001>();
+            db.Insertable(new List<Test001> { new Test001() { Name = "\0\0\0\0\0" },new Test001() { Name = "x\0s" } }).ExecuteReturnEntity();//用例
+            var list2=db.Queryable<Test001>().ToList();
+            db.Updateable(list2).ExecuteCommand();
+            var list3 = db.Queryable<Test001>().ToList();
         }
 
         public class TestView : Test001
