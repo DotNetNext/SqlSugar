@@ -13,7 +13,7 @@ namespace SqlSugar.SonnetDB
         protected override string GetTableInfoListSql => "SELECT table_name AS Name FROM information_schema.tables WHERE table_type = 'BASE TABLE'";
         protected override string GetViewInfoListSql => "SELECT table_name AS Name FROM information_schema.views";
         protected override string CreateDataBaseSql => "CREATE DATABASE {0}";
-        protected override string AddPrimaryKeySql => "ALTER TABLE {0} ADD PRIMARY KEY ({2})";
+        protected override string AddPrimaryKeySql => "ALTER TABLE {0} ADD CONSTRAINT {1} PRIMARY KEY ({2})";
         protected override string AddColumnToTableSql => "ALTER TABLE {0} ADD COLUMN {1} {2}{3} {4}";
         protected override string AlterColumnToTableSql => "ALTER TABLE {0} ALTER COLUMN {1} TYPE {2}{3} {4}";
         protected override string BackupDataBaseSql => throw new NotSupportedException("SonnetDB has no SQL database backup statement.");
@@ -194,7 +194,7 @@ namespace SqlSugar.SonnetDB
 
         public override bool CreateIndex(string tableName, string[] columnNames, string indexName, bool isUnique = false)
         {
-            // SonnetDB's native index order is ascending and has no ASC token.
+            // Omitting explicit ASC is equivalent to SonnetDB's default direction; DESC and INCLUDE are retained.
             var columns = columnNames.Select(column => column.EndsWith(" ASC", StringComparison.OrdinalIgnoreCase)
                 ? column.Substring(0, column.Length - 4)
                 : column).ToArray();
@@ -223,7 +223,28 @@ namespace SqlSugar.SonnetDB
 
         public override bool SetAutoIncrementInitialValue(string tableName, int initialValue)
         {
-            throw new NotSupportedException("SonnetDB has no SQL statement for changing the identity start value.");
+            if (initialValue <= 0) throw new ArgumentOutOfRangeException(nameof(initialValue));
+            Context.Ado.ExecuteCommand("ALTER TABLE " + SqlBuilder.GetTranslationTableName(ResolveTableName(tableName)) +
+                " AUTO_INCREMENT = " + initialValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            return true;
+        }
+
+        public override bool AddPrimaryKey(string tableName, string columnName)
+        {
+            tableName = ResolveTableName(tableName);
+            columnName = SqlBuilder.GetNoTranslationColumnName(columnName);
+            string name = "PK_" + tableName + "_" + columnName;
+            Context.Ado.ExecuteCommand(string.Format(AddPrimaryKeySql,
+                SqlBuilder.GetTranslationTableName(tableName), SqlBuilder.GetTranslationColumnName(name),
+                SqlBuilder.GetTranslationColumnName(columnName)));
+            return true;
+        }
+
+        public override bool DropConstraint(string tableName, string constraintName)
+        {
+            Context.Ado.ExecuteCommand("ALTER TABLE " + SqlBuilder.GetTranslationTableName(ResolveTableName(tableName)) +
+                " DROP CONSTRAINT " + SqlBuilder.GetTranslationColumnName(constraintName));
+            return true;
         }
 
         public override bool SetAutoIncrementInitialValue(Type entityType, int initialValue)

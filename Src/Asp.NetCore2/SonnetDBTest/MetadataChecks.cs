@@ -77,7 +77,14 @@ public static class MetadataChecks
             using var process = Process.Start(startInfo)!;
             var output = process.StandardOutput.ReadToEndAsync();
             var error = process.StandardError.ReadToEndAsync();
-            process.WaitForExit();
+            Console.WriteLine($"Generated model compiler PID={process.Id}; startedUtc={process.StartTime.ToUniversalTime():O}.");
+            if (!process.WaitForExit(120_000))
+            {
+                process.Kill(entireProcessTree: true);
+                if (!process.WaitForExit(10_000))
+                    throw new TimeoutException("Generated model compiler did not exit after cancellation.");
+                throw new TimeoutException("Generated model compiler exceeded 120 seconds.");
+            }
             Ensure(process.ExitCode == 0, "Generated DbFirst models must compile and retain their defaults: " +
                 output.GetAwaiter().GetResult() + error.GetAwaiter().GetResult());
         }

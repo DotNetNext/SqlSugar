@@ -1,13 +1,21 @@
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
+using System.Security.Cryptography;
 using SqlSugar;
 
+Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+foreach (var name in new[] { "SonnetDB.Core", "SonnetDB.Data", "SonnetDB.Protocol", "SqlSugar", "SqlSugar.SonnetDBCore" })
+{
+    var assembly = Assembly.Load(name);
+    Console.WriteLine($"ASSEMBLY|{name}|{assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion}|{Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(assembly.Location)))}");
+}
 var databasePath = Path.Combine(Path.GetTempPath(), "sqlsugar-sonnetdb-" + Guid.NewGuid().ToString("N"));
 var failures = 0;
 var statements = new List<string>();
 using var db = new SqlSugarClient(new ConnectionConfig
 {
-    ConnectionString = "Data Source=" + databasePath,
+    ConnectionString = Environment.GetEnvironmentVariable("SQLSUGAR_SONNETDB_CONNECTION") ?? "Data Source=" + databasePath,
     DbType = SqlSugar.DbType.SonnetDB,
     InitKeyType = InitKeyType.Attribute,
     IsAutoCloseConnection = true
@@ -197,17 +205,30 @@ try
         });
         Check("完整性：高有效位 decimal 参数保真", () =>
         {
-            db.Ado.ExecuteCommand("CREATE TABLE precision_records (Id INT, Amount DECIMAL(38,28), At DATETIME, PRIMARY KEY(Id))");
+            db.Ado.ExecuteCommand("CREATE TABLE precision_records (Id INT, Amount DECIMAL(38,28), At DATETIME2, PRIMARY KEY(Id))");
             const decimal amount = 123456789.1234567890123456789m;
             db.Ado.ExecuteCommand("INSERT INTO precision_records(Id,Amount) VALUES(1,@amount)", new SugarParameter("@amount", amount));
             Assert(db.Ado.GetDecimal("SELECT Amount FROM precision_records WHERE Id=1") == amount, "decimal 参数有效位丢失（SonnetDB #235）");
         });
-        Check("完整性：DATETIME 亚毫秒参数保真", () =>
+        Check("完整性：显式 DATETIME2 亚毫秒参数保真", () =>
         {
             var instant = new DateTime(2026, 10, 8, 1, 2, 3, DateTimeKind.Utc).AddTicks(4567890);
-            db.Ado.ExecuteCommand("UPDATE precision_records SET At=@instant WHERE Id=1", new SugarParameter("@instant", instant));
+            db.Ado.ExecuteCommand("UPDATE precision_records SET At=@instant WHERE Id=1", new SugarParameter("@instant", instant) { DbType = System.Data.DbType.DateTime2 });
             Assert(Convert.ToDateTime(db.Ado.GetScalar("SELECT At FROM precision_records WHERE Id=1")).Ticks == instant.Ticks,
-                "DATETIME 参数亚毫秒精度丢失（SonnetDB #236）");
+                "DATETIME2 参数亚毫秒精度丢失（SonnetDB #236）");
+        });
+        Check("完整性：旧 DATETIME 不静默截断亚毫秒参数", () =>
+        {
+            db.Ado.ExecuteCommand("CREATE TABLE legacy_time_precision (Id INT, At DATETIME, PRIMARY KEY(Id))");
+            var rejected = false;
+            try
+            {
+                db.Ado.ExecuteCommand("INSERT INTO legacy_time_precision(Id,At) VALUES(1,@instant)",
+                    new SugarParameter("@instant", new DateTime(2026, 10, 8, 1, 2, 3, DateTimeKind.Utc).AddTicks(1)));
+            }
+            catch (ArgumentException) { rejected = true; }
+            Assert(rejected && db.Ado.GetInt("SELECT COUNT(*) FROM legacy_time_precision") == 0,
+                "旧 DATETIME 必须拒绝不兼容的精度且不写入数据。");
         });
         Check("完整性：ALTER DECIMAL 精度元数据", () =>
         {

@@ -7,6 +7,11 @@ namespace SqlSugar.SonnetDB
     {
         protected override string GetPropertyTypeName(DbColumnInfo column)
         {
+            if (column.DataType.Equals("TIME", StringComparison.OrdinalIgnoreCase))
+            {
+                return column.IsNullable ? "TimeOnly?" : "TimeOnly";
+            }
+
             // The shared DbFirst template recognizes JSON attributes by this prefix.
             if (column.DataType.Equals("JSON", StringComparison.OrdinalIgnoreCase))
             {

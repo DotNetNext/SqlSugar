@@ -48,13 +48,6 @@ namespace SqlSugar.SonnetDB
             };
         }
 
-        public override string GetPropertyTypeName(string dbTypeName)
-        {
-            return dbTypeName.Equals("TIME", StringComparison.OrdinalIgnoreCase)
-                ? nameof(TimeOnly)
-                : base.GetPropertyTypeName(dbTypeName);
-        }
-
         public override string GetConvertString(string dbTypeName)
         {
             return dbTypeName.ToUpperInvariant() switch

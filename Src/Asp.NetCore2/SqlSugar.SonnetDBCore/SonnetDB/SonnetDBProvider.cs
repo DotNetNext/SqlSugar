@@ -2,12 +2,52 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Threading.Tasks;
 using SonnetDB.Data;
 
 namespace SqlSugar.SonnetDB
 {
     public sealed class SonnetDBProvider : AdoProvider
     {
+        private bool captureReaderOutputs;
+        private (SugarParameter Target, IDataParameter Source)[] readerOutputs = [];
+
+        public override IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
+        {
+            bool procedure = CommandType == CommandType.StoredProcedure;
+            if (!procedure) return base.GetDataReader(sql, parameters);
+            captureReaderOutputs = true;
+            readerOutputs = [];
+            try
+            {
+                var reader = (DbDataReader)base.GetDataReader(sql, parameters);
+                return new SonnetDBOutputDataReader(reader, readerOutputs);
+            }
+            finally
+            {
+                captureReaderOutputs = false;
+                readerOutputs = [];
+            }
+        }
+
+        public override async Task<IDataReader> GetDataReaderAsync(string sql, params SugarParameter[] parameters)
+        {
+            bool procedure = CommandType == CommandType.StoredProcedure;
+            if (!procedure) return await base.GetDataReaderAsync(sql, parameters).ConfigureAwait(false);
+            captureReaderOutputs = true;
+            readerOutputs = [];
+            try
+            {
+                var reader = (DbDataReader)await base.GetDataReaderAsync(sql, parameters).ConfigureAwait(false);
+                return new SonnetDBOutputDataReader(reader, readerOutputs);
+            }
+            finally
+            {
+                captureReaderOutputs = false;
+                readerOutputs = [];
+            }
+        }
         public override IDbConnection Connection
         {
             get => _DbConnection ??= new SndbConnection(Context.CurrentConnectionConfig.ConnectionString);
@@ -30,7 +70,11 @@ namespace SqlSugar.SonnetDB
             };
             if (parameters != null && parameters.Length > 0)
             {
-                command.Parameters.AddRange((SndbParameter[])ToIDbDataParameter(parameters));
+                var native = (SndbParameter[])ToIDbDataParameter(parameters);
+                command.Parameters.AddRange(native);
+                if (captureReaderOutputs)
+                    readerOutputs = parameters.Select((parameter, index) => (Target: parameter, Source: (IDataParameter)native[index]))
+                        .Where(pair => pair.Source.Direction != ParameterDirection.Input).ToArray();
             }
             CheckConnection();
             return command;

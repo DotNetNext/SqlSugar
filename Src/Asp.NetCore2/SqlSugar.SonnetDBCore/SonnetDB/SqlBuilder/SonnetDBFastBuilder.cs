@@ -61,31 +61,20 @@ namespace SqlSugar.SonnetDB
             }
         }
 
-        public override Task CreateTempAsync<T>(DataTable table)
+        public override async Task CreateTempAsync<T>(DataTable table)
         {
-            // 沿用 Fastest 的 staging 生命周期；表结构交给已有维护接口生成。
+            // 仅复制输入列声明，不继承持久表主键、默认值或自增；工作表归当前连接。
             targetTableName = table.TableName;
-            var columns = Context.DbMaintenance.GetColumnInfosByTableName(table.TableName, false)
-                .Where(column => table.Columns.Contains(column.DbColumnName)).ToList();
-            foreach (var column in columns)
-            {
-                column.IsIdentity = false;
-                column.IsPrimarykey = false;
-                column.ColumnDescription = null;
-                column.DefaultValue = null;
-            }
-            columns.Add(new DbColumnInfo
-            {
-                DbColumnName = "sonnet_bulk_row_" + Guid.NewGuid().ToString("N"),
-                DataType = "INT",
-                IsPrimarykey = true,
-                IsIdentity = true
-            });
+            var builder = Context.Queryable<object>().SqlBuilder;
+            var projection = string.Join(",", table.Columns.Cast<DataColumn>()
+                .Select(column => builder.GetTranslationColumnName(column.ColumnName)));
             table.TableName = "sonnet_bulk_" + Guid.NewGuid().ToString("N");
-            Context.DbMaintenance.CreateTable(table.TableName, columns);
+            await Context.Ado.ExecuteCommandAsync(
+                "CREATE TEMP TABLE " + builder.GetTranslationTableName(table.TableName) +
+                " AS SELECT " + projection + " FROM " + builder.GetTranslationTableName(targetTableName) +
+                " WHERE 1=0");
             stagingTableName = table.TableName;
             isStaging = true;
-            return Task.CompletedTask;
         }
 
         public override async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
