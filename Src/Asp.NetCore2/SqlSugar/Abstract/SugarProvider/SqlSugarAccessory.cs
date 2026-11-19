@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -556,6 +556,10 @@ namespace SqlSugar
                 case DbType.TDengine:
                     Check.Exception(SugarCompatible.IsFramework, "TDengine only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDengine" : "SqlSugar.TDengineCore";
+                    break;
+                case DbType.IoTDB:
+                    Check.Exception(SugarCompatible.IsFramework, "IoTDB only support .net core");
+                    InstanceFactory.CustomDllName = "SqlSugar.IoTDBCore";
                     break;
                 case DbType.HANA:
                     Check.Exception(SugarCompatible.IsFramework, "NANA only support .net core");
