@@ -1,41 +1,34 @@
 # SonnetDB 所需数据库能力
 
-验证日期：2026-10-08 至 2026-10-09。SqlSugar PR [#1457](https://github.com/DotNetNext/SqlSugar/pull/1457) 以正式 `SonnetDB 4.0.0` 为依据。SqlSugar 的能力不应因选择 SonnetDB 被提前禁用；缺口在数据库侧实现，适配层只负责原生方言与现有接口。
+本页按 SqlSugar PR #1457 的公开入口重新核对，验证基线为公开 `SonnetDB 5.0.0`。SonnetDB 侧能力已经完成或明确标记产品边界，适配层只接入已有 SqlSugar 接口。
 
-## 当前待补合同
+## 状态矩阵
 
-复用其他 ORM 已提出的共同需求，避免给相同数据库能力重复立项。新建 issue 均限定 SqlSugar 的实际公开接口，不要求复制 PostgreSQL 全部方言。
+| SonnetDB issue | 所需合同 | 当前状态 | SqlSugar 影响 |
+| --- | --- | --- | --- |
+| [#223](https://github.com/IoTSharp/SonnetDB/issues/223) | 关系表字符串聚合 | 已完成并关闭 | `SelectStringJoin` 可使用原生聚合。 |
+| [#226](https://github.com/IoTSharp/SonnetDB/issues/226) | 有数据表的主键结构演进 | 已完成并关闭 | CodeFirst 存量主键迁移有真实回归。 |
+| [#227](https://github.com/IoTSharp/SonnetDB/issues/227) | 关系 DDL 事务提交与回滚 | 已完成并关闭 | 基类 CodeFirst 事务 DDL 检查通过。 |
+| [#229](https://github.com/IoTSharp/SonnetDB/issues/229) | 多 SELECT 与 `NextResult` | 已完成并关闭 | ADO 多结果集检查通过。 |
+| [#233](https://github.com/IoTSharp/SonnetDB/issues/233) | 普通事务锁定读 | 已完成并关闭 | `TranLock(Wait)` 入口有真实回归。 |
+| [#235](https://github.com/IoTSharp/SonnetDB/issues/235) | decimal 参数有效位保真 | 已完成并关闭 | 高有效位参数检查通过。 |
+| [#236](https://github.com/IoTSharp/SonnetDB/issues/236) | DATETIME 参数亚毫秒精度 | 已完成并关闭 | `DATETIME2` 100ns 与旧 `DATETIME` 拒绝合同通过。 |
+| [#237](https://github.com/IoTSharp/SonnetDB/issues/237) | 持久化表列备注与反向元数据 | 已完成并关闭 | CodeFirst、DbMaintenance 和 DbFirst 路径有回归。 |
+| [#239](https://github.com/IoTSharp/SonnetDB/issues/239) | XCode 专属备注与反向元数据 | 不计划实现 | 该 XCode 专属范围不属于 SqlSugar 适配合同，SqlSugar 所需备注合同由 #237 覆盖。 |
+| [#241](https://github.com/IoTSharp/SonnetDB/issues/241) | `ADD/ALTER DECIMAL(p,s)` 精度与元数据 | 已完成并关闭 | ALTER 精度元数据检查通过。 |
+| [#245](https://github.com/IoTSharp/SonnetDB/issues/245) | 原生临时关系表与 CTAS | 已完成并关闭 | Fastest 工作表和调用方事务回归通过。 |
+| [#246](https://github.com/IoTSharp/SonnetDB/issues/246) | 批量关联更新派生来源与事务连续写入 | 已完成并关闭 | `UPDATE ... FROM` 派生来源回归通过。 |
+| [#247](https://github.com/IoTSharp/SonnetDB/issues/247) | 标准存储过程命令与输出参数 | 已完成并关闭 | 过程、多结果和输出参数合同通过。 |
+| [#248](https://github.com/IoTSharp/SonnetDB/issues/248) | NOWAIT 锁定读 | 已完成并关闭 | 锁等待与立即失败选项有真实回归。 |
+| [#249](https://github.com/IoTSharp/SonnetDB/issues/249) | 动态 JSON path 与对象数组谓词 | 已完成并关闭 | JSON path、数组和对象谓词回归通过。 |
+| [#250](https://github.com/IoTSharp/SonnetDB/issues/250) | 约束目录、索引选项和自增起点 | 已完成并关闭 | 维护接口、索引元数据和自增起点回归通过。 |
 
-| SonnetDB issue | 所需合同 | SqlSugar 入口/证据 |
-| --- | --- | --- |
-| [#227](https://github.com/IoTSharp/SonnetDB/issues/227) | 关系 DDL 事务提交与回滚 | 基类 CodeFirst.InitTables 在事务内建表，4.0.0 实测失败 |
-| [#245](https://github.com/IoTSharp/SonnetDB/issues/245) | 原生临时关系表与 CTAS | Fastest 的工作表生命周期、BackupTable；4.0.0 SQL 实测失败 |
-| [#246](https://github.com/IoTSharp/SonnetDB/issues/246) | 批量关联更新的派生来源、事务内连续写入 | UPDATE FROM VALUES/派生查询失败；同一事务第二次关联更新失败 |
-| [#229](https://github.com/IoTSharp/SonnetDB/issues/229) | 多 SELECT 与 NextResult | Ado.GetDataSetAll/多类型 SqlQuery，4.0.0 实测失败 |
-| [#247](https://github.com/IoTSharp/SonnetDB/issues/247) | 标准存储过程命令与输出参数 | Ado.UseStoredProcedure/SugarParameter.Direction；CALL 可用，CommandType.StoredProcedure 仍拒绝 |
-| [#233](https://github.com/IoTSharp/SonnetDB/issues/233) | 普通事务锁定读 | Queryable/Storageable.TranLock(Wait)，4.0.0 实测失败 |
-| [#248](https://github.com/IoTSharp/SonnetDB/issues/248) | NOWAIT 锁定读 | TranLock(DbLockType.Error)；只跟踪现有立即失败选项，不增加锁模式 |
-| [#249](https://github.com/IoTSharp/SonnetDB/issues/249) | 按行动态 JSON path 和对象数组谓词 | JsonField/JsonIndex/JsonListObjectAny；参数化静态 path 已支持，无需重复 |
-| [#223](https://github.com/IoTSharp/SonnetDB/issues/223) | 数据库内字符串聚合 | Subqueryable.SelectStringJoin；STRING_AGG/GROUP_CONCAT 实测失败 |
-| [#239](https://github.com/IoTSharp/SonnetDB/issues/239) / [#237](https://github.com/IoTSharp/SonnetDB/issues/237) | 持久化表列备注与反向元数据 | CodeFirst 描述、DbMaintenance remarks、DbFirst |
-| [#250](https://github.com/IoTSharp/SonnetDB/issues/250) | 约束目录、索引选项、自增起点 | CodeFirst.ChangeKey、SugarIndex.Desc/包含列、SetAutoIncrementInitialValue |
-| [#226](https://github.com/IoTSharp/SonnetDB/issues/226) | 有数据表的主键结构演进 | CodeFirst 存量主键列及定义迁移 |
-| [#235](https://github.com/IoTSharp/SonnetDB/issues/235) | decimal 参数有效位保真 | 高有效位 ADO 参数往返实测丢失精度 |
-| [#236](https://github.com/IoTSharp/SonnetDB/issues/236) | DATETIME 参数亚毫秒精度 | ADO 日期参数往返实测丢失 ticks |
-| [#241](https://github.com/IoTSharp/SonnetDB/issues/241) | ADD/ALTER DECIMAL(p,s) 精度与元数据 | DbMaintenance.AddColumn 的精度声明及回读 |
+## 证据入口
 
-新建的 #245–#250 含复现/源码依据、接口影响和验收。其他条目复用共享需求；不把关闭为 duplicate 或“仅定义不支持边界”理解为能力已实现。
+- [SonnetDB 与 SqlSugar 适配说明](SonnetDB-compatibility.md)
+- [SonnetDB 5.0.0 公共发布审计](https://github.com/IoTSharp/SonnetDB/blob/main/docs/audits/release-5.0-20261104-public-acceptance.json)
+- [Fastest 消费者回归](https://github.com/IoTSharp/SonnetDB/blob/main/docs/audits/issue245-fastest-consumer-20261019.md)
+- [存储过程消费者回归](https://github.com/IoTSharp/SonnetDB/blob/main/docs/audits/issue247-consumer-20261019.md)
+- [锁定读实现回归](https://github.com/IoTSharp/SonnetDB/blob/main/docs/audits/issue-248-implementation-20261016.md)
 
-## 原 #171–#183 的更新
-
-旧清单基于 3.1.0，原十三条 SQL issue 已关闭，4.0.0 已交付其中多项能力：CTE、基础窗口、CAST、普通字符串/日期函数、聚合 DISTINCT、更多连接与集合运算、BETWEEN/ILIKE、基础 JSON、DECIMAL、TIME 和按位运算。
-
-提供程序已移除旧清单产生的大面积拒绝，使用原生映射与通用生成流程。分页、窗口、字符串/日期、JSON、复合键和批量 DML 已有消费者实际回归；不能用旧矩阵继续永久限制这些入口，也不能从 issue 状态推导未验证的完整兼容性。
-
-#190 的关闭只定义了乐观并发及拒绝悲观锁的产品边界；实际锁定读仍按 #233/#248 追踪。#191 的关系表关联更新也不等于派生来源和事务连续写入已完成，剩余范围见 #246。
-
-## 验证和交付
-
-基础功能与一万行集合写入回归见 [SonnetDB-compatibility.md](SonnetDB-compatibility.md)。`--check-capabilities` 会对尚缺的核心合同执行成功断言，失败返回非零；它不是期待 NotSupportedException 的拒绝矩阵。
-
-每项交付须包含数据库实现、实际回归、正式 NuGet/Server 版本和 SqlSugar 消费者验证。当前不声称已经完整满足 SqlSugar，也不要求为 SonnetDB 改造其核心框架。
+关闭 issue 证明 SonnetDB 侧合同已经收口。公开包和 SqlSugar 三协议消费者证据另行记录，上游合入和后续 SqlSugar 发行仍由上游维护流程确认。

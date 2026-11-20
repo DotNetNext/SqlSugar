@@ -1,6 +1,6 @@
 # SonnetDB 验证
 
-依赖 SonnetDB 5.0.0，使用 .NET 10。本次验证使用绑定源码 `455bf3b53b1e56df0064d8f574b0595cbb0b609e` 的候选 NuGet 包；正式公开包发布和上游 PR 合并分别验收。运行：
+依赖公开 SonnetDB 5.0.0，使用 .NET 10。本次验证使用 NuGet 正式包，包内程序集来源为 SonnetDB 5.0.0 公共发布审计记录的 `84433f9edcceb84605520ebecc4b2879e3c4aa79`；上游 PR 合并和后续 SqlSugar 发行分别验收。运行：
 
 ```powershell
 dotnet run --project Src/Asp.NetCore2/SonnetDBTest/SonnetDBTest.csproj
