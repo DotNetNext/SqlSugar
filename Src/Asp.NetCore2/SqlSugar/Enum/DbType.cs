@@ -41,6 +41,7 @@ namespace SqlSugar
         GaussDBNative,
         DuckDB,
         MongoDb,
+        SonnetDB,
         Custom = 900
     }
 }

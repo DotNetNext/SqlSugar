@@ -838,6 +838,10 @@ namespace SqlSugar
                 {
                     return (char)(bytes)[0];
                 }
+                else if (sourceType.FullName == "System.TimeOnly" && destinationType == typeof(TimeSpan))
+                {
+                    return TimeOnlyToTimeSpan(value);
+                }
                 else if (value is DateTime &&   destinationType == typeof(TimeSpan))
                 {
                     value = Convert.ToDateTime(value).TimeOfDay;

@@ -575,20 +575,27 @@ namespace SqlSugar
             {
                 var fieldName = GetIdentityKeys().Last();
 
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL ||
+                    this.Context.CurrentConnectionConfig.DbType == DbType.SonnetDB)
                 {
-                    var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
-                        .PropertyInfo.PropertyType;
-                    cons.Add(new ConditionalModel()
+                    var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x =>
+                        string.Equals(x.DbColumnName, fieldName, StringComparison.OrdinalIgnoreCase))?.PropertyInfo?.PropertyType;
+                    var identityCondition = new ConditionalModel()
                     {
                         ConditionalType = ConditionalType.Equal,
                         FieldName = fieldName,
-                        FieldValue = identity.ToString(),
-                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType)
-                    });
+                        FieldValue = identity.ToString()
+                    };
+                    if (fieldObjectType != null)
+                    {
+                        identityCondition.FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType);
+                    }
+                    cons.Add(identityCondition);
                 }
                 else
+                {
                     cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
+                }
             }
             else
             {
@@ -597,7 +604,9 @@ namespace SqlSugar
                     var fielddName = item.DbColumnName;
                     var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
                     var fieldValue = filedObject.ObjToString();
-                    if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                    if (filedObject != null && filedObject.GetType() != typeof(string) &&
+                        (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL ||
+                         this.Context.CurrentConnectionConfig.DbType == DbType.SonnetDB))
                     {
                         cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
                     }

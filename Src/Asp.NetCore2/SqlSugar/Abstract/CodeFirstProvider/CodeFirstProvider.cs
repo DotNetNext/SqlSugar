@@ -513,7 +513,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            this.Context.DbMaintenance.DropConstraint(tableName, string.Format("PK_{0}_{1}", tableName, item.DbColumnName));
+                            this.Context.DbMaintenance.DropConstraint(tableName, GetPrimaryKeyConstraintName(tableName, item.DbColumnName));
                         }
                     }
                     else if ((pkDiff || idEntityDiff) && isMultiplePrimaryKey == false)
@@ -571,9 +571,14 @@ namespace SqlSugar
             idEntityDiff = item.IsIdentity != dbColumn.IsIdentity;
         }
 
+        protected virtual string GetPrimaryKeyConstraintName(string tableName, string columnName)
+        {
+            return string.Format("PK_{0}_{1}", tableName, columnName);
+        }
+
         protected virtual void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
-            string constraintName = string.Format("PK_{0}_{1}", tableName, item.DbColumnName);
+            string constraintName = GetPrimaryKeyConstraintName(tableName, item.DbColumnName);
             if (this.Context.DbMaintenance.IsAnyConstraint(constraintName))
                 this.Context.DbMaintenance.DropConstraint(tableName, constraintName);
             this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);

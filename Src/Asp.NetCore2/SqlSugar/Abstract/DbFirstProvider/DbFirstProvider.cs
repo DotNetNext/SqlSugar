@@ -562,7 +562,7 @@ namespace SqlSugar
             }
             return result;
         }
-        private string GetPropertyTypeConvert(DbColumnInfo item)
+        protected virtual string GetPropertyTypeConvert(DbColumnInfo item)
         {
             var convertString = GetProertypeDefaultValue(item);
             if (convertString == "DateTime.Now" || convertString == null)

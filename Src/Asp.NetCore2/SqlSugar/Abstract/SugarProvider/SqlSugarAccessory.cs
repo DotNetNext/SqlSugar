@@ -581,6 +581,9 @@ namespace SqlSugar
                 case DbType.DuckDB:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.DuckDBCore";
                     break;
+                case DbType.SonnetDB:
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.SonnetDBCore";
+                    break;
                 case DbType.MongoDb:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.MongoDbCore";
                     break;

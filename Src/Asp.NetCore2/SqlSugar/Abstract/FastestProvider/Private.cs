@@ -65,6 +65,12 @@ namespace SqlSugar
             var reslut = InstanceFactory.CreateInstance<IFastBuilder>(className);
             reslut.CharacterSet = this.CharacterSet;
             reslut.FastEntityInfo = this.entityInfo;
+            if (this.context.CurrentConnectionConfig.DbType == DbType.SonnetDB && reslut.DbFastestProperties != null)
+            {
+                reslut.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                reslut.DbFastestProperties.BatchSize = this.BatchsSize;
+                reslut.DbFastestProperties.IsIgnoreInsertError = this.IsIgnoreInsertError;
+            }
             return reslut;
         }
         private DataTable ToDdateTable(List<T> datas)
