@@ -113,6 +113,9 @@ namespace SqlSugar
                     }
                     else
                     {
+                        // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+                        queryable.QueryBuilder.LambdaExpressions.SugarContext =
+                            new ExpressionOutParameter() { Context = this.context };
                         tableName = queryable.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                             (queryable.QueryBuilder.Builder.GetTranslationColumnName(dbName), queryable.QueryBuilder.Builder.GetTranslationColumnName(tableName));
                     }

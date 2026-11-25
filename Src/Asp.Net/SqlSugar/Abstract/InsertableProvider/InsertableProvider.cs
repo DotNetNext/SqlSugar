@@ -653,7 +653,7 @@ namespace SqlSugar
         {
             return new MySqlBlukCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
         }
-        public SqlServerBlukCopy UseSqlServer()
+        public virtual SqlServerBlukCopy UseSqlServer()
         {
             PreToSql();
             var currentType = this.Context.CurrentConnectionConfig.DbType;

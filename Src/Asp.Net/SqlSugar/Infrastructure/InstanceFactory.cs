@@ -340,6 +340,13 @@ namespace SqlSugar
             {
                 return new KdbndpInserttable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.VastbaseV5)
+            {
+                // IsCustomDb 的 {DbType}Provider 探测约定与外置包命名不匹配，ClickHouse 同因走显式路径
+                string className = GetClassName(currentConnectionConfig.DbType.ToString(), "Inserttable");
+                var result = CreateInstance<T, InsertableProvider<T>>(className);
+                return result;
+            }
             else if (IsCustomDb(currentConnectionConfig))
             {
                 var name =

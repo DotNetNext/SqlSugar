@@ -1408,6 +1408,9 @@ namespace SqlSugar
                 dbName=dbName.Replace(".", guidPoint);
                 tableName = this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(entity.Type).DbTableName;
                 oldTableName = tableName;
+                // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+                this.QueryBuilder.LambdaExpressions.SugarContext =
+                    new ExpressionOutParameter() { Context = this.Context };
                 tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                 (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
                 tableName = tableName.Replace(guidPoint, ".");

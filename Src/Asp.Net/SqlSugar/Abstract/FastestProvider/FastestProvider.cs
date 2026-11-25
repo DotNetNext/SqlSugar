@@ -384,6 +384,11 @@ namespace SqlSugar
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
                 this.context.Ado.IsDisableMasterSlaveSeparation = true;
                 DataTable dt = ToDdateTable(datas);
+                // dt 缺 whereColumns 时（identity 列已被剥离），temp 表 JOIN 列无值 →
+                // UPDATE 静默 0 行命中；按实体声明补回该列及其值。补列实现在外置包内
+                // （VastbaseV5BulkCopySupport），主库经 CustomDllName 装载后反射调用并缓存。
+                if (this.context.CurrentConnectionConfig.DbType == DbType.VastbaseV5)
+                    RestoreVastbaseWhereColumns(dt, datas, whereColumns);
                 IFastBuilder buider = GetBuider();
                 ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
                 buider.Context = context;
@@ -574,5 +579,22 @@ namespace SqlSugar
         }
         #endregion
 
+        // VastbaseV5 的 temp 表补列实现在外置包内（VastbaseV5BulkCopySupport 为包内 internal
+        // 类），主库经 CustomDllName 装载后反射调用；MethodInfo 静态缓存，BulkUpdate 调用
+        // 频度下开销可忽略。
+        private static readonly System.Lazy<System.Reflection.MethodInfo> _vastbaseRestoreWhereColumns =
+            new System.Lazy<System.Reflection.MethodInfo>(() =>
+            {
+                var type = InstanceFactory.GetCustomTypeByClass("SqlSugar.VastbaseV5BulkCopySupport");
+                return type == null ? null : type.GetMethod("RestoreWhereColumns",
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            });
+
+        private void RestoreVastbaseWhereColumns(DataTable dt, List<T> datas, string[] whereColumns)
+        {
+            var method = _vastbaseRestoreWhereColumns.Value;
+            Check.Exception(method == null, "Not Found VastbaseV5BulkCopySupport.RestoreWhereColumns in SqlSugar.VastbaseV5.dll");
+            method.MakeGenericMethod(typeof(T)).Invoke(null, new object[] { dt, datas, whereColumns, this.entityInfo });
+        }
     }
 }

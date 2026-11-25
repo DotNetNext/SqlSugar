@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{875D264C-AA12-4948-B8AD-5D093B78FDAF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SqlSugar</RootNamespace>
+    <AssemblyName>SqlSugar.VastbaseV5</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Vastbase, Version=8.0.8.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Vastbase.8.0.8-5.0.2\lib\netstandard2.0\Vastbase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
+      <Project>{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}</Project>
+      <Name>SqlSugar</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ToolsCopy.cs" />
+    <Compile Include="Realization\Vastbase\CodeFirst\VastbaseCodeFirst.cs" />
+    <Compile Include="Realization\Vastbase\DbBind\VastbaseDbBind.cs" />
+    <Compile Include="Realization\Vastbase\DbMaintenance\VastbaseDbMaintenance.cs" />
+    <Compile Include="Realization\Vastbase\Insertable\VastbaseInserttable.cs" />
+    <Compile Include="Realization\Vastbase\Queryable\VastbaseQueryable.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseBuilder.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseExpressionContext.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseFastBuilder.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseInsertBuilder.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseQueryBuilder.cs" />
+    <Compile Include="Realization\Vastbase\SqlBuilder\VastbaseUpdateBuilder.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseBabelfishRewritePipeline.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseBulkCopySupport.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseContextMethods.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseMode.cs" />
+    <Compile Include="Realization\Vastbase\VastbasePgArrayParser.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseProvider.cs" />
+    <Compile Include="Realization\Vastbase\VastbaseSupport.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

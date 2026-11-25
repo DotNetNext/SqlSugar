@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SqlSugar.VastbaseV5</id>
+    <version>5.1.4.207</version>
+    <title>SqlSugar Vastbase V5 Provider (.NET Framework)</title>
+    <authors>SqlSugar Team</authors>
+    <owners>SqlSugar Team</owners>
+    <licenseUrl>https://github.com/sunkaixuan/SqlSugar/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://www.sqlsugar.com/favicon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Vastbase V5 database provider for SqlSugar (.NET Framework 4.7.2+).
+
+Requires the SqlSugar package (main library). Dual compatibility modes: native PostgreSQL protocol and Babelfish (TDS, SQL Server dialect), auto-detected by the Server Compatibility Mode connection string marker.</description>
+    <summary>Vastbase V5 provider for SqlSugar (.NET Framework).</summary>
+    <language>zh-CN</language>
+    <tags>SqlSugar Vastbase postgresql orm database</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2">
+        <dependency id="SqlSugar" version="5.1.4.207" />
+        <dependency id="Vastbase" version="8.0.8-5.0.2" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SqlSugar.VastbaseV5.dll" target="lib\net472" />
+  </files>
+</package>

@@ -635,6 +635,8 @@ namespace SqlSugar
         internal ISugarQueryable<T> _UnionAll<T>(ISugarQueryable<T>[] queryables) 
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+            sqlBuilder.Context = this;
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
@@ -682,6 +684,8 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+            sqlBuilder.Context = this;
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
@@ -1106,6 +1110,8 @@ namespace SqlSugar
             dataList = dataList.Where(it => it != null).ToList();
             this.InitMappingInfo<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+            sqlBuilder.Context = this.Context;
             var result= new Storageable<T>(dataList,this);
             result.Builder = sqlBuilder;
             return result;
@@ -1186,6 +1192,7 @@ namespace SqlSugar
             result.Context = this;
             result.formatBuilder.Context = this;
             result.queryBuilder = this.Queryable<object>().QueryBuilder;
+            InitReportableSugarContext(result);
             return result;
         }
         public IReportable<T> Reportable<T>(List<T> list)  
@@ -1195,6 +1202,7 @@ namespace SqlSugar
             result.Context = this;
             result.formatBuilder.Context = this;
             result.queryBuilder = this.Queryable<object>().QueryBuilder;
+            InitReportableSugarContext(result);
             return result;
         }
         public IReportable<T> Reportable<T>(T [] list)
@@ -1206,7 +1214,15 @@ namespace SqlSugar
             result.Context = this;
             result.formatBuilder.Context = this;
             result.queryBuilder = this.Queryable<object>().QueryBuilder;
+            InitReportableSugarContext(result);
             return result;
+        }
+
+        // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+        private void InitReportableSugarContext<T>(ReportableProvider<T> result)
+        {
+            result.queryBuilder.LambdaExpressions.SugarContext =
+                new ExpressionOutParameter() { Context = this, QueryBuilder = result.queryBuilder };
         }
         #endregion
 

@@ -1069,13 +1069,46 @@ namespace SqlSugar
             return info;
         }
 
-        internal static object GetConvertValue(object entityValue)
+        public static object GetConvertValue(object entityValue)
         {
             if (entityValue != null && entityValue is DateTime)
             {
                 entityValue = entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff");
             }
             return entityValue;
+        }
+
+        // VastbaseV5 兼容模式判定（provider 在外置包内，主库不能引其工具类）：先看
+        // MoreSettings 显式设置，再按与驱动同口径的宽容解析识别连接串标记。
+        internal static bool IsVastbaseBabelfish(ConnectionConfig connectionConfig)
+        {
+            if (connectionConfig != null
+                && connectionConfig.MoreSettings != null
+                && connectionConfig.MoreSettings.VastbaseCompatibility == VastbaseCompatibilityMode.Babelfish)
+                return true;
+            return IsVastbaseBabelfishMarker(connectionConfig == null ? null : connectionConfig.ConnectionString);
+        }
+
+        // 驱动端连接串解析（DbConnectionStringBuilder 家族）对大小写、等号两侧空白、引号
+        // 宽容——判定必须与驱动同口径：精确子串匹配会把变体写法误判为 PG。连接串解析失败
+        // （驱动同样无法连接）按 PG 处理。
+        internal static bool IsVastbaseBabelfishMarker(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString)) return false;
+            try
+            {
+                var builder = new System.Data.Common.DbConnectionStringBuilder();
+                builder.ConnectionString = connectionString;
+                foreach (string key in builder.Keys)
+                    if (string.Equals(key, "Server Compatibility Mode", StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(System.Convert.ToString(builder[key]), "Babelfish", StringComparison.OrdinalIgnoreCase))
+                        return true;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         internal static T To<T>(object value)
@@ -1146,7 +1179,7 @@ namespace SqlSugar
             return unType;
         }
 
-        internal static Type GetUnderType(PropertyInfo propertyInfo)
+        public static Type GetUnderType(PropertyInfo propertyInfo)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
             unType = unType ?? propertyInfo.PropertyType;
@@ -1878,7 +1911,8 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, "'{" + new SerializeService().SerializeObject(item.Value).TrimStart('[').TrimEnd(']') + "}'");
                     }
-                    else if (item.Value is byte[]&&connectionConfig.DbType==DbType.PostgreSQL)
+                    else if (item.Value is byte[] && (connectionConfig.DbType == DbType.PostgreSQL
+                        || (connectionConfig.DbType == DbType.VastbaseV5 && !IsVastbaseBabelfish(connectionConfig))))
                     {
                         result = result.Replace(item.ParameterName, ByteArrayToPostgreByteaLiteral(item.Value as byte[]));
                     }

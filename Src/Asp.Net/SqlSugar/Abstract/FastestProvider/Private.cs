@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -33,6 +33,21 @@ namespace SqlSugar
                     return new OracleFastBuilder(this.entityInfo);
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
+                case DbType.VastbaseV5:
+                    // VastbaseV5 的 FastBuilder 在外置包 SqlSugar.VastbaseV5 内（经 CustomDllName
+                    // 装载），主库反射构造并传实体元数据（包内构造器形态与内建版一致）；AsName 是
+                    // 包内 internal 字段，反射注入（.AS() 别名场景的列元数据解析依赖）。
+                    var vastbaseFastBuilderType = InstanceFactory.GetCustomTypeByClass("SqlSugar.VastbaseV5FastBuilder");
+                    var resultVastbase = (IFastBuilder)Activator.CreateInstance(vastbaseFastBuilderType, new object[] { this.entityInfo });
+                    resultVastbase.Context = this.context;
+                    resultVastbase.GetType().GetField("AsName", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(resultVastbase, this.AsName);
+                    if (UtilMethods.IsVastbaseBabelfish(this.context.CurrentConnectionConfig))
+                    {
+                        resultVastbase.DbFastestProperties = new DbFastestProperties();
+                        resultVastbase.DbFastestProperties.HasOffsetTime = true;
+                        resultVastbase.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    }
+                    return resultVastbase;
                 case DbType.MySqlConnector:
                     var resultConnector = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.MySqlConnector.MySqlFastBuilder");
                     resultConnector.CharacterSet = this.CharacterSet;

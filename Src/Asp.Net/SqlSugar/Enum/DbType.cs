@@ -40,6 +40,7 @@ namespace SqlSugar
         GaussDBNative,
         DuckDB,
         MongoDb,
+        VastbaseV5,
         Custom =900
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    internal class ListAnyParameter
+    public class ListAnyParameter
     {
         public string Name { get; internal set; }
         public string Sql { get; internal set; }

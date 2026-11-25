@@ -40,5 +40,6 @@ namespace SqlSugar
         public bool ClickHouseEnableFinal { get; set; }
         public bool EnableJsonb { get;  set; }
         public PostgresIdentityStrategy PostgresIdentityStrategy { get; set; } = PostgresIdentityStrategy.Serial; // 兼容性处理，默认使用Serial
+        public VastbaseCompatibilityMode VastbaseCompatibility { get; set; } = VastbaseCompatibilityMode.PostgreSQL;
     }
 }

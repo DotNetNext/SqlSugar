@@ -513,6 +513,13 @@ namespace SqlSugar
                         this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
+                case DbType.VastbaseV5:
+                    // VastbaseV5 provider 在外置包 SqlSugar.VastbaseV5 内（net472 独立程序集，
+                    // 驱动不进主库），经 CustomDllName 反射装载（ClickHouse 同型）；Babelfish
+                    // 兼容模式探测与连接串回填由包内 VastbaseV5Support.Install 构造期承接。
+                    InstanceFactory.CustomDllName = "SqlSugar.VastbaseV5";
+                    InstallVastbaseV5(this.Context);
+                    break;
                 case DbType.OceanBase:
                     config.DbType = DbType.MySql;
                     if (this.CurrentConnectionConfig.MoreSettings == null)
@@ -690,6 +697,33 @@ namespace SqlSugar
             }
             return result;
         }
+
+        // VastbaseV5 的构造期装配在外置包内（VastbaseV5Support.Install：换入兼容模式感知的
+        // Utilities、EntityService 挂元数据归一）。必须早于一切元数据缓存读取——首次
+        // Queryable<T>() 即读进程级元数据缓存，早于惰性 Ado 首访，故只能在构造期
+        // （CheckDbDependency）触发；外置包不在主库编译面，装载后反射调用并静态缓存。
+        // 外置包缺失/不可载时给可操作的双语提示（对齐驱动缺失提示模式），不裸抛装载异常。
+        private static void InstallVastbaseV5(SqlSugarProvider context)
+        {
+            System.Reflection.MethodInfo install;
+            try
+            {
+                install = _vastbaseV5Install.Value;
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage(
+                    "You need to install the SqlSugar.VastbaseV5 package (NuGet) to use DbType.VastbaseV5. (" + ex.Message + ")",
+                    "使用 DbType.VastbaseV5 需要安装 SqlSugar.VastbaseV5 包（NuGet）：(" + ex.Message + ")"));
+                return;
+            }
+            Check.Exception(install == null, "Not Found VastbaseV5Support.Install in SqlSugar.VastbaseV5.dll");
+            install.Invoke(null, new object[] { context });
+        }
+        private static readonly System.Lazy<System.Reflection.MethodInfo> _vastbaseV5Install =
+            new System.Lazy<System.Reflection.MethodInfo>(() =>
+                InstanceFactory.GetCustomTypeByClass("SqlSugar.VastbaseV5Support")
+                    .GetMethod("Install", new[] { typeof(SqlSugarProvider) }));
         #endregion
     }
 }

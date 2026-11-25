@@ -326,8 +326,29 @@ namespace SqlSugar
             var obj = dr.GetValue(i);
             if (obj == null)
                 return default(T);
+            var tType = typeof(T);
+            var readerType = dr.GetType();
+            if (obj is string str && tType.IsArray
+                && readerType.Name == "VastbaseDataReader" && readerType.Namespace == "Vastbase")
+            {
+                // 仅 Vastbase 驱动 reader + 字符串值 + 数组目标时进入：Babelfish 兼容模式(TDS) 下
+                // 数组列降级为 text，需把 PG 数组字面量读回目标数组；PG 原生数组不经此分支，
+                // 其他库 string→数组仍走下方原生转换（含 InvalidCastException 行为）。
+                // 主库不编译引用 Vastbase 驱动，故用名字+命名空间判定（先形状门后求值，
+                // 避免其他库误命中），解析器在外置包内，反射调用并缓存委托。
+                return (T)_vastbaseArrayParse.Value(str, tType.GetElementType());
+            }
             return  (T)obj;
         }
+
+        private static readonly System.Lazy<System.Func<string, System.Type, object>> _vastbaseArrayParse =
+            new System.Lazy<System.Func<string, System.Type, object>>(() =>
+            {
+                var parserType = InstanceFactory.GetCustomTypeByClass("SqlSugar.VastbaseV5PgArrayParser");
+                var method = parserType == null ? null : parserType.GetMethod("Parse", new[] { typeof(string), typeof(System.Type) });
+                Check.Exception(method == null, "Not Found VastbaseV5PgArrayParser.Parse in SqlSugar.VastbaseV5.dll");
+                return (System.Func<string, System.Type, object>)method.CreateDelegate(typeof(System.Func<string, System.Type, object>));
+            });
 
         public static Nullable<T> GetConvertEnum_Null<T>(this IDataReader dr, int i) where T : struct
         {
