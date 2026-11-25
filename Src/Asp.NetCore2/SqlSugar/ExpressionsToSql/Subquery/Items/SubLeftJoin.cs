@@ -66,7 +66,16 @@ namespace SqlSugar
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,
                  null);
-            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.SqlServer && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockSubquery == true)
+            // NOLOCK 提示仅限两类源：SqlServer 保持原生语义；Vastbase 仅 Babelfish 兼容模式(TDS)
+            // 接受（T-SQL 提示语法；PG 方言无此语法，生成即 42601）。括号化子查询源的提示会落
+            // 到派生表别名后被拒（42601），故抑制。
+            var nolockConfig = this.Context?.SugarContext?.Context?.CurrentConnectionConfig;
+            var nolockEligible =
+                nolockConfig?.DbType == DbType.SqlServer
+                || (nolockConfig?.DbType == DbType.VastbaseV5
+                    && VastbaseV5Helper.IsBabelfish(this.Context?.SugarContext?.Context)
+                    && !tableName.TrimStart().StartsWith("("));
+            if (nolockEligible && nolockConfig?.MoreSettings?.IsWithNoLockSubquery == true)
             {
                 joinString = $"{joinString} {SqlWith.NoLock} ";
             }

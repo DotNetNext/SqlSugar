@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- VastbaseV5 冒烟项目：console、无 Test.Sdk、ProjectReference 直连主库。
+       默认占位串可构建并跳过；设置 VB_V5TEST_PG / VB_V5TEST_BF 后运行真实例。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+  </ItemGroup>
+
+</Project>

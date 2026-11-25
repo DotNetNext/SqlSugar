@@ -24,6 +24,7 @@
     <PackageReference Include="MySqlConnector" Version="2.6.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Npgsql" Version="5.0.18" />
+    <PackageReference Include="Vastbase" Version="8.0.8-5.0.2" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="Oscar.Data.SqlClient" Version="4.0.4" />
     <PackageReference Include="SqlSugarCore.Dm" Version="8.8.1" />

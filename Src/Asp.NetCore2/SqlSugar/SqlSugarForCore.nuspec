@@ -26,6 +26,7 @@
 	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.8.413" />
 		<dependency id="Oscar.Data.SqlClient" version="4.0.4" />
 		<dependency id="System.Text.RegularExpressions" version="4.3.1" />
+		<dependency id="Vastbase" version="8.0.8-5.0.2" />
       </group>
     </dependencies>
   </metadata>

@@ -33,6 +33,17 @@ namespace SqlSugar
                     return new OracleFastBuilder(this.entityInfo);
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
+                case DbType.VastbaseV5:
+                    var resultVastbase = new VastbaseV5FastBuilder(this.entityInfo);
+                    resultVastbase.Context = this.context;
+                    resultVastbase.AsName = this.AsName;
+                    if (VastbaseV5Helper.IsBabelfish(this.context))
+                    {
+                        resultVastbase.DbFastestProperties = new DbFastestProperties();
+                        resultVastbase.DbFastestProperties.HasOffsetTime = true;
+                        resultVastbase.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    }
+                    return resultVastbase;
                 case DbType.MySqlConnector:
                     var resultConnector = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.MySqlConnector.MySqlFastBuilder");
                     resultConnector.CharacterSet = this.CharacterSet;

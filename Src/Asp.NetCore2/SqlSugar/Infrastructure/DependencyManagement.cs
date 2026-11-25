@@ -16,6 +16,7 @@ namespace SqlSugar
         private static bool IsTryDm = false;
         private static bool IsTryKd = false;
         private static bool IsTryOscar = false;
+        private static bool IsTryVastbase = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -164,6 +165,26 @@ namespace SqlSugar
                 catch  
                 {
                     var message = "需要引用Oscar.Data.SqlClient.dll,Github搜索sqlsugar源码里面有";
+                    throw new Exception(message);
+                }
+            }
+        }
+
+        public static void TryVastbaseV5()
+        {
+            if (!IsTryVastbase)
+            {
+                try
+                {
+                    VastbaseV5Provider db = new VastbaseV5Provider();
+                    var conn = db.GetAdapter();
+                    IsTryVastbase = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                        "You need to refer to Vastbase.dll (NuGet package: Vastbase 8.0.8-5.0.2).",
+                        "需要引用Vastbase.dll(NuGet 包 Vastbase 8.0.8-5.0.2)");
                     throw new Exception(message);
                 }
             }

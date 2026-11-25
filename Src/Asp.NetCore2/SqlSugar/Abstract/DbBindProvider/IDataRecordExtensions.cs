@@ -326,6 +326,18 @@ namespace SqlSugar
             var obj = dr.GetValue(i);
             if (obj == null)
                 return default(T);
+            var tType = typeof(T);
+            var readerType = dr.GetType();
+            if (obj is string str && tType.IsArray
+                && readerType.Name == "VastbaseDataReader" && readerType.Namespace == "Vastbase")
+            {
+                // 仅 Vastbase 驱动 reader + 字符串值 + 数组目标时进入：Babelfish 兼容模式(TDS) 下
+                // 数组列降级为 text，需把 PG 数组字面量读回目标数组；PG 原生数组不经此分支，
+                // 其他库 string→数组仍走下方原生转换（含 InvalidCastException 行为）。
+                // 不用类型 is：编译期耦合会在无驱动包的 NoDrive 变体上 JIT 失败；
+                // 名字+命名空间判定仅在上述形状门命中后求值，避免其他库误命中。
+                return (T)VastbaseV5PgArrayParser.Parse(str, tType.GetElementType());
+            }
             return  (T)obj;
         }
 

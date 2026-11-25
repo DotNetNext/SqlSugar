@@ -225,6 +225,9 @@ namespace SqlSugar
                         }
                         else if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                         {
+                            // VastbaseV5 依赖此处赋值的上下文判定兼容模式（Babelfish 兼容模式(TDS) 或 PG 方言），须在生成 SQL 前赋值；其他数据库仅多一次属性赋值，行为不变。
+                            this.DeleteBuilder.LambdaExpressions.SugarContext =
+                                new ExpressionOutParameter() { Context = (SqlSugarProvider)Context };
                             andString.AppendFormat("{0}={1} ", this.SqlBuilder.GetTranslationColumnName(primaryField), this.DeleteBuilder.LambdaExpressions.DbMehtods.ToDate(new MethodCallExpressionModel()
                             {
                                 Args = new List<MethodCallExpressionArgs>()

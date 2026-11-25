@@ -1884,7 +1884,8 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, "'{" + new SerializeService().SerializeObject(item.Value).TrimStart('[').TrimEnd(']') + "}'");
                     }
-                    else if (item.Value is byte[]&&connectionConfig.DbType==DbType.PostgreSQL)
+                    else if (item.Value is byte[] && (connectionConfig.DbType == DbType.PostgreSQL
+                        || (connectionConfig.DbType == DbType.VastbaseV5 && !VastbaseV5Helper.IsBabelfish(connectionConfig))))
                     {
                         result = result.Replace(item.ParameterName, ByteArrayToPostgreByteaLiteral(item.Value as byte[]));
                     }

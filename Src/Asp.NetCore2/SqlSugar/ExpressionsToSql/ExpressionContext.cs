@@ -20,7 +20,7 @@ namespace SqlSugar
 
         #region Properties
         public virtual ExpressionContextCase  Case{ get; set; }
-        public ExpressionOutParameter SugarContext { get; set; }
+        public virtual ExpressionOutParameter SugarContext { get; set; }
         public IDbMethods DbMehtods
         {
             get

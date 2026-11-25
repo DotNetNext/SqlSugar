@@ -54,6 +54,10 @@ namespace SqlSugar
             {
                 return new PostgreSQLQueryable<T>();
             } 
+            else if (currentConnectionConfig.DbType == DbType.VastbaseV5)
+            {
+                return new VastbaseV5Queryable<T>();
+            }
             else
             {
                 string className = "Queryable";
@@ -340,6 +344,10 @@ namespace SqlSugar
             {
                 return new KdbndpInserttable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.VastbaseV5)
+            {
+                return new VastbaseV5Inserttable<T>();
+            }
             else if (IsCustomDb(currentConnectionConfig))
             {
                 var name =
@@ -477,6 +485,7 @@ namespace SqlSugar
             {
                 return "SqlSugar.GaussDB.GaussDB"  + name;
             }
+
             else
             {
                 //if (!string.IsNullOrEmpty(CustomDllName)) 

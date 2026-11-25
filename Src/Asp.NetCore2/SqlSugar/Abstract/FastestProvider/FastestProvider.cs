@@ -388,6 +388,10 @@ namespace SqlSugar
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
                 this.context.Ado.IsDisableMasterSlaveSeparation = true;
                 DataTable dt = ToDdateTable(datas);
+                // dt 缺 whereColumns 时（identity 列已被剥离），temp 表 JOIN 列无值 →
+                // UPDATE 静默 0 行命中；按实体声明补回该列及其值。
+                if (this.context.CurrentConnectionConfig.DbType == DbType.VastbaseV5)
+                    VastbaseV5BulkCopySupport.RestoreWhereColumns(dt, datas, whereColumns, this.entityInfo);
                 IFastBuilder buider = GetBuider();
                 ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
                 buider.Context = context;

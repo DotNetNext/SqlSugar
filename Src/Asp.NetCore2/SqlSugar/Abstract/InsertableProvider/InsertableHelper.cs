@@ -575,7 +575,8 @@ namespace SqlSugar
             {
                 var fieldName = GetIdentityKeys().Last();
 
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL
+                    || this.Context.CurrentConnectionConfig.DbType == DbType.VastbaseV5)
                 {
                     var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
                         .PropertyInfo.PropertyType;
@@ -597,7 +598,8 @@ namespace SqlSugar
                     var fielddName = item.DbColumnName;
                     var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
                     var fieldValue = filedObject.ObjToString();
-                    if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                    if (filedObject != null && filedObject.GetType() != typeof(string) && (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL
+                        || this.Context.CurrentConnectionConfig.DbType == DbType.VastbaseV5))
                     {
                         cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
                     }

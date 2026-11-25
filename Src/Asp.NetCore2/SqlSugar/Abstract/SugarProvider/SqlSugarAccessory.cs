@@ -525,6 +525,11 @@ namespace SqlSugar
                     }
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
+                case DbType.VastbaseV5:
+                    // 兼容模式探测与回填由 VastbaseV5Support.Install 构造期承接（载荷内）。
+                    DependencyManagement.TryVastbaseV5();
+                    VastbaseV5Support.Install(this.Context);
+                    break;
                 case DbType.OceanBase:
                     config.DbType = DbType.MySql;
                     if (this.CurrentConnectionConfig.MoreSettings == null)

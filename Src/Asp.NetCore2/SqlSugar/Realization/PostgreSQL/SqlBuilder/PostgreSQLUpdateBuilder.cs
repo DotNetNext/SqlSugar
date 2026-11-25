@@ -102,6 +102,14 @@ namespace SqlSugar
             }
         }
 
+        // 批量模板全列 CAST 的目标类型。PG 默认用裸 udt_name（无精度/长度修饰符）；
+        // Vastbase 的 Babelfish 兼容模式(TDS) 下无精度 numeric 按 decimal(18,0) 解析会舍入
+        // 小数位，VastbaseUpdateBuilder 重写此方法拼入显式精度（列元数据可得）。
+        protected virtual string GetCastDbType(DbColumnInfo columnInfo, string dbType)
+        {
+            return dbType;
+        }
+
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
@@ -185,7 +193,7 @@ namespace SqlSugar
                         {
                             return string.Format(" {0} ", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
                         }
-                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i+(pageIndex-1)*100000,it)), dbType);
+                        return string.Format("CAST({0} AS {1})", this.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i+(pageIndex-1)*100000,it)), GetCastDbType(columnInfo, dbType));
 
                     })) + ")");
                     ++i;

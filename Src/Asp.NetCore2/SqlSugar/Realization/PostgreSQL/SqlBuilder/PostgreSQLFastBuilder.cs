@@ -31,7 +31,7 @@ namespace SqlSugar
         //    string sql = string.Format(UpdateSql, sets, tableName, tempName, wheres);
         //    return await this.Context.Ado.ExecuteCommandAsync(sql);
         //}
-        public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
+        public virtual async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
             List<string> lsColNames = new List<string>();
             for (int i = 0; i < dt.Columns.Count; i++)
