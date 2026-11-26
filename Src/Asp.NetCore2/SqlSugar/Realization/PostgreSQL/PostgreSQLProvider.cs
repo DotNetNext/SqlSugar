@@ -12,8 +12,9 @@ namespace SqlSugar
 {
     public partial class PostgreSQLProvider : AdoProvider
     {
-        public PostgreSQLProvider() 
+        public PostgreSQLProvider()
         {
+            this.IsOpenAsync = true;
 
             if (StaticConfig.AppContext_ConvertInfinityDateTime == false)
             {
@@ -78,6 +79,23 @@ namespace SqlSugar
                 sqlCommand.Parameters.AddRange((NpgsqlParameter[])ipars);
             }
             CheckConnection();
+            return sqlCommand;
+        }
+        public override async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            NpgsqlCommand sqlCommand = new NpgsqlCommand(sql, (NpgsqlConnection)this.Connection);
+            sqlCommand.CommandType = this.CommandType;
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
+            if (this.Transaction != null)
+            {
+                sqlCommand.Transaction = (NpgsqlTransaction)this.Transaction;
+            }
+            if (parameters.HasValue())
+            {
+                IDataParameter[] ipars = ToIDbDataParameter(parameters);
+                sqlCommand.Parameters.AddRange((NpgsqlParameter[])ipars);
+            }
+            await CheckConnectionAsync();
             return sqlCommand;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
