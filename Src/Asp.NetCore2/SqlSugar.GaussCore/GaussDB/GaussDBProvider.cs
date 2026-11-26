@@ -74,6 +74,24 @@ namespace SqlSugar.GaussDB
             return sqlCommand;
         }
 
+        public override async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            OpenGaussCommand sqlCommand = new OpenGaussCommand(sql, (OpenGaussConnection)this.Connection);
+            sqlCommand.CommandType = this.CommandType;
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
+            if (this.Transaction != null)
+            {
+                sqlCommand.Transaction = (OpenGaussTransaction)this.Transaction;
+            }
+            if (parameters.HasValue())
+            {
+                IDataParameter[] ipars = ToIDbDataParameter(parameters);
+                sqlCommand.Parameters.AddRange((OpenGaussParameter[])ipars);
+            }
+            await CheckConnectionAsync();
+            return sqlCommand;
+        }
+
         public override void SetCommandToAdapter(IDataAdapter adapter, DbCommand command)
         {
             ((GaussDBDataAdapter)adapter).SelectCommand = (OpenGaussCommand)command;
